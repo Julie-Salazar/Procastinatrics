@@ -19,7 +19,7 @@ flask db migrate
 flask db upgrade
 
 
-if you changed the database schema the just run 
+if you changed the database schema then just run 
 flask db migrate
 flask db upgrade
 ```
@@ -30,6 +30,10 @@ Now that all the dependencies are set up, you can now run the flask app.
 To start the web-app, run the following:
 
 ``` shell
+optional : python -m TEST 
+the above will create 3 users for testing
+
+to run the program:
 flask run
 ```
 This will host the application at http://127.0.0.1:5000
