@@ -15,8 +15,13 @@ Here are the instructions for developing the project
 - run these 3 commands individually
 ``` shell 
 flask db init
-flask db upgrade
 flask db migrate
+flask db upgrade
+
+
+if you changed the database schema the just run 
+flask db migrate
+flask db upgrade
 ```
 
 ## Running procrastinators
