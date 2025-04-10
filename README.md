@@ -14,7 +14,10 @@ Here are the instructions for developing the project
 1. Initialise the Database Schema:
 - run these 3 commands individually
 ``` shell
--- run this incase flask cant find 'app.py' : on CMD run in main folder : 'set FLASK_APP=app'
+-- run this incase flask cant find 'app.py' : on CMD run in main folder :
+'set FLASK_APP=app'
+
+-- run below for db initialisation
 flask db init
 flask db migrate
 flask db upgrade
