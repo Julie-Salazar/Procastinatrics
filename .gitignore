@@ -5,3 +5,9 @@
 migrations/
 migrations/__pycache__
 migrations/versions/__pycache__
+
+# Ignore all __pycache__ folders
+**/__pycache__/
+
+# Ignore all .pyc files
+*.pyc
