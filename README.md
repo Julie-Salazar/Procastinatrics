@@ -1,5 +1,5 @@
 # CITS3404_PROJ_2025
-Group project for unit cits3404, designing a metrics measuring app with interation and sharing features.
+Group project for unit cits3404, designing a metrics app with comparitive analytics of productivity app usage and recreational app usage.
 
 
 Here are the instructions for developing the project
