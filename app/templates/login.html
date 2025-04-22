@@ -17,12 +17,12 @@
     <div class="login-page-container">
         <div class="introductory-section">
             <img src="{{ url_for('static', filename='img/sloth_hourglass.png') }}" alt="Procrastinatircs Sloth Mascot">
-            <p>
-                Welcome to Procrastinatircs! This is your productivity central, make staying on top of tasks easier by
+            <h1 style="font-family: var(--font-heading); font-weight: 700;">Welcome to Procrastinatircs!</h1>
+            <br>
+            <p style="font-family: var(--font-body); font-weight: 400;">This is your productivity central, make staying on top of tasks easier by
                 raising your awareness of how long you're spending on different applications, share with your friends
                 your usage, edit the way that productive and recreational applications are measured through changing
-                tags and track your moods after every usage.
-            </p>
+                tags and track your moods after every usage.</p>
         </div>
 
         <div class="login-form-container">
@@ -73,7 +73,7 @@
 
                 <div class="divider">Or with</div>
 
-                <div class="social-login">
+                <div class="social-login" >
                     <a href="{{ url_for('login_facebook') }}" class="btn btn-social facebook">
                         Facebook
                     </a>

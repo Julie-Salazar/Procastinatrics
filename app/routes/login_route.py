@@ -23,6 +23,14 @@ def login():
 
     return flask.render_template("login.html", form=form)
 
+
+
+#Temporary fix as port 5000 is automatically redirecting to home as it thinks we are logged in already. 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return flask.redirect(url_for('login'))
+
 @app.route('/forgot-password')
 def forgot_password():
     return "Forgot Password page placeholder"

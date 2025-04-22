@@ -1,1 +1,77 @@
-share.html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}"> 
+    </head>
+    
+    <body>
+
+        <h1 class="page-title">Share your shame!✨</h1>
+      
+        <div class="main-row">
+      
+          <!-- Sidebar -->
+          <aside class="sidebar">
+            <div class="sidebar-logo">
+              <img src="{{ url_for('static', filename='img/sloth_hourglass.png') }}" alt="Sloth Logo">
+            </div>
+            <div class="sidebar-label">Admin tools</div>
+            <nav class="sidebar-nav">
+              <a href="/dashboard" class="sidebar-link"><img src="{{ url_for('static', filename='img/icon-dashboard.svg') }}">Dashboard</a>
+              <a href="/share" class="sidebar-link"><img src="{{ url_for('static', filename='img/icon-share.svg') }}">Share Progress</a>
+              <a href="/analytics" class="sidebar-link"><img src="{{ url_for('static', filename='img/icon-analytics.svg') }}">Analytics</a>
+              <a href="/friends" class="sidebar-link"><img src="{{ url_for('static', filename='img/icon-friends.svg') }}">Friends Receipts</a>
+              <a href="/log" class="sidebar-link"><img src="{{ url_for('static', filename='img/icon-log.svg') }}">Log Activity</a>
+            </nav>
+          </aside>
+      
+          <!-- Receipt Display -->
+          <div class="receipt">
+            <img src="{{ url_for('static', filename='img/receipt_sample.svg') }}" alt="Receipt" style="width: 100%;">
+          </div>
+      
+          <!-- Right Panel -->
+          <div class="right-panel">
+            <div class="friend-list">
+              <h2>Friends</h2>
+              <ul style="list-style: none; padding-left: 0;">
+                {% for i in range(5) %}
+                <li class="friend-item">
+                  <div style="display: flex; align-items: center;">
+                    <img src="{{ url_for('static', filename='img/sloth_hourglass.png') }}" alt="Avatar">
+                    <span>oogly boogly</span>
+                  </div>
+                  <button class="share-btn">share</button>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+      
+            <div class="filter-dropdown">
+              <label for="timeframe">Choose a timeframe:</label>
+              <select id="timeframe">
+                <option>Day</option>
+                <option>Week</option>
+                <option selected>Month</option>
+                <option>Year</option>
+              </select>
+            </div>
+      
+            <div class="download-btn">
+              <button class="download-btn-inner">
+                <img src="{{ url_for('static', filename='img/import.svg') }}" alt="Download">
+                <span>Get PDF Receipt</span>
+              </button>
+            </div>
+          </div>
+      
+        </div>
+      
+      </body>
+
+</html>
