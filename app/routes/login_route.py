@@ -31,6 +31,7 @@ def logout():
     logout_user()
     return flask.redirect(url_for('login'))
 
+
 @app.route('/forgot-password')
 def forgot_password():
     return "Forgot Password page placeholder"

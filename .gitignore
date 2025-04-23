@@ -10,4 +10,8 @@ migrations/versions/__pycache__
 **/__pycache__/
 
 # Ignore all .pyc files
-*.pyc
+*.pycnode_modules/
+
+node_modules/
+
+

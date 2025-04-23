@@ -1,94 +1,149 @@
-/* ---------- Share Page Layout ---------- */
-
-body {
+/* ---------- Basic Reset & Layout Structure ---------- */
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
-    padding: 20px;
     font-family: var(--font-body, 'Inter'), sans-serif;
     background-color: var(--primary-background, #292929);
     color: var(--text-primary, #FAFAFA);
   }
   
-  .share-page-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 60px;
-    max-width: 1400px;
-    width: 100%;
-  }
-  
-  /* Left Section (e.g., Sloth Art + Info) */
-  .share-intro-section {
-    flex: 1;
-    max-width: 450px;
+  /* ---------- Sidebar Styling ---------- */
+  .sidebar {
+    width: 220px;
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed position so it stays visible */
+    left: 0;
+    top: 0;
+    background-color: #1b1b1b;
+    padding: 32px 20px;
+    color: #FAFAFA;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--padding-card, 24px);
+    overflow-y: auto; /* In case content is too tall */
+  }
+  
+  .sidebar-logo {
+    margin-bottom: 40px;
+  }
+  
+  .sidebar-logo img {
+    max-width: 120px;
+  }
+  
+  .sidebar-label {
+    font-weight: 600;
+    margin-bottom: 32px;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+  }
+  
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #FAFAFA;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+  
+  .sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .sidebar-link img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* ---------- Main Content Layout ---------- */
+  .main-content {
+    margin-left: 220px; /* Same as sidebar width */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page-header {
+   
     text-align: center;
   }
   
-  .share-intro-section img {
-    max-width: 400px;
-    height: auto;
-    margin-bottom: -40px;
-    margin-top: -60px;
-  }
-  
-  .share-intro-section h1 {
+  .page-header h1 {
     font-family: var(--font-heading, 'Poppins'), sans-serif;
     font-size: var(--font-heading-size, 28px);
     font-weight: var(--font-heading-weight, 600);
-    margin-top: 40px;
-    margin-bottom: 16px;
+    margin-top: 0;
+   
   }
   
-  .share-intro-section p {
-    font-size: var(--font-body-size, 16px);
-    line-height: 1.5;
-    text-align: center;
-    color: var(--text-secondary, #BFBFBF);
+  .content-wrapper {
+    display: flex;
+    padding: 0 32px 32px;
+    gap: 40px;
   }
   
-  /* Right Card Section (e.g., Share Panel) */
+  .receipt-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .receipt-container img {
+    max-height: 80vh;
+    object-fit: contain;
+  }
+  
+  /* ---------- Share Card ---------- */
   .share-card {
     flex: 1;
-    max-width: 650px;
-    background-color: #595A5D;
+    max-width: 450px;
+    background-color: #29292A;
     border-radius: var(--border-radius-card, 12px);
     padding: var(--padding-card, 24px);
-    min-height: 650px;
+    min-height: 550px;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
   
-  /* Friend List & Filter */
+  /* Friend List & Filter - keeping your existing styles */
   .friend-list {
     flex-grow: 1;
+    margin-bottom: 32px;
+    
+  }
+  
+  .friend-list h2 {
+    margin-top: 0;
   }
   
   .friend-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #595A5D;
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 10px;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
   
-  .friend-item img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
   
   .share-btn {
     background-color: var(--accent1-mint-green, #D9FFE7);
@@ -102,7 +157,7 @@ body {
   }
   
   .share-btn:hover {
-    background-color:var(--accent2-pastel-pink, #FFD6DA);
+    background-color: var(--accent2-pastel-pink, #FFD6DA);
   }
   
   /* Dropdown + PDF */
@@ -117,48 +172,29 @@ body {
   }
   
   .download-btn {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .download-btn button {
-    background: transparent;
-    border: 1px solid white;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    padding: 8px 16px;
-    cursor: pointer;
-  }
-  
-  .download-btn button:hover {
-    background-color: #f0f0f0;
-    color: #292929;
-  }
-  .download-btn {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    
   }
   
   .download-btn-inner {
     display: flex;
     align-items: center;
-    gap: 8px; /* space between image and text */
+    gap: 8px;
     background: transparent;
-    border: 1px solid #292929;
+    border: 1px solid white;
     border-radius: 8px;
     padding: 10px 16px;
     font-size: 14px;
     font-weight: 600;
-    color: #292929;
+    color: white;
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
   
   .download-btn-inner:hover {
-    background-color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.1);
   }
   
   .download-btn-inner img {
@@ -168,33 +204,123 @@ body {
   }
   
   /* ---------- Responsive Adjustments ---------- */
+  @media (max-width: 1100px) {
+    .content-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .receipt-container, .share-card {
+      max-width: 100%;
+    }
+  }
   
   @media (max-width: 768px) {
-    .share-page-container {
+    body {
       flex-direction: column;
-      gap: 40px;
-      padding: 20px;
     }
-  
-    .share-intro-section,
-    .share-card {
-      max-width: 100%;
+    
+    .sidebar {
       width: 100%;
+      height: auto;
+      position: relative;
+      padding: 16px;
+    }
+    
+    .main-content {
+      margin-left: 0;
+    }
+    
+    .content-wrapper {
+      padding: 16px;
     }
   }
-  .share-page-container {
-    display: flex;
-    justify-content: left;
-    gap: 60px;
-    padding: 40px;
+  /* Add this to your CSS file */
+.search-bar {
+    margin-bottom: 15px;
+    position: relative;
   }
   
-  .share-side-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    max-width: 350px;
+  .search-bar input {
     width: 100%;
+    padding: 12px 12px;
+    padding-left: 42px; /* Space for the icon */
+    border-radius: 12px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    
+    font-size: 16px;
   }
   
+  .search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
   
+  .search-bar input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  /* Position the search icon */
+  .search-bar .search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+    opacity: 0.7;
+  }
+  
+ /* Updated top bar CSS */
+.top-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 220px; /* Sidebar width */
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 5;
+    background-color: var(--primary-background, #292929); /* Same as page background */
+  }
+  
+  .top-bar-buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .icon-button {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .icon-button img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Adjust main content to account for top bar */
+  .main-content {
+    margin-left: 220px; /* Same as sidebar width */
+    margin-top: 60px; /* Height of top bar */
+    flex: 1;
+    display: flex;
+    padding: 40px;
+    gap: 40px;
+  }
