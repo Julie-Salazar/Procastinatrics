@@ -1,0 +1,71 @@
+/* static/css/global.css */
+
+/* ---------- Define Variables ---------- */
+:root {
+  /* Colors */
+  --primary-background: #1B1B1B;    /* Charcoal Black */
+  --secondary-background: #292929;  /* Gray-Black (for cards/forms per Figma) */
+  --accent1-mint-green: #D9FFE7;   /* Mint Green */
+  --accent2-pastel-pink: #FFD6DA;   /* Pastel Pink */
+  --accent3-soft-yellow: #FFF2C5;   /* Soft Yellow */
+  --accent4-aqua-teal: #7FFFD4;     /* Aqua Teal */
+  --text-primary: #FAFAFA;        /* White */
+  --text-secondary: #BFBFBF;      /* Light Gray */
+  --borders-dividers: #2E2E2E;    /* Dark Gray */
+
+  /* Font */
+  --font-heading: 'Poppins', sans-serif;
+  --font-heading-weight: 650;
+  --font-heading-size: 28px;
+  --font-body: 'Inter', sans-serif;
+  --font-body-weight: 450;
+  --font-body-size: 16px;
+  --font-label-size: 13px;
+  --font-label-weight: 500;
+  --font-navigation-size: 16px;
+  --font-navigation-weight: 500;
+
+  /* Standard spacing and radius */
+  --padding-section: 40px;
+  --padding-card: 24px;
+  --margin-element: 20px;
+  --border-radius-standard: 8px;
+  --border-radius-card: 12px;
+  --button-height: 48px;
+}
+
+/* ---------- Reset Browser Styles ----------*/
+/* Global Reset */ 
+*,*::before,*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Button Reset */
+button {
+  font-family: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* ---------- Global Styles ---------- */
+/* Body Styles */
+body {
+  font-family: var(--font-body);
+  font-weight: var(--font-body-weight);
+  background-color: var(--primary-background);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Link Styling */
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
