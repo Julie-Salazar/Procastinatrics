@@ -48,5 +48,6 @@ def login_google():
 
 @app.route('/logout')
 def logout():
+    print("logged out")
     logout_user()  
     return redirect(url_for('login'))  

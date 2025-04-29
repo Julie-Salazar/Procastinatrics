@@ -7,9 +7,7 @@ from app import app
 def share():
 
 
-    #this prevents cache from being accessed
-    if not current_user.is_authenticated:
-        return redirect(flask.url_for('/login'))
+    
 
     # Get friends list, user receipts, etc.
     friends_list = [

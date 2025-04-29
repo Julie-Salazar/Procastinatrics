@@ -9,8 +9,4 @@ from app import app
 def home():
 
 
-    #this prevents cache from being accessed
-    if not current_user.is_authenticated:
-        return redirect(flask.url_for('/login'))
-
     return flask.render_template('analytics-home.html')
