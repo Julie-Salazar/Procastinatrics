@@ -43,6 +43,8 @@ flask run
 This will host the application at http://127.0.0.1:5000
 
 
+### Install dependencies (for all the node_modules)
+npm install 
 
 
 ### Files

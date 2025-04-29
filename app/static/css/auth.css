@@ -56,7 +56,15 @@ body {
     padding: var(--padding-card, 24px);
     min-width: 350px;
     min-height: 650px;
+<<<<<<< HEAD
+<<<<<<< HEAD:app/static/css/login.css
+    color: #292929;
+=======
     color: #1B1B1B; 
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b:app/static/css/auth.css
+=======
+    color: #1B1B1B; 
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -81,12 +89,12 @@ body {
 
 .back-button {
     background: transparent;
-    border: 1px solid #1B1B1B;
+    border: 1px solid #292929;
     border-radius: 6px;
     width: 30px;
     height: 30px;
     font-size: 17px;
-    color: #1B1B1B;
+    color: #292929;
     cursor: pointer;
     padding: 0;
 }
@@ -156,7 +164,7 @@ body {
     align-items: center;
     margin-bottom: 24px;
     font-size: 13px;
-    color: #1B1B1B;
+    color: #292929;
 }
 
 .remember-me {
@@ -167,7 +175,7 @@ body {
 .remember-me input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #1B1B1B;
+    accent-color: #292929;
     cursor: pointer;
 }
 
@@ -175,11 +183,11 @@ body {
     margin-left: 6px;
     margin-bottom: 0;
     font-weight: 400;
-    color: #1B1B1B;
+    color: #292929;
 }
 
 .forgot-password-link {
-    color: #1B1B1B;
+    color: #292929;
     text-decoration: none;
     font-weight: 500;
 }
@@ -194,7 +202,15 @@ form .btn[type="submit"] {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary,#FAFAFA);
+<<<<<<< HEAD
+<<<<<<< HEAD:app/static/css/login.css
+    background-color: #292929;
+=======
     background-color: #1B1B1B; 
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b:app/static/css/auth.css
+=======
+    background-color: #1B1B1B; 
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b
     border: none;
     border-radius: var(--border-radius-standard, 8px);
     padding: 0 20px;
@@ -250,7 +266,7 @@ form .btn.signup-submit-btn {
 .btn-social {
     font-size: 14px;
     font-weight: 600;
-    color: #1B1B1B;
+    color: #292929;
     background-color: #FAFAFA;
     border: 1px solid #2E2E2E;
     border-radius: 8px;
@@ -283,8 +299,16 @@ form .btn.signup-submit-btn {
     margin-bottom: 0;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD:app/static/css/login.css
+.signup-prompt a {
+    color: #292929;
+=======
+=======
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b
 .switch-prompt a {
     color: #1B1B1B;
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b:app/static/css/auth.css
     font-weight: 600;
     text-decoration: none;
 }

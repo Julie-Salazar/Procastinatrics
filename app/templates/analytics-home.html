@@ -8,11 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
-    <title>Share Your Shame</title>
+    <title>Analytics Dashboard</title>
 </head>
-<body>
-    <!-- Top bar with buttons -->
-<div class="top-bar">
+   <!-- Top bar with buttons -->
+   <div class="top-bar">
     <div class="top-bar-buttons">
       <button class="icon-button" aria-label="Notifications">
         <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
@@ -25,6 +24,7 @@
       </button>
     </div>
   </div>
+    <!-- Fixed Sidebar -->
      <!-- Fixed Sidebar -->
      <aside class="sidebar">
         <div class="sidebar-logo">
@@ -58,57 +58,6 @@
     <!-- Main Content Area -->
     <main class="main-content">
         <!-- Page Title Header -->
-        <header class="page-header">
-            <h1>Share your shame!✨</h1>
+        <header class="page-header" style="display: flex; align-items: left; justify-content: space-between;">
+            <h1>Dashboard</h1>
         </header>
-        
-        <!-- Content Container -->
-        <div class="content-wrapper">
-            <!-- Receipt Container -->
-            <div class="receipt-container">
-                <img src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="receipt" />
-            </div>
-            
-            <!-- Share Options -->
-            <section class="share-card">
-                <div class="friend-list">
-                    <div class="search-bar">
-                        <img src="{{ url_for('static', filename='img/search-icon.svg') }}" alt="Search" class="search-icon">
-                        <input type="text" placeholder="Search friends..." aria-label="Search friends">
-                    </div>
-                    
-                    <ul style="padding-left: 0;">
-                        {% for i in range(6) %}
-                        <li class="friend-item">
-                            <div style="display: flex; align-items: center;">
-                                <span>oogly boogly</span>
-                            </div>
-                            <button class="share-btn">share</button>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                
-                <!-- Dropdown Filter -->
-                <div class="filter-dropdown">
-                    <label for="timeframe">Choose a timeframe:</label>
-                    <select name="timeframe" id="timeframe">
-                        <option>Day</option>
-                        <option>Week</option>
-                        <option selected>Month</option>
-                        <option>Year</option>
-                    </select>
-                </div>
-                
-                <!-- Download Button -->
-                <div class="download-btn">
-                    <button class="download-btn-inner">
-                        <img src="{{ url_for('static', filename='img/import-icon.svg') }}" alt="Download" />
-                        <span>Get PDF Receipt</span>
-                    </button>
-                </div>
-            </section>
-        </div>
-    </main>
-</body>
-</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
+    <title>Friend Receipts</title>
+</head>
+<body>
+     <!-- Fixed Sidebar -->
+     <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
+        </div>
+        
+        <div class="sidebar-label">Admin tools</div>
+        
+        <nav class="sidebar-nav">
+            <a href="/analytics-home" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
+                <span>Analytics</span>
+            </a>
+            <a href="/share" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
+                <span>Share Progress</span>
+            </a>
+            
+            <a href="/friend-receipt" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
+                <span>Friends Receipts</span>
+            </a>
+            <a href="/log-activity" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
+                <span>Log Activity</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <h1 class="page-title">Friend Receipts</h1>
+        
+        <!-- Simple Pagination Container -->
+        <div class="pagination-container">
+            <!-- Left Arrow -->
+            <button class="pagination-arrow left-arrow" id="prevBtn">
+                <img src="{{ url_for('static', filename='img/left-arrow.svg') }}" alt="Previous">
+            </button>
+            
+            <!-- Receipt Display -->
+            <div class="receipt-viewer">
+                <div class="receipt-slider" id="receiptSlider">
+                    <!-- Receipt images will be displayed here -->
+                    {% for i in range(4) %}
+                    <div class="receipt-slide {% if i == 0 %}active{% endif %}" data-index="{{ i }}">
+                        <img src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="Receipt {{ i+1 }}">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Right Arrow -->
+            <button class="pagination-arrow right-arrow" id="nextBtn">
+                <img src="{{ url_for('static', filename='img/right-arrow.svg') }}" alt="Next">
+            </button>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const receiptSlider = document.getElementById('receiptSlider');
+            const slides = document.querySelectorAll('.receipt-slide');
+            
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+            
+            // Update display
+            function updateSlider() {
+                // Hide all slides
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Show current slide
+                slides[currentIndex].classList.add('active');
+                
+                // Update button states
+                prevBtn.disabled = currentIndex === 0;
+                prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
+                nextBtn.disabled = currentIndex === totalSlides - 1;
+                nextBtn.style.opacity = currentIndex === totalSlides - 1 ? 0.5 : 1;
+            }
+            
+            // Go to previous slide
+            prevBtn.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateSlider();
+                }
+            });
+            
+            // Go to next slide
+            nextBtn.addEventListener('click', function() {
+                if (currentIndex < totalSlides - 1) {
+                    currentIndex++;
+                    updateSlider();
+                }
+            });
+            
+            // Initialize
+            updateSlider();
+        });
+    </script>
+</body>
+</html>
