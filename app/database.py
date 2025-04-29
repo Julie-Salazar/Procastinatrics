@@ -3,7 +3,7 @@ import flask
 
 from app import app
 from app import db
-from .models import *
+from app.models.user import User
 
 # AddUser adds a User() entry to the database, must have all arguements
 def AddUser(first_name, last_name, email, passwordHash, usertype):
