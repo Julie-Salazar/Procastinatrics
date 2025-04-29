@@ -9,6 +9,6 @@ from flask import Flask
 # Create flask app instance
 app = Flask(__name__)
 
-from app.routes import analytics_route, share_route, friends_route, log_route
+from app.routes import analytics_route, share_route, friend_route, log_route, login_route
 
 app.config['SECRET_KEY'] = 'your-secret-key'
