@@ -42,81 +42,75 @@
     </aside>
     
     <!-- Main Content Area -->
-    <main class="main-content">
-        <h1 class="page-title">Friend Receipts</h1>
-        
-        <!-- Simple Pagination Container -->
-        <div class="pagination-container">
-            <!-- Left Arrow -->
-            <button class="pagination-arrow left-arrow" id="prevBtn">
-                <img src="{{ url_for('static', filename='img/left-arrow.svg') }}" alt="Previous">
-            </button>
-            
-            <!-- Receipt Display -->
-            <div class="receipt-viewer">
-                <div class="receipt-slider" id="receiptSlider">
-                    <!-- Receipt images will be displayed here -->
-                    {% for i in range(4) %}
-                    <div class="receipt-slide {% if i == 0 %}active{% endif %}" data-index="{{ i }}">
-                        <img src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="Receipt {{ i+1 }}">
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            
-            <!-- Right Arrow -->
-            <button class="pagination-arrow right-arrow" id="nextBtn">
-                <img src="{{ url_for('static', filename='img/right-arrow.svg') }}" alt="Next">
-            </button>
-        </div>
-    </main>
+<main class="main-content">
+    <h1 class="page-title">Friend Receipts</h1>
     
+    <!-- Carousel Container -->
+    <div class="carousel-container">
+        <!-- Left Arrow -->
+        <button class="carousel-arrow left-arrow" id="prevBtn">
+            <img src="{{ url_for('static', filename='img/left-arrow.svg') }}" alt="Previous">
+        </button>
+        
+        <!-- Receipt Display -->
+        <div class="receipt-display">
+            <!-- Only one receipt is shown at a time -->
+            <img id="currentReceipt" src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="Receipt">
+        </div>
+        
+        <!-- Right Arrow -->
+        <button class="carousel-arrow right-arrow" id="nextBtn">
+            <img src="{{ url_for('static', filename='img/right-arrow.svg') }}" alt="Next">
+        </button>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Receipt image sources (put all your receipt paths here)
+            const receipts = [
+                "{{ url_for('static', filename='img/receipt-sample.svg') }}",
+                "{{ url_for('static', filename='img/julie-receipt-sample.svg') }}",
+                "{{ url_for('static', filename='img/tyler-receipt-sample.svg') }}"
+                // Add more receipts as needed
+            ];
+            
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-            const receiptSlider = document.getElementById('receiptSlider');
-            const slides = document.querySelectorAll('.receipt-slide');
+            const currentReceipt = document.getElementById('currentReceipt');
             
             let currentIndex = 0;
-            const totalSlides = slides.length;
             
-            // Update display
-            function updateSlider() {
-                // Hide all slides
-                slides.forEach(slide => {
-                    slide.classList.remove('active');
-                });
-                
-                // Show current slide
-                slides[currentIndex].classList.add('active');
+            // Function to update displayed receipt
+            function updateReceipt() {
+                currentReceipt.src = receipts[currentIndex];
                 
                 // Update button states
                 prevBtn.disabled = currentIndex === 0;
                 prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
-                nextBtn.disabled = currentIndex === totalSlides - 1;
-                nextBtn.style.opacity = currentIndex === totalSlides - 1 ? 0.5 : 1;
+                nextBtn.disabled = currentIndex === receipts.length - 1;
+                nextBtn.style.opacity = currentIndex === receipts.length - 1 ? 0.5 : 1;
             }
             
-            // Go to previous slide
+            // Previous button click
             prevBtn.addEventListener('click', function() {
                 if (currentIndex > 0) {
                     currentIndex--;
-                    updateSlider();
+                    updateReceipt();
                 }
             });
             
-            // Go to next slide
+            // Next button click
             nextBtn.addEventListener('click', function() {
-                if (currentIndex < totalSlides - 1) {
+                if (currentIndex < receipts.length - 1) {
                     currentIndex++;
-                    updateSlider();
+                    updateReceipt();
                 }
             });
             
             // Initialize
-            updateSlider();
+            updateReceipt();
         });
     </script>
+</main>
 </body>
 </html>

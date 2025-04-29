@@ -178,3 +178,41 @@
       gap: 10px;
     }
   }
+
+  .carousel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.carousel-arrow {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.carousel-arrow:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+
+.carousel-arrow img {
+    width: 40px;
+    height: 40px;
+}
+
+.receipt-display {
+    width: 400px;
+}
+
+.receipt-display img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
