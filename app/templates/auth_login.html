@@ -1,0 +1,68 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block form_card %}
+<div class="auth-card login-card">
+    <div class="card-header-icons">
+        <button class="back-button"> &lt; </button>
+    </div>
+
+    <h1>Hi, Welcome! 👋</h1>
+
+    <form method="POST" action="{{ url_for('login') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="email">Email address</label>
+            {{ form.email(id="email", placeholder="Your email", required=true) }}
+            {% if form.email.errors %}
+            <div class="error">
+                {% for error in form.email.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            {{ form.password(id="password", placeholder="Password", required=true) }}
+            {% if form.password.errors %}
+            <div class="error">
+                {% for error in form.password.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-options">
+            <div class="remember-me">
+                {{ form.remember_me(id="remember") }}
+                <label for="remember">Remember me</label>
+            </div>
+            <a href="{{ url_for('forgot_password') }}" class="forgot-password-link">Forgot password?</a>
+        </div>
+
+        {{ form.submit(class="btn") }}
+    </form>
+
+    <div class="divider">Or with</div>
+
+    <div class="social-login">
+        <a href="{{ url_for('login_facebook') }}" class="btn btn-social facebook">
+            Facebook
+        </a>
+        <a href="{{ url_for('login_google') }}" class="btn btn-social google">
+            Google
+        </a>
+    </div>
+
+    <p class="switch-prompt"> {# Changed class name slightly #}
+        Don't have an account?
+        <a href="{{ url_for('signup') }}">Sign up</a>
+    </p>
+
+</div>
+{% endblock %}

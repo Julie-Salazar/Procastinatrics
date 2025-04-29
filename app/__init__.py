@@ -26,3 +26,8 @@ login.login_view = '/login'
 login.init_app(app)
 
 from app import routes, models
+from app.models import views
+
+with app.app_context():
+    db.create_all()
+    views.init()

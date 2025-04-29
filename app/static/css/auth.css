@@ -1,14 +1,14 @@
-/* static/css/login.css */
+/* static/css/auth.css */
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 20px;
+    padding: 20px; 
 }
 
-.login-page-container {
+.auth-page-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -25,7 +25,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--padding-card, 24px);
+    padding: var(--padding-card, 24px); 
     margin: 0px;
 }
 
@@ -42,25 +42,36 @@ body {
     text-align: left;
 }
 
-/* Login Form Container (Right) */
-.login-form-container {
+/* Form Container (Right)*/
+.form-container {
     flex: 1;
     max-width: 450px;
     display: flex;
     justify-content: center;
 }
 
-
-.login-card {
-    background-color: var(--accent1-mint-green, #D9FFE7);
+/* Card Styles */
+.auth-card {
     border-radius: var(--border-radius-card, 12px);
     padding: var(--padding-card, 24px);
     min-width: 350px;
     min-height: 650px;
+<<<<<<< HEAD:app/static/css/login.css
     color: #292929;
+=======
+    color: #1B1B1B; 
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b:app/static/css/auth.css
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.login-card {
+    background-color: var(--accent1-mint-green, #D9FFE7);
+}
+
+.signup-card {
+    background-color: var(--accent2-pastel-pink, #FFD6DA);
 }
 
 
@@ -70,6 +81,7 @@ body {
     align-items: center;
     margin-bottom: 16px;
 }
+
 
 .back-button {
     background: transparent;
@@ -83,8 +95,7 @@ body {
     padding: 0;
 }
 
-
-.login-card h1 {
+.auth-card h1 {
     font-family: var(--font-heading, 'Poppins'), sans-serif;
     font-size: var(--font-heading-size, 32px);
     font-weight: var(--font-heading-weight, 700);
@@ -92,6 +103,7 @@ body {
     text-align: left;
 }
 
+/* Form Element Styles (Common) */
 
 .form-group {
     margin-bottom: 20px;
@@ -102,10 +114,12 @@ body {
     font-weight: var(--font-label-weight, 500);
     display: block;
     margin-bottom: 5px;
+    color: #1B1B1B;
 }
 
 .form-group input[type="email"],
 .form-group input[type="password"] {
+    font-family: var(--font-body, 'Inter'), sans-serif;
     font-size: var(--font-label-size, 13px);
     font-weight: var(--font-label-weight, 500);
     color: var(--text-primary, #FAFAFA);
@@ -124,6 +138,13 @@ body {
     opacity: 1;
 }
 
+.form-group input:focus {
+    outline: none;
+    border-color: var(--accent1-mint-green); 
+    box-shadow: 0 0 0 2px rgba(217, 255, 231, 0.493); 
+}
+
+
 /* Flask-WTF errors */
 .form-group .error p {
     color: #FF6B6B;
@@ -132,6 +153,7 @@ body {
     margin-bottom: 0;
 }
 
+/* Login Specific Form Options */
 .form-options {
     display: flex;
     justify-content: space-between;
@@ -170,34 +192,44 @@ body {
     text-decoration: underline;
 }
 
-
+/* Common Button Style */
 form .btn[type="submit"] {
     font-family: var(--font-body,'Inter'), sans-serif;
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary,#FAFAFA);
+<<<<<<< HEAD:app/static/css/login.css
     background-color: #292929;
+=======
+    background-color: #1B1B1B; 
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b:app/static/css/auth.css
     border: none;
-    border-radius: 8px;
+    border-radius: var(--border-radius-standard, 8px);
     padding: 0 20px;
     width: 100%;
-    height: 48px;
+    height: var(--button-height, 48px);
     cursor: pointer;
     transition: background-color 0.2s ease, opacity 0.2s ease;
+    margin-top: 10px;
     margin-bottom: 24px;
     text-align: center;
     display: block;
 }
 
 form .btn[type="submit"]:hover {
-    background-color: #292929;
+    background-color: #333;
     opacity: 0.95;
 }
 
+form .btn.signup-submit-btn {
+    margin-top: 45px;
+  }
+
+/* Login Specific Divider and Social Login */
 .divider {
     font-family:var(--font-body, 'Inter'), sans-serif;
     font-size: var(--font-label-size,13px);
-    color: var(--text-secondary,#BFBFBF);
+    color: #555; 
     text-align: center;
     margin: 24px 0;
     display: flex;
@@ -212,7 +244,7 @@ form .btn[type="submit"]:hover {
     content: '';
     flex-grow: 1;
     height: 1px;
-    background-color: var(--text-secondary,#BFBFBF);
+    background-color: #555; 
     margin: 0 10px;
 }
 
@@ -244,53 +276,80 @@ form .btn[type="submit"]:hover {
 }
 
 .btn-social:hover {
-    background-color: #e4e4e4;
+    background-color: #f0f0f0;
+    border-color: #555;
 }
 
-.signup-prompt {
+/* Common Prompt at Bottom */
+.switch-prompt { 
     font-family: var(--font-body,'Inter'), sans-serif;
     font-size: 14px;
     text-align: center;
-    color: #BFBFBF;
-    margin-top: 24px;
+    color: #555; 
+    margin-top: auto; 
+    padding-top: 20px; 
     margin-bottom: 0;
 }
 
+<<<<<<< HEAD:app/static/css/login.css
 .signup-prompt a {
     color: #292929;
+=======
+.switch-prompt a {
+    color: #1B1B1B;
+>>>>>>> 84ba3b0e9c3a9b25ac9e091580397b4c564cbf7b:app/static/css/auth.css
     font-weight: 600;
     text-decoration: none;
 }
 
-.signup-prompt a:hover {
+.switch-prompt a:hover {
     text-decoration: underline;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .login-page-container {
+/* Responsive adjustments*/
+@media (max-width: 900px) {
+    .auth-page-container {
         flex-direction: column;
         gap: 40px;
         padding: 20px;
-        /* Adjust padding */
     }
 
     .introductory-section {
-        max-width: 100%;
-        order: 1;
+        max-width: 500px; 
+        order: 1; 
+        text-align: center; 
         padding: 0;
+        margin-top: 0; 
     }
+     .introductory-section img {
+         margin-top: 0;
+         margin-bottom: 20px; 
+         max-width: 300px;
+     }
+      .introductory-section p {
+          text-align: center; 
+      }
 
-    .login-form-container {
+
+    .form-container {
         max-width: 100%;
-        /* Allow form to take full width */
         width: 100%;
         order: 2;
-        /* Show form first */
     }
 
-    .login-card {
+    .auth-card {
         padding: 20px;
-        /* Slightly reduce card padding */
+    }
+
+     .social-login {
+         flex-direction: column; /* Stack social buttons */
+         align-items: center; /* Center stacked buttons */
+         gap: 20px;
+     }
+
+    .btn-social {
+        max-width: 100%; /* Allow full width on smaller screens */
+        width: 100%;
+        padding: 10px 0; /* Adjust padding for better touch targets */
     }
 }

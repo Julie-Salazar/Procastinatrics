@@ -1,10 +1,10 @@
 import flask
-from flask import url_for
-from flask_login import *
-from app import app
-from app.forms import *
-from app.database import *
-from app.models import *
+from flask import url_for, flash, redirect, render_template 
+from flask_login import current_user, login_user, logout_user 
+from app import app, db 
+from app.forms import LoginForm, SignupForm 
+from app.database import GetUser 
+from app.models import User 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -21,29 +21,26 @@ def login():
         login_user(user)
         return flask.redirect(url_for('home'))
 
-    return flask.render_template("login.html", form=form)
+    return flask.render_template("auth_login.html", form=form)
 
 
+# --- Haven't implemented ---
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm() 
+    return render_template("auth_signup.html", form=form)
 
-#Temporary fix as port 5000 is automatically redirecting to home as it thinks we are logged in already. 
-@app.route('/logout')
-def logout():
-    logout_user()
-    return flask.redirect(url_for('login'))
-
-
+# --- Haven't implemented ---
 @app.route('/forgot-password')
 def forgot_password():
     return "Forgot Password page placeholder"
 
+# --- Haven't implemented ---
 @app.route('/login_facebook')
 def login_facebook():
     return "Login Facebook page placeholder"
 
+# --- Haven't implemented ---
 @app.route('/login_google')
 def login_google():
     return "Login Google page placeholder"
-
-@app.route('/signup')
-def signup():
-    return "Sign Up page placeholder"
