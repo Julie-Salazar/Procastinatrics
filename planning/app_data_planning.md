@@ -33,7 +33,8 @@ Does not query/link to other table so it becomes a "snapshot" of the past.
 - productive_spent
 
 ### ReceiptsShared
-- user_id (foreign)
+- author_id (foreign)
+- receiver_id (foreign)
 - receipt_id (foreign)
 
 # Redundancy Zone
