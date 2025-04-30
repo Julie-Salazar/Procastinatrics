@@ -1,0 +1,343 @@
+/* Dashboard styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body, 'Inter'), sans-serif;
+    background-color: var(--primary-background, #292929);
+    color: var(--text-primary, #FAFAFA);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---------- Top Bar ---------- */
+.top-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 220px; /* Sidebar width */
+    height: 60px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 5;
+}
+
+.top-bar-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.icon-button {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icon-button img {
+    width: 20px;
+    height: 20px;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #1b1b1b;
+    padding: 32px 20px;
+    color: #FAFAFA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.sidebar-logo {
+    margin-bottom: 40px;
+}
+
+.sidebar-logo img {
+    max-width: 120px;
+}
+
+.sidebar-label {
+    font-weight: 600;
+    margin-bottom: 16px;
+    width: 100%;
+    text-align: left;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #FAFAFA;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-link img {
+    width: 20px;
+    height: 20px;
+}
+
+/* ---------- Main Content ---------- */
+.main-content {
+    margin-left: 220px;
+    margin-top: 60px;
+    flex: 1;
+    padding: 30px;
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.dashboard-header h2 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-top: 0;
+}
+
+/* ---------- Dashboard Grid ---------- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+}
+
+/* ---------- Chart Cards ---------- */
+.chart-card {
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.pink-bg {
+    background-color: #ffeeee;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.blue-bg {
+    background-color: #e0edff;
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.chart-dropdown select {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #333;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 12px) center;
+    padding-right: 28px;
+}
+
+.chart-container {
+    height: 250px;
+    position: relative;
+}
+
+/* ---------- Breakdown Section ---------- */
+.breakdown-container {
+    display: flex;
+    height: 200px;
+}
+
+.breakdown-categories {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.category-name {
+    color: #555;
+}
+
+.category-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.donut-chart-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.total-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.total-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.total-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ---------- Recents Panel ---------- */
+.recents-panel {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    background-color: #2A2A2A;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.recents-panel h3 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 20px;
+}
+
+.recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.recent-item {
+    display: flex;
+    align-items: center;
+}
+
+.app-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: #3A3A3A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.app-duration {
+    flex: 1;
+    color: #CCC;
+    font-size: 14px;
+}
+
+.app-mood {
+    font-size: 20px;
+}
+
+/* ---------- Responsive Adjustments ---------- */
+@media (max-width: 1100px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .recents-panel {
+        grid-column: 1;
+        grid-row: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 15px;
+    }
+    
+    .top-bar {
+        left: 0;
+        position: relative;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        margin-top: 0;
+    }
+    
+    .breakdown-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .breakdown-categories {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    .donut-chart-container {
+        height: 200px;
+    }
+}
