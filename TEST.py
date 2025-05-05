@@ -2,7 +2,7 @@
 from app import app, db
 from app.database import *
 from app.models.user import User
-from app.models.mood import Mood
+from app.models.activitylog import ActivityLog
 from app.models import views
 
 # adds 3 users to the database so testing can be done

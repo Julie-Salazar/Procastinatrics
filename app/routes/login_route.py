@@ -1,46 +1,51 @@
-import flask
-from flask import url_for, flash, redirect, render_template 
-from flask_login import current_user, login_user, logout_user 
-from app import app, db 
-from app.forms import LoginForm, SignupForm 
-from app.database import GetUser 
-from app.models import User 
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required
+from app.models.user import User
+from app.models import db
 
-@app.route("/login", methods=["GET", "POST"])
+auth = Blueprint('auth', __name__)
+
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return flask.redirect(url_for('home'))
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
 
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = GetUser(email=form.email.data)
-
-        if user is None or not user.is_password_correct(form.password.data):
-            return flask.redirect('login')
+        if not user or not user.is_password_correct(password):
+            flash('Invalid email or password', 'danger')
+            return redirect(url_for('auth.login'))
 
         login_user(user)
-        return flask.redirect(url_for('home'))
+        return redirect(url_for('views.analytics_home'))  # or your dashboard route
 
-    return flask.render_template("auth_login.html", form=form)
+    return render_template('auth_login.html')
 
 
-# --- Haven't implemented ---
-@app.route('/signup', methods=['GET', 'POST'])
+@auth.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = SignupForm() 
-    return render_template("auth_signup.html", form=form)
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        fname = request.form.get('first_name')
+        lname = request.form.get('last_name')
 
-# --- Haven't implemented ---
-@app.route('/forgot-password')
-def forgot_password():
-    return "Forgot Password page placeholder"
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered', 'warning')
+            return redirect(url_for('auth.signup'))
 
-# --- Haven't implemented ---
-@app.route('/login_facebook')
-def login_facebook():
-    return "Login Facebook page placeholder"
+        new_user = User(email=email, first_name=fname, last_name=lname, usertype='default')
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user)
+        return redirect(url_for('views.analytics_home'))
 
-# --- Haven't implemented ---
-@app.route('/login_google')
-def login_google():
-    return "Login Google page placeholder"
+    return render_template('auth_signup.html')
+
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.login'))

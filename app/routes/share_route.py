@@ -2,6 +2,7 @@ from flask import render_template
 from app import app 
 
 @app.route('/share')
+
 def share():
     # Get friends list, user receipts, etc.
     friends_list = [
