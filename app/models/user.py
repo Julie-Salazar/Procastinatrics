@@ -14,11 +14,12 @@ class User(db.Model, UserMixin):
     def id(self):
         return self.uid
 
-    def is_password_correct(self, password_plaintext: str):
-        return check_password_hash(self.passwordHash, password_plaintext)
-
-    def set_password(self, plaintext: str):
+    def set_password(self, plaintext):
         self.passwordHash = generate_password_hash(plaintext)
+
+    def is_password_correct(self, plaintext):
+        return check_password_hash(self.passwordHash, plaintext)
+
 
 @login.user_loader
 def load_user(user_id):
