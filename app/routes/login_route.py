@@ -44,3 +44,10 @@ def login_facebook():
 @app.route('/login_google')
 def login_google():
     return "Login Google page placeholder"
+
+
+@app.route('/logout')
+def logout():
+    print("logged out")
+    logout_user()  
+    return redirect(url_for('login'))  

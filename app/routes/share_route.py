@@ -1,8 +1,14 @@
-from flask import render_template
+from flask import render_template, redirect, session
+from flask_login import *
 from app import app 
 
 @app.route('/share')
+@login_required
 def share():
+
+
+    
+
     # Get friends list, user receipts, etc.
     friends_list = [
         {"name": "oogly boogly", "profile_pic": "sloth-hourglass.png"},
