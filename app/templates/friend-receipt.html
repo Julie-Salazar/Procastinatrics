@@ -11,6 +11,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
     <title>Friend Receipts</title>
 </head>
+   <!-- Top bar with buttons -->
+   <div class="top-bar">
+    <div class="top-bar-buttons">
+      <button class="icon-button" aria-label="Notifications">
+        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
+      </button>
+      <button class="icon-button" aria-label="Settings">
+        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Settings">
+      </button>
+      <button class="icon-button" aria-label="Logout">
+        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
+      </button>
+    </div>
+  </div>
 <body>
      <!-- Fixed Sidebar -->
      <aside class="sidebar">

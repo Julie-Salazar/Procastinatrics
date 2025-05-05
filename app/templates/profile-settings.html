@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
+</head>
+<body>
+    <!-- Top bar with buttons -->
+<div class="top-bar">
+    <div class="top-bar-buttons">
+      <button class="icon-button" aria-label="Notifications">
+        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
+      </button>
+      <nav></nav>
+      <a href="/profile-settings">
+        <img src="{{ url_for('static', filename='img/profile-settings.png') }}" alt="Profile Settings" />
+    </a>
+      <button class="icon-button" aria-label="Logout">
+        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
+      </button>
+    </div>
+  </div>
+     <!-- Fixed Sidebar -->
+     <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
+        </div>
+        
+        <div class="sidebar-label">Admin tools</div>
+        
+        <nav class="sidebar-nav">
+            <a href="/analytics-home" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
+                <span>Analytics</span>
+            </a>
+            <a href="/share" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
+                <span>Share Progress</span>
+            </a>
+            
+            <a href="/friend-receipt" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
+                <span>Friends Receipts</span>
+            </a>
+            <a href="/log-activity" class="sidebar-link">
+                <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
+                <span>Log Activity</span>
+            </a>
+        </nav>
+    </aside>
+    
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <h1 class="page-title">Profile Settings</h1>
+        
+        <div class="settings-container">
+            <!-- Notifications Toggle -->
+            <div class="settings-card">
+                <div class="settings-info">
+                    <h2 class="settings-title">Notifications</h2>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notificationToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Change Email or Password -->
+            <div class="settings-card clickable">
+                <div class="settings-info">
+                    <h2 class="settings-title">Change Email or Password</h2>
+                </div>
+                <div class="forward-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Batman Mode Toggle -->
+            <div class="settings-card">
+                <div class="settings-info">
+                    <h2 class="settings-title">Batman mode</h2>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="batmanToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="settings-card clickable">
+                <div class="settings-info">
+                    <h2 class="settings-title">Help</h2>
+                </div>
+                <div class="forward-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Log Out Button -->
+            <div class="settings-card clickable logout-card">
+                <div class="settings-info">
+                    <h2 class="settings-title">Log out</h2>
+                </div>
+                <div class="logout-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 17L21 12L16 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12H9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        {% block form_card %}{% endblock %}
+    </main>
+    
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle toggle switches
+            const notificationToggle = document.getElementById('notificationToggle');
+            const batmanToggle = document.getElementById('batmanToggle');
+            
+            notificationToggle.addEventListener('change', function() {
+                // Call API to update notification settings
+                updateSetting('notifications', this.checked);
+            });
+            
+            batmanToggle.addEventListener('change', function() {
+                // Call API to update batman mode
+                updateSetting('batman_mode', this.checked);
+            });
+            
+            // Handle clickable cards
+            const clickableCards = document.querySelectorAll('.clickable');
+            
+            clickableCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.settings-title').textContent.trim().toLowerCase();
+                    
+                    if (title === 'change email or password') {
+                        window.location.href = '/settings/account';
+                    } else if (title === 'help') {
+                        window.location.href = '/help';
+                    } else if (title === 'log out') {
+                        logOut();
+                    }
+                });
+            });
+            
+            // Function to update settings
+            function updateSetting(setting, value) {
+                // Example API call - replace with your actual implementation
+                console.log(`Updating ${setting} to ${value}`);
+                
+                fetch('/api/settings/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        setting: setting,
+                        value: value
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+            
+            // Function to log out
+            function logOut() {
+                // Example logout - replace with your actual implementation
+                fetch('/logout', {
+                    method: 'POST',
+                })
+                .then(() => {
+                    window.location.href = '/login';
+                })
+                .catch((error) => {
+                    console.error('Error logging out:', error);
+                });
+            }
+        });
+    </script> -->
+</body>
+</html>

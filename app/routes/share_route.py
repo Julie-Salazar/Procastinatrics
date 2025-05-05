@@ -6,9 +6,6 @@ from app import app
 @login_required
 def share():
 
-
-    
-
     # Get friends list, user receipts, etc.
     friends_list = [
         {"name": "oogly boogly", "profile_pic": "sloth-hourglass.png"},
