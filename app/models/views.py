@@ -14,14 +14,17 @@ def create_hours_view():
         CREATE VIEW IF NOT EXISTS hours AS
         SELECT
             activity_log.user_id AS user_id,
-            SUM(CASE WHEN activity_log.category = 'procrastination' THEN (activity_log.hours * 60 + activity_log.minutes) ELSE 0 END) AS procrastination_minutes,
-            SUM(CASE WHEN activity_log.category = 'gaming' THEN (activity_log.hours * 60 + activity_log.minutes) ELSE 0 END) AS gaming_minutes,
-            SUM(CASE WHEN activity_log.category = 'productive' THEN (activity_log.hours * 60 + activity_log.minutes) ELSE 0 END) AS productive_minutes
+            SUM(CASE WHEN activity_log.category = 'procrastination' THEN (activity_log.hours + activity_log.minutes / 60.0) ELSE 0 END) AS procrastination_hours,
+            SUM(CASE WHEN activity_log.category = 'gaming' THEN (activity_log.hours + activity_log.minutes / 60.0) ELSE 0 END) AS gaming_hours,
+            SUM(CASE WHEN activity_log.category = 'productive' THEN (activity_log.hours + activity_log.minutes / 60.0) ELSE 0 END) AS productive_hours,
+            SUM(activity_log.hours + activity_log.minutes / 60.0) AS total_hours_logged
         FROM activity_log
         GROUP BY activity_log.user_id;
     """
     with db.engine.connect() as connection:
         connection.execute(text(sql))
+
+
 
         
         
