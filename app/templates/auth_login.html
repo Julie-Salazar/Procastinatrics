@@ -15,7 +15,7 @@
 
         <div class="form-group">
             <label for="email">Email address</label>
-            {{ form.email(id="email", placeholder="Your email", required=true) }}
+            {{ form.email(type="email", placeholder="Your email", required=true) }}
             {% if form.email.errors %}
             <div class="error">
                 {% for error in form.email.errors %}
@@ -48,16 +48,6 @@
         {{ form.submit(class="btn") }}
     </form>
 
-    <div class="divider">Or with</div>
-
-    <div class="social-login">
-        <a href="#" class="btn btn-social facebook">
-            Facebook
-        </a>
-        <a href="#" class="btn btn-social google">
-            Google
-        </a>
-    </div>
 
     <p class="switch-prompt">
         Don't have an account?

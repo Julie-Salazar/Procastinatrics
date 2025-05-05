@@ -5,6 +5,8 @@ from app.models import db
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.fields import EmailField  # NOT StringField
+
 
 auth = Blueprint('auth', __name__)
 
@@ -17,7 +19,7 @@ class LoginForm(FlaskForm):
 
 # ---- Signup Form ----
 class SignupForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Sign Up')
