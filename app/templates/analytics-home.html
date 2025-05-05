@@ -21,9 +21,12 @@
       <button class="icon-button" aria-label="Settings">
         <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Settings">
       </button>
-      <button class="icon-button" aria-label="Logout">
+      <a href="{{ url_for('logout') }}" class="icon-button" aria-label="Logout">
         <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
-      </button>
+      </a>
+      
+      
+           
     </div>
   </div>
 <body>

@@ -24,6 +24,7 @@ def login():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -49,3 +50,4 @@ def signup():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
+
