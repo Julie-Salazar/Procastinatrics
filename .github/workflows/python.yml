@@ -40,6 +40,6 @@
           flask db init
           flask db migrate
           flask db upgrade
-      -name: Run flask app
+     - name: Run flask app
        run: |
           flask run
