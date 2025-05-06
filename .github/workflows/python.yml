@@ -4,7 +4,7 @@
 name: Python application
 on:
   push:
-    branches: [ "35-issue-github-workflow-linting" ]
+    branches: [ "main", "35-issue-github-workflow-linting" ]
   pull_request:
     branches: [ "main" ]
  
