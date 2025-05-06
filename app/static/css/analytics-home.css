@@ -330,7 +330,7 @@ body {
     font-weight: 600;
     font-family: var(--font-heading);
     margin: 0;
-    padding-bottom: 8px;
+    padding: 0 16px 8px 16px;
 }
 
 .recent-list {
