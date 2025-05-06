@@ -37,3 +37,11 @@
      - name: Test with pytest
        run: |
          pytest
+     - name: Intialise database
+       run: |
+          flask db init
+          flask db migrate
+          flask db upgrade
+      -name: Run flask app
+       run: |
+          flask run
