@@ -4,6 +4,10 @@ from flask_login import login_required, current_user
 from app.models import db
 from app.models.activitylog import ActivityLog
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, IntegerField, SubmitField
+from wtforms.validators import DataRequired
+
 log = Blueprint('log', __name__)
 
 @log.route('/log-activity', methods=['GET', 'POST'])
@@ -28,5 +32,13 @@ def log_activity():
         db.session.commit()
         flash('Activity logged successfully.', 'success')
         return redirect(url_for('views.analytics_home'))
+    
+    
 
     return render_template('log-activity.html')
+
+
+
+
+# FOR TMORROW MAKE SURE THAT YOU TAKE OFF THE BACK BUTTON >> HAVE NAME INPUT ONLY FOR SIGNUP SO THAT IT SHOWS WHEN LOGGING IN 
+

@@ -131,54 +131,54 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Data for the dashboard
-            const jsonData = {
-                "productivityData": {
-                    "monthly": {
-                        "labels": ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                        "productivity": [65, 78, 72, 85, 88, 70, 92, 75, 80, 73, 82, 77],
-                        "procrastination": [35, 22, 28, 15, 12, 30, 8, 25, 20, 27, 18, 23]
-                    },
-                    "weekly": {
-                        "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                        "productivity": [70, 82, 77, 91, 73, 68, 86],
-                        "procrastination": [30, 18, 23, 9, 27, 32, 14]
-                    },
-                    "yearly": {
-                        "labels": ["2018", "2019", "2020", "2021", "2022", "2023"],
-                        "productivity": [68, 71, 63, 78, 82, 76],
-                        "procrastination": [32, 29, 37, 22, 18, 24]
-                    }
-                },
-                "procrastinationBreakdown": {
-                    "december": {
-                        "totalHours": 120,
-                        "categories": [
-                            {"name": "Productive apps", "percentage": 40, "color": "#FFE6E6"},
-                            {"name": "Social Media", "percentage": 20, "color": "#FFFFC8"},
-                            {"name": "Gaming", "percentage": 15, "color": "#DCDCDC"},
-                            {"name": "Other", "percentage": 25, "color": "#C8FFE6"}
-                        ]
-                    },
-                    "november": {
-                        "totalHours": 110,
-                        "categories": [
-                            {"name": "Productive apps", "percentage": 45, "color": "#FFE6E6"},
-                            {"name": "Social Media", "percentage": 25, "color": "#FFFFC8"},
-                            {"name": "Gaming", "percentage": 10, "color": "#DCDCDC"},
-                            {"name": "Other", "percentage": 20, "color": "#C8FFE6"}
-                        ]
-                    },
-                    "october": {
-                        "totalHours": 130,
-                        "categories": [
-                            {"name": "Productive apps", "percentage": 35, "color": "#FFE6E6"},
-                            {"name": "Social Media", "percentage": 30, "color": "#FFFFC8"},
-                            {"name": "Gaming", "percentage": 20, "color": "#DCDCDC"},
-                            {"name": "Other", "percentage": 15, "color": "#C8FFE6"}
-                        ]
-                    }
-                }
-            };
+            // const jsonData = {
+            //     "productivityData": {
+            //         "monthly": {
+            //             "labels": ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            //             "productivity": [65, 78, 72, 85, 88, 70, 92, 75, 80, 73, 82, 77],
+            //             "procrastination": [35, 22, 28, 15, 12, 30, 8, 25, 20, 27, 18, 23]
+            //         },
+            //         "weekly": {
+            //             "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            //             "productivity": [70, 82, 77, 91, 73, 68, 86],
+            //             "procrastination": [30, 18, 23, 9, 27, 32, 14]
+            //         },
+            //         "yearly": {
+            //             "labels": ["2018", "2019", "2020", "2021", "2022", "2023"],
+            //             "productivity": [68, 71, 63, 78, 82, 76],
+            //             "procrastination": [32, 29, 37, 22, 18, 24]
+            //         }
+            //     },
+            //     "procrastinationBreakdown": {
+            //         "december": {
+            //             "totalHours": 120,
+            //             "categories": [
+            //                 {"name": "Productive apps", "percentage": 40, "color": "#FFE6E6"},
+            //                 {"name": "Social Media", "percentage": 20, "color": "#FFFFC8"},
+            //                 {"name": "Gaming", "percentage": 15, "color": "#DCDCDC"},
+            //                 {"name": "Other", "percentage": 25, "color": "#C8FFE6"}
+            //             ]
+            //         },
+            //         "november": {
+            //             "totalHours": 110,
+            //             "categories": [
+            //                 {"name": "Productive apps", "percentage": 45, "color": "#FFE6E6"},
+            //                 {"name": "Social Media", "percentage": 25, "color": "#FFFFC8"},
+            //                 {"name": "Gaming", "percentage": 10, "color": "#DCDCDC"},
+            //                 {"name": "Other", "percentage": 20, "color": "#C8FFE6"}
+            //             ]
+            //         },
+            //         "october": {
+            //             "totalHours": 130,
+            //             "categories": [
+            //                 {"name": "Productive apps", "percentage": 35, "color": "#FFE6E6"},
+            //                 {"name": "Social Media", "percentage": 30, "color": "#FFFFC8"},
+            //                 {"name": "Gaming", "percentage": 20, "color": "#DCDCDC"},
+            //                 {"name": "Other", "percentage": 15, "color": "#C8FFE6"}
+            //             ]
+            //         }
+            //     }
+            // };
             
             // Initialize charts
             initProductivityChart('monthly');
