@@ -1,5 +1,5 @@
 import pytest
-from Procrastinatrics.app import app, db
+from app import app, db
 
 @pytest.fixture
 def client():
