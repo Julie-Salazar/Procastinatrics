@@ -119,12 +119,31 @@
             </div>
             
             <!-- Recents Panel -->
+            <!-- Recents Panel -->
             <div class="recents-panel">
-                <h3>Recents</h3>
+                <div class="recent-header">
+                    Recents
+                </div>
                 <div class="recent-list">
-                    <img src="{{ url_for('static', filename='img/recents.svg') }}" alt="recents">
+                    {% if recent_logs %}
+                        {% for log in recent_logs %}
+                            <div class="recent-entry"> 
+                                <div class="recent-icon">
+                                    <img src="{{ url_for('static', filename='img/logos/' ~ log.application|lower ~ '.svg') }}" alt="{{ log.application }} logo">
+                                </div>     
+                                <div class="recent-application">{{ log.application }}</div>                       
+                                <div class="recent-time">{{ log.hours }}h {{ log.minutes }}m</div>
+                                <div class="recent-emoji">{{ log.mood }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: white;">No recent activity yet.</p>
+                    {% endif %}
                 </div>
             </div>
+
+            
+                       
         </div>
     </main>
     
