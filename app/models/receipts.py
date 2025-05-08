@@ -21,3 +21,11 @@ class ReceiptsShared(BaseModel):
     receiver_id = db.Column("receiver_id",db.Integer,db.ForeignKey("user.uid"))
     receipt_id = db.Column("receipt_id",db.Integer,db.ForeignKey("receipts.receipt_id"))
 
+class ReceiptShareRequest(BaseModel):
+    request_id = db.Column("request_id", db.Integer, primary_key=True)
+    sender_id = db.Column("sender_id", db.Integer, db.ForeignKey("user.uid"))
+    receiver_id = db.Column("receiver_id", db.Integer, db.ForeignKey("user.uid"))
+    shared_receipt_id = db.Column("shared_receipt_id", db.Integer, db.ForeignKey("receipts.receipt_id"))
+    status = db.Column("status",db.String(20))
+    time = db.Column("time",db.Integer)
+    
