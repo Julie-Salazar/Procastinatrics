@@ -16,13 +16,12 @@
       <button class="icon-button" aria-label="Notifications">
         <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
       </button>
-      <nav></nav>
       <a href="/profile-settings">
-        <img src="{{ url_for('static', filename='img/profile-settings.png') }}" alt="Profile Settings" />
-    </a>
-      <button class="icon-button" aria-label="Logout">
+        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Profile Settings" />
+      </a>
+      <a href="{{ url_for('auth.logout') }}" class="icon-button" aria-label="Logout">
         <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
-      </button>
+      </a>
     </div>
   </div>
      <!-- Fixed Sidebar -->
@@ -74,16 +73,30 @@
             </div>
             
             <!-- Change Email or Password -->
-            <div class="settings-card clickable">
-                <div class="settings-info">
-                    <h2 class="settings-title">Change Email or Password</h2>
+            <a href="{{ url_for('change_password') }}" class="settings-card clickable">
+                <div class="settings-card clickable">
+                    <div class="settings-info">
+                        <h2 class="settings-title">Change Password</h2>
+                    </div>
+                    <div class="forward-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="forward-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+            </a>
+            <a href="{{ url_for('change_email') }}" class="settings-card clickable">
+                <div class="settings-card clickable">
+                    <div class="settings-info">
+                        <h2 class="settings-title">Change Email</h2>
+                    </div>
+                    <div class="forward-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                 </div>
-            </div>
+            </a>
             
             <!-- Batman Mode Toggle -->
             <div class="settings-card">
@@ -111,22 +124,28 @@
             </div>
             
             <!-- Log Out Button -->
-            <div class="settings-card clickable logout-card">
+            <a href="{{ url_for('auth.logout') }}" class="settings-card clickable logout-card">
                 <div class="settings-info">
                     <h2 class="settings-title">Log out</h2>
                 </div>
                 <div class="logout-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16 17L21 12L16 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M21 12H9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 17L21 12L16 7" stroke="white" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12H9" stroke="white" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
-            </div>
+            </a>
+            
+            
         </div>
         {% block form_card %}{% endblock %}
     </main>
-    
+      
     <!-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Handle toggle switches

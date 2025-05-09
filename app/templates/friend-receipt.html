@@ -17,9 +17,9 @@
       <button class="icon-button" aria-label="Notifications">
         <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
       </button>
-      <button class="icon-button" aria-label="Settings">
-        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Settings">
-      </button>
+      <a href="/profile-settings">
+        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Profile Settings" />
+      </a>
       <button class="icon-button" aria-label="Logout">
         <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
       </button>
