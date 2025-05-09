@@ -18,12 +18,16 @@
 #     return render_template('share.html', friends=friends_list)
 
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 
 share = Blueprint('share', __name__)
 
-@share.route('/share')
+@share.route('/share', methods=['GET', 'POST'])
 @login_required
 def share_page():
+    if request.method is 'POST':
+        #TODO
+        pass
+
     return render_template('share.html')  # update this if your template name is different
