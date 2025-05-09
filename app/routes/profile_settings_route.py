@@ -23,6 +23,9 @@ def change_password():
         if not current_user.is_password_correct(current_password):
             
             flash('Current password is incorrect.', 'password_change_error')
+        elif len(new_password) < 8:
+            flash('Current password is too short.', 'password_change_error')
+
         else:
             
             current_user.set_password(new_password)
