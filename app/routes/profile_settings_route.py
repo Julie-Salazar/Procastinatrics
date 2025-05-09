@@ -57,3 +57,8 @@ def change_email():
 
     return flask.render_template('change-email.html')
 
+
+@app.route('/help', methods=['GET', 'POST'])
+@login_required
+def help():
+    return flask.render_template('help.html')
