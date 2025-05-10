@@ -1,239 +1,190 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/log-activity.css') }}">
-    <title>Log Activity</title>
-</head>
-   <!-- Top bar with buttons -->
-   <div class="top-bar">
-    <div class="top-bar-buttons">
-      <button class="icon-button" aria-label="Notifications">
-        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
-      </button>
-      <a href="/profile-settings">
-        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Profile Settings" />
-      </a>
-      <button class="icon-button" aria-label="Logout">
-        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
-      </button>
-    </div>
-  </div>
-<body>
-    <!-- Fixed Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-          <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
-      </div>
-      
-      <div class="sidebar-label">Admin tools</div>
-      
-      <nav class="sidebar-nav">
-          <a href="/analytics-home" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
-              <span>Analytics</span>
-          </a>
-          <a href="/share" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
-              <span>Share Progress</span>
-          </a>
-          
-          <a href="/friend-receipt" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
-              <span>Friends Receipts</span>
-          </a>
-          <a href="/log-activity" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
-              <span>Log Activity</span>
-          </a>
-      </nav>
-  </aside>
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <h1 class="greeting-title">Hi, Slothie!</h1>
-        <h2 class="page-subtitle">Log it champ!</h2>
-        
-        <div class="activity-form-container">
-            <form id="activityForm" method="post">
-                <!-- Application Selection -->
-                <div class="form-group">
-                  <select id="application" name="application" class="app-select" required>
-                    <option value="" disabled selected>select an application</option>
-                    
-                    <!-- Browsers -->
-                    <option value="chrome">Chrome</option>
-                    <option value="firefox">Firefox</option>
-                    <option value="safari">Safari</option>
-                    <option value="edge">Microsoft Edge</option>
-                    
-                    <!-- Social Media -->
-                    <option value="discord">Discord</option>
-                    <option value="slack">Slack</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="facebook">Facebook</option>
-                    <option value="twitter">Twitter</option>
-                    <option value="tiktok">TikTok</option>
-                    <option value="snapchat">Snapchat</option>
-                    <option value="whatsapp">WhatsApp</option>
-                    <option value="telegram">Telegram</option>
-                    
-                    <!-- Work/School -->
-                    <option value="zoom">Zoom</option>
-                    <option value="teams">Microsoft Teams</option>
-                    <option value="vscode">VS Code</option>
-                    <option value="word">Microsoft Word</option>
-                    <option value="excel">Microsoft Excel</option>
-                    <option value="powerpoint">PowerPoint</option>
-                    <option value="outlook">Outlook</option>
-                    <option value="gmail">Gmail</option>
-                    <option value="googledocs">Google Docs</option>
-                    <option value="googlesheets">Google Sheets</option>
-                    <option value="photoshop">Photoshop</option>
-                    <option value="illustrator">Illustrator</option>
-                    <option value="figma">Figma</option>
-                    
-                    <!-- Entertainment -->
-                    <option value="netflix">Netflix</option>
-                    <option value="hulu">Hulu</option>
-                    <option value="disney">Disney+</option>
-                    <option value="youtube">YouTube</option>
-                    <option value="twitch">Twitch</option>
-                    <option value="spotify">Spotify</option>
-                    <option value="appletv">Apple TV</option>
-                    <option value="amazonprime">Amazon Prime Video</option>
-                    
-                    <!-- Gaming -->
-                    <option value="steam">Steam</option>
-                    <option value="epicgames">Epic Games</option>
-                    <option value="leagueoflegends">League of Legends</option>
-                    <option value="minecraft">Minecraft</option>
-                    <option value="fortnite">Fortnite</option>
-                    <option value="valorant">Valorant</option>
-                    <option value="roblox">Roblox</option>
-                    <option value="apexlegends">Apex Legends</option>
-                    <option value="battlenet">Battle.net</option>
-                    <option value="origin">EA Origin</option>
-                </select>
-                </div>
-                
-                <!-- Category Selection -->
-                <div class="category-tabs">
-                    <input type="radio" id="productive" name="category" value="productive" checked>
-                    <label for="productive">Productive</label>
-                    
-                    <input type="radio" id="social" name="category" value="social_media">
-                    <label for="social">Social Media</label>
-                    
-                    <input type="radio" id="gaming" name="category" value="gaming">
-                    <label for="gaming">Gaming</label>
-                </div>
-                
-                <!-- Time Tracking -->
-                <div class="time-mood-container">
-                    <div class="time-container">
-                        <h3>Time Spent</h3>
-                        <div class="time-inputs">
-                            <input type="number" id="hours" name="hours" min="0" max="24" value="6" required>
-                            <span class="time-separator">hrs</span>
-                            <span class="colon">:</span>
-                            <input type="number" id="minutes" name="minutes" min="0" max="59" value="59" required>
-                            <span class="time-separator">mins</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Mood Selection -->
-                    <div class="mood-container">
-                        <h3>Mood</h3>
-                        <div class="emoji-picker">
-                            <button type="button" id="emojiButton" class="emoji-button">😊</button>
-                            <div id="emojiPicker" class="emoji-dropdown">
-                                <div class="emoji-header">SMILEYS & PEOPLE</div>
-                                <div class="emoji-grid">
-                                    <button type="button" class="emoji-option" data-emoji="😊">😊</button>
-                                    <button type="button" class="emoji-option" data-emoji="😀">😀</button>
-                                    <button type="button" class="emoji-option" data-emoji="😁">😁</button>
-                                    <button type="button" class="emoji-option" data-emoji="😂">😂</button>
-                                    <button type="button" class="emoji-option" data-emoji="🥲">🥲</button>
-                                    <button type="button" class="emoji-option" data-emoji="😍">😍</button>
-                                    <button type="button" class="emoji-option" data-emoji="😋">😋</button>
-                                    <button type="button" class="emoji-option" data-emoji="😎">😎</button>
-                                    <button type="button" class="emoji-option" data-emoji="🥳">🥳</button>
-                                    <button type="button" class="emoji-option" data-emoji="😨">😨</button>
-                                    <button type="button" class="emoji-option" data-emoji="😰">😰</button>
-                                    <button type="button" class="emoji-option" data-emoji="😥">😥</button>
-                                    <button type="button" class="emoji-option" data-emoji="😢">😢</button>
-                                    <button type="button" class="emoji-option" data-emoji="😭">😭</button>
-                                    <button type="button" class="emoji-option" data-emoji="😱">😱</button>
-                                    <button type="button" class="emoji-option" data-emoji="😖">😖</button>
-                                    <button type="button" class="emoji-option" data-emoji="😣">😣</button>
-                                    <button type="button" class="emoji-option" data-emoji="😞">😞</button>
-                                    <button type="button" class="emoji-option" data-emoji="😓">😓</button>
-                                    <button type="button" class="emoji-option" data-emoji="😩">😩</button>
-                                    <button type="button" class="emoji-option" data-emoji="😫">😫</button>
-                                    <button type="button" class="emoji-option" data-emoji="🥱">🥱</button>
-                                    <button type="button" class="emoji-option" data-emoji="😴">😴</button>
-                                    <button type="button" class="emoji-option" data-emoji="😪">😪</button>
-                                </div>
-                            </div>
-                            <input type="hidden" id="selectedMood" name="mood" value="😊">
-                        </div>
-                    </div>
-                </div>
-                
-                <button type="submit" class="submit-button">Submit</button>
-            </form>
-        </div>
-    </main>
+{% extends "base.html" %}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Category tabs styling
-            const categoryLabels = document.querySelectorAll('.category-tabs label');
-            const categoryInputs = document.querySelectorAll('.category-tabs input');
-            
-            categoryInputs.forEach((input, index) => {
-                input.addEventListener('change', function() {
-                    categoryLabels.forEach(label => label.classList.remove('active'));
-                    if (this.checked) {
-                        categoryLabels[index].classList.add('active');
-                    }
-                });
-            });
-            
-            categoryLabels[0].classList.add('active');
-            
-            // Emoji picker functionality
-            const emojiButton = document.getElementById('emojiButton');
-            const emojiPicker = document.getElementById('emojiPicker');
-            const emojiOptions = document.querySelectorAll('.emoji-option');
-            const selectedMood = document.getElementById('selectedMood');
-            
-            emojiButton.addEventListener('click', function() {
-                emojiPicker.classList.toggle('show');
-            });
-            
-            emojiOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const emoji = this.getAttribute('data-emoji');
-                    emojiButton.textContent = emoji;
-                    selectedMood.value = emoji;
-                    emojiPicker.classList.remove('show');
-                });
-            });
-            
-            // Close emoji picker when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!emojiButton.contains(e.target) && !emojiPicker.contains(e.target)) {
-                    emojiPicker.classList.remove('show');
+{% block title %}Log Activity{% endblock %}
+
+{% block head_links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/log-activity.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1 class="greeting-title">Hi, Slothie!</h1>
+<h2 class="page-subtitle">Log it champ!</h2>
+
+<div class="activity-form-container">
+    <form id="activityForm" method="post">
+        <!-- Application Selection -->
+        <div class="form-group">
+            <select id="application" name="application" class="app-select" required>
+                <option value="" disabled selected>select an application</option>
+
+                <!-- Browsers -->
+                <option value="chrome">Chrome</option>
+                <option value="firefox">Firefox</option>
+                <option value="safari">Safari</option>
+                <option value="edge">Microsoft Edge</option>
+
+                <!-- Social Media -->
+                <option value="discord">Discord</option>
+                <option value="slack">Slack</option>
+                <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
+                <option value="twitter">Twitter</option>
+                <option value="tiktok">TikTok</option>
+                <option value="snapchat">Snapchat</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="telegram">Telegram</option>
+
+                <!-- Work/School -->
+                <option value="zoom">Zoom</option>
+                <option value="teams">Microsoft Teams</option>
+                <option value="vscode">VS Code</option>
+                <option value="word">Microsoft Word</option>
+                <option value="excel">Microsoft Excel</option>
+                <option value="powerpoint">PowerPoint</option>
+                <option value="outlook">Outlook</option>
+                <option value="gmail">Gmail</option>
+                <option value="googledocs">Google Docs</option>
+                <option value="googlesheets">Google Sheets</option>
+                <option value="photoshop">Photoshop</option>
+                <option value="illustrator">Illustrator</option>
+                <option value="figma">Figma</option>
+
+                <!-- Entertainment -->
+                <option value="netflix">Netflix</option>
+                <option value="hulu">Hulu</option>
+                <option value="disney">Disney+</option>
+                <option value="youtube">YouTube</option>
+                <option value="twitch">Twitch</option>
+                <option value="spotify">Spotify</option>
+                <option value="appletv">Apple TV</option>
+                <option value="amazonprime">Amazon Prime Video</option>
+
+                <!-- Gaming -->
+                <option value="steam">Steam</option>
+                <option value="epicgames">Epic Games</option>
+                <option value="leagueoflegends">League of Legends</option>
+                <option value="minecraft">Minecraft</option>
+                <option value="fortnite">Fortnite</option>
+                <option value="valorant">Valorant</option>
+                <option value="roblox">Roblox</option>
+                <option value="apexlegends">Apex Legends</option>
+                <option value="battlenet">Battle.net</option>
+                <option value="origin">EA Origin</option>
+            </select>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="category-tabs">
+            <input type="radio" id="productive" name="category" value="productive" checked>
+            <label for="productive">Productive</label>
+
+            <input type="radio" id="social" name="category" value="social_media">
+            <label for="social">Social Media</label>
+
+            <input type="radio" id="gaming" name="category" value="gaming">
+            <label for="gaming">Gaming</label>
+        </div>
+
+        <!-- Time Tracking -->
+        <div class="time-mood-container">
+            <div class="time-container">
+                <h3>Time Spent</h3>
+                <div class="time-inputs">
+                    <input type="number" id="hours" name="hours" min="0" max="24" value="6" required>
+                    <span class="time-separator">hrs</span>
+                    <span class="colon">:</span>
+                    <input type="number" id="minutes" name="minutes" min="0" max="59" value="59" required>
+                    <span class="time-separator">mins</span>
+                </div>
+            </div>
+
+            <!-- Mood Selection -->
+            <div class="mood-container">
+                <h3>Mood</h3>
+                <div class="emoji-picker">
+                    <button type="button" id="emojiButton" class="emoji-button">😊</button>
+                    <div id="emojiPicker" class="emoji-dropdown">
+                        <div class="emoji-header">SMILEYS & PEOPLE</div>
+                        <div class="emoji-grid">
+                            <button type="button" class="emoji-option" data-emoji="😊">😊</button>
+                            <button type="button" class="emoji-option" data-emoji="😀">😀</button>
+                            <button type="button" class="emoji-option" data-emoji="😁">😁</button>
+                            <button type="button" class="emoji-option" data-emoji="😂">😂</button>
+                            <button type="button" class="emoji-option" data-emoji="🥲">🥲</button>
+                            <button type="button" class="emoji-option" data-emoji="😍">😍</button>
+                            <button type="button" class="emoji-option" data-emoji="😋">😋</button>
+                            <button type="button" class="emoji-option" data-emoji="😎">😎</button>
+                            <button type="button" class="emoji-option" data-emoji="🥳">🥳</button>
+                            <button type="button" class="emoji-option" data-emoji="😨">😨</button>
+                            <button type="button" class="emoji-option" data-emoji="😰">😰</button>
+                            <button type="button" class="emoji-option" data-emoji="😥">😥</button>
+                            <button type="button" class="emoji-option" data-emoji="😢">😢</button>
+                            <button type="button" class="emoji-option" data-emoji="😭">😭</button>
+                            <button type="button" class="emoji-option" data-emoji="😱">😱</button>
+                            <button type="button" class="emoji-option" data-emoji="😖">😖</button>
+                            <button type="button" class="emoji-option" data-emoji="😣">😣</button>
+                            <button type="button" class="emoji-option" data-emoji="😞">😞</button>
+                            <button type="button" class="emoji-option" data-emoji="😓">😓</button>
+                            <button type="button" class="emoji-option" data-emoji="😩">😩</button>
+                            <button type="button" class="emoji-option" data-emoji="😫">😫</button>
+                            <button type="button" class="emoji-option" data-emoji="🥱">🥱</button>
+                            <button type="button" class="emoji-option" data-emoji="😴">😴</button>
+                            <button type="button" class="emoji-option" data-emoji="😪">😪</button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedMood" name="mood" value="😊">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Category tabs styling
+        const categoryLabels = document.querySelectorAll('.category-tabs label');
+        const categoryInputs = document.querySelectorAll('.category-tabs input');
+
+        categoryInputs.forEach((input, index) => {
+            input.addEventListener('change', function () {
+                categoryLabels.forEach(label => label.classList.remove('active'));
+                if (this.checked) {
+                    categoryLabels[index].classList.add('active');
                 }
             });
         });
-    </script>
-</body>
-</html>
+
+        categoryLabels[0].classList.add('active');
+
+        // Emoji picker functionality
+        const emojiButton = document.getElementById('emojiButton');
+        const emojiPicker = document.getElementById('emojiPicker');
+        const emojiOptions = document.querySelectorAll('.emoji-option');
+        const selectedMood = document.getElementById('selectedMood');
+
+        emojiButton.addEventListener('click', function () {
+            emojiPicker.classList.toggle('show');
+        });
+
+        emojiOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                const emoji = this.getAttribute('data-emoji');
+                emojiButton.textContent = emoji;
+                selectedMood.value = emoji;
+                emojiPicker.classList.remove('show');
+            });
+        });
+
+        // Close emoji picker when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!emojiButton.contains(e.target) && !emojiPicker.contains(e.target)) {
+                emojiPicker.classList.remove('show');
+            }
+        });
+    });
+</script>
+{% endblock %}
