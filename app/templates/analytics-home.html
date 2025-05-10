@@ -1,349 +1,294 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/analytics-home.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Log Activity</title>
-</head>
-   <!-- Top bar with buttons -->
-   <div class="top-bar">
-    <div class="top-bar-buttons">
-      <button class="icon-button" aria-label="Notifications">
-        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
-      </button>
-      <button class="icon-button" aria-label="Settings">
-        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Settings">
-      </button>
-      <a href="{{ url_for('auth.logout') }}" class="icon-button" aria-label="Logout">
-        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
-      </a>
-      
-      
-           
-    </div>
-  </div>
-<body>
-    <!-- Fixed Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-          <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
-      </div>
-      
-      <div class="sidebar-label">Admin tools</div>
-      
-      <nav class="sidebar-nav">
-          <a href="/analytics-home" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
-              <span>Analytics</span>
-          </a>
-          <a href="/share" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
-              <span>Share Progress</span>
-          </a>
-          
-          <a href="/friend-receipt" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
-              <span>Friends Receipts</span>
-          </a>
-          <a href="/log-activity" class="sidebar-link">
-              <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
-              <span>Log Activity</span>
-          </a>
-      </nav>
-  </aside>
-    
-    <main class="main-content">
-        <header class="dashboard-header">
-            <h1>Hi, Slothie!</h1>
-            <h2>Dashboard</h2>
-        </header>
-        
-        <div class="dashboard-grid">
-            <!-- Productivity Bar Chart -->
-            <div class="chart-card pink-bg">
-                <div class="chart-header">
-                    <h3>Productivity vs Procrastination</h3>
-                    <div class="chart-dropdown">
-                        <select id="productivity-timeframe">
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="productivityChart"></canvas>
-                </div>
-            </div>
-            
-            <!-- Breakdown Donut Chart -->
-            <div class="chart-card blue-bg">
-                <div class="chart-header">
-                    <h3>Monthly Procrastination Breakdown</h3>
-                    <div class="chart-dropdown">
-                        <select id="breakdown-month">
-                            <option value="december" selected>December</option>
-                            <option value="november">November</option>
-                            <option value="october">October</option>
-                            <option value="september">September</option>
-                            <option value="august">August</option>
-                            <option value="july">July</option>
-                            <option value="june">June</option>
-                            <option value="may">May</option>
-                            <option value="april">April</option>
-                            <option value="march">March</option>
-                            <option value="february">February</option>
-                            <option value="january">January</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="breakdown-container">
-                    <div class="breakdown-categories" id="breakdown-categories">
-                        <!-- Categories will be dynamically added here -->
-                    </div>
-                    <div class="donut-chart-container">
-                        <canvas id="breakdownChart"></canvas>
-                        <div class="total-display">
-                            <div class="total-label">Total</div>
-                            <div class="total-value" id="total-hours">120hrs</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Recents Panel -->
-            <!-- Recents Panel -->
-            <div class="recents-panel">
-                <div class="recent-header">
-                    Recents
-                </div>
-                <div class="recent-list">
-                    {% if recent_logs %}
-                        {% for log in recent_logs %}
-                            <div class="recent-entry"> 
-                                <div class="recent-icon">
-                                    <img src="{{ url_for('static', filename='img/logos/' ~ log.application|lower ~ '.svg') }}" alt="{{ log.application }} logo">
-                                </div>     
-                                <div class="recent-application">{{ log.application }}</div>                       
-                                <div class="recent-time">{{ log.hours }}h {{ log.minutes }}m</div>
-                                <div class="recent-emoji">{{ log.mood }}</div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p style="color: white;">No recent activity yet.</p>
-                    {% endif %}
-                </div>
-            </div>
+{% extends "base.html" %}
 
-            
-                       
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block head_links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics-home.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<header class="dashboard-header">
+    <h1>Hi, Slothie!</h1>
+    <h2>Dashboard</h2>
+</header>
+
+<div class="dashboard-grid">
+    <!-- Productivity Bar Chart -->
+    <div class="chart-card pink-bg">
+        <div class="chart-header">
+            <h3>Productivity vs Procrastination</h3>
+            <div class="chart-dropdown">
+                <select id="productivity-timeframe">
+                    <option value="monthly" selected>Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
         </div>
-    </main>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Data for the dashboard
-            // const jsonData = {
-            //     "productivityData": {
-            //         "monthly": {
-            //             "labels": ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            //             "productivity": [65, 78, 72, 85, 88, 70, 92, 75, 80, 73, 82, 77],
-            //             "procrastination": [35, 22, 28, 15, 12, 30, 8, 25, 20, 27, 18, 23]
-            //         },
-            //         "weekly": {
-            //             "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            //             "productivity": [70, 82, 77, 91, 73, 68, 86],
-            //             "procrastination": [30, 18, 23, 9, 27, 32, 14]
-            //         },
-            //         "yearly": {
-            //             "labels": ["2018", "2019", "2020", "2021", "2022", "2023"],
-            //             "productivity": [68, 71, 63, 78, 82, 76],
-            //             "procrastination": [32, 29, 37, 22, 18, 24]
-            //         }
-            //     },
-            //     "procrastinationBreakdown": {
-            //         "december": {
-            //             "totalHours": 120,
-            //             "categories": [
-            //                 {"name": "Productive apps", "percentage": 40, "color": "#FFE6E6"},
-            //                 {"name": "Social Media", "percentage": 20, "color": "#FFFFC8"},
-            //                 {"name": "Gaming", "percentage": 15, "color": "#DCDCDC"},
-            //                 {"name": "Other", "percentage": 25, "color": "#C8FFE6"}
-            //             ]
-            //         },
-            //         "november": {
-            //             "totalHours": 110,
-            //             "categories": [
-            //                 {"name": "Productive apps", "percentage": 45, "color": "#FFE6E6"},
-            //                 {"name": "Social Media", "percentage": 25, "color": "#FFFFC8"},
-            //                 {"name": "Gaming", "percentage": 10, "color": "#DCDCDC"},
-            //                 {"name": "Other", "percentage": 20, "color": "#C8FFE6"}
-            //             ]
-            //         },
-            //         "october": {
-            //             "totalHours": 130,
-            //             "categories": [
-            //                 {"name": "Productive apps", "percentage": 35, "color": "#FFE6E6"},
-            //                 {"name": "Social Media", "percentage": 30, "color": "#FFFFC8"},
-            //                 {"name": "Gaming", "percentage": 20, "color": "#DCDCDC"},
-            //                 {"name": "Other", "percentage": 15, "color": "#C8FFE6"}
-            //             ]
-            //         }
-            //     }
-            // };
-            
-            // Initialize charts
-            initProductivityChart('monthly');
-            initBreakdownChart('december');
-            
-            // Add event listeners for dropdown changes
-            document.getElementById('productivity-timeframe').addEventListener('change', function() {
-                initProductivityChart(this.value);
-            });
-            
-            document.getElementById('breakdown-month').addEventListener('change', function() {
-                initBreakdownChart(this.value);
-            });
-            
-            // Function to initialize the productivity chart
-            function initProductivityChart(timeframe) {
-                const ctx = document.getElementById('productivityChart').getContext('2d');
-                const data = jsonData.productivityData[timeframe];
-                
-                // Clear any existing chart
-                if (window.productivityBarChart) {
-                    window.productivityBarChart.destroy();
-                }
-                
-                // Create new chart
-                window.productivityBarChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            label: 'Productivity',
-                            data: data.productivity,
-                            backgroundColor: 'rgba(255, 255, 200, 0.7)',
-                            borderWidth: 0,
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: {
-                                    stepSize: 20,
-                                    color: 'rgba(0, 0, 0, 0.5)'
-                                },
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    color: 'rgba(0, 0, 0, 0.5)'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(70, 70, 70, 0.9)',
-                                titleColor: '#fff',
-                                bodyColor: '#fff',
-                                displayColors: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.parsed.y + '% productivity';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Function to initialize the breakdown donut chart
-            function initBreakdownChart(month) {
-                const ctx = document.getElementById('breakdownChart').getContext('2d');
-                const data = jsonData.procrastinationBreakdown[month];
-                
-                // Update total hours display
-                document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
-                
-                // Update categories list
-                const categoriesContainer = document.getElementById('breakdown-categories');
-                categoriesContainer.innerHTML = '';
-                
-                data.categories.forEach(category => {
-                    const item = document.createElement('div');
-                    item.className = 'category-item';
-                    item.innerHTML = `
-                        <span class="category-name">${category.name}</span>
-                        <span class="category-value">${category.percentage}%</span>
-                    `;
-                    categoriesContainer.appendChild(item);
-                });
-                
-                // Clear any existing chart
-                if (window.breakdownDonutChart) {
-                    window.breakdownDonutChart.destroy();
-                }
-                
-                // Create new chart with specific size settings
-                window.breakdownDonutChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: data.categories.map(c => c.name),
-                        datasets: [{
-                            data: data.categories.map(c => c.percentage),
-                            backgroundColor: data.categories.map(c => c.color),
-                            borderWidth: 0,
-                            hoverOffset: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        cutout: '70%',
-                        layout: {
-                            padding: 0
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(70, 70, 70, 0.9)',
-                                titleColor: '#fff',
-                                bodyColor: '#fff',
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.label + ': ' + context.parsed + '%';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+        <div class="chart-container">
+            <canvas id="productivityChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Breakdown Donut Chart -->
+    <div class="chart-card blue-bg">
+        <div class="chart-header">
+            <h3>Monthly Procrastination Breakdown</h3>
+            <div class="chart-dropdown">
+                <select id="breakdown-month">
+                    <option value="december" selected>December</option>
+                    <option value="november">November</option>
+                    <option value="october">October</option>
+                    <option value="september">September</option>
+                    <option value="august">August</option>
+                    <option value="july">July</option>
+                    <option value="june">June</option>
+                    <option value="may">May</option>
+                    <option value="april">April</option>
+                    <option value="march">March</option>
+                    <option value="february">February</option>
+                    <option value="january">January</option>
+                </select>
+            </div>
+        </div>
+        <div class="breakdown-container">
+            <div class="breakdown-categories" id="breakdown-categories">
+                <!-- Categories will be dynamically added here -->
+            </div>
+            <div class="donut-chart-container">
+                <canvas id="breakdownChart"></canvas>
+                <div class="total-display">
+                    <div class="total-label">Total</div>
+                    <div class="total-value" id="total-hours">120hrs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recents Panel -->
+    <div class="recents-panel">
+        <div class="recent-header">
+            Recents
+        </div>
+        <div class="recent-list">
+            {% if recent_logs %}
+            {% for log in recent_logs %}
+            <div class="recent-entry">
+                <div class="recent-icon">
+                    <img src="{{ url_for('static', filename='img/logos/' ~ log.application|lower ~ '.svg') }}"
+                        alt="{{ log.application }} logo">
+                </div>
+                <div class="recent-application">{{ log.application }}</div>
+                <div class="recent-time">{{ log.hours }}h {{ log.minutes }}m</div>
+                <div class="recent-emoji">{{ log.mood }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p style="color: white;">No recent activity yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Data for the dashboard
+        // const jsonData = {
+        //     "productivityData": {
+        //         "monthly": {
+        //             "labels": ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        //             "productivity": [65, 78, 72, 85, 88, 70, 92, 75, 80, 73, 82, 77],
+        //             "procrastination": [35, 22, 28, 15, 12, 30, 8, 25, 20, 27, 18, 23]
+        //         },
+        //         "weekly": {
+        //             "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        //             "productivity": [70, 82, 77, 91, 73, 68, 86],
+        //             "procrastination": [30, 18, 23, 9, 27, 32, 14]
+        //         },
+        //         "yearly": {
+        //             "labels": ["2018", "2019", "2020", "2021", "2022", "2023"],
+        //             "productivity": [68, 71, 63, 78, 82, 76],
+        //             "procrastination": [32, 29, 37, 22, 18, 24]
+        //         }
+        //     },
+        //     "procrastinationBreakdown": {
+        //         "december": {
+        //             "totalHours": 120,
+        //             "categories": [
+        //                 {"name": "Productive apps", "percentage": 40, "color": "#FFE6E6"},
+        //                 {"name": "Social Media", "percentage": 20, "color": "#FFFFC8"},
+        //                 {"name": "Gaming", "percentage": 15, "color": "#DCDCDC"},
+        //                 {"name": "Other", "percentage": 25, "color": "#C8FFE6"}
+        //             ]
+        //         },
+        //         "november": {
+        //             "totalHours": 110,
+        //             "categories": [
+        //                 {"name": "Productive apps", "percentage": 45, "color": "#FFE6E6"},
+        //                 {"name": "Social Media", "percentage": 25, "color": "#FFFFC8"},
+        //                 {"name": "Gaming", "percentage": 10, "color": "#DCDCDC"},
+        //                 {"name": "Other", "percentage": 20, "color": "#C8FFE6"}
+        //             ]
+        //         },
+        //         "october": {
+        //             "totalHours": 130,
+        //             "categories": [
+        //                 {"name": "Productive apps", "percentage": 35, "color": "#FFE6E6"},
+        //                 {"name": "Social Media", "percentage": 30, "color": "#FFFFC8"},
+        //                 {"name": "Gaming", "percentage": 20, "color": "#DCDCDC"},
+        //                 {"name": "Other", "percentage": 15, "color": "#C8FFE6"}
+        //             ]
+        //         }
+        //     }
+        // };
+
+        // Initialize charts
+        initProductivityChart('monthly');
+        initBreakdownChart('december');
+
+        // Add event listeners for dropdown changes
+        document.getElementById('productivity-timeframe').addEventListener('change', function () {
+            initProductivityChart(this.value);
         });
-    </script>
-</body>
-</html>
+
+        document.getElementById('breakdown-month').addEventListener('change', function () {
+            initBreakdownChart(this.value);
+        });
+
+        // Function to initialize the productivity chart
+        function initProductivityChart(timeframe) {
+            const ctx = document.getElementById('productivityChart').getContext('2d');
+            const data = jsonData.productivityData[timeframe];
+
+            // Clear any existing chart
+            if (window.productivityBarChart) {
+                window.productivityBarChart.destroy();
+            }
+
+            // Create new chart
+            window.productivityBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Productivity',
+                        data: data.productivity,
+                        backgroundColor: 'rgba(255, 255, 200, 0.7)',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                color: 'rgba(0, 0, 0, 0.5)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(70, 70, 70, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            displayColors: false,
+                            callbacks: {
+                                label: function (context) {
+                                    return context.parsed.y + '% productivity';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to initialize the breakdown donut chart
+        function initBreakdownChart(month) {
+            const ctx = document.getElementById('breakdownChart').getContext('2d');
+            const data = jsonData.procrastinationBreakdown[month];
+
+            // Update total hours display
+            document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
+
+            // Update categories list
+            const categoriesContainer = document.getElementById('breakdown-categories');
+            categoriesContainer.innerHTML = '';
+
+            data.categories.forEach(category => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.innerHTML = `
+                    <span class="category-name">${category.name}</span>
+                    <span class="category-value">${category.percentage}%</span>
+                `;
+                categoriesContainer.appendChild(item);
+            });
+
+            // Clear any existing chart
+            if (window.breakdownDonutChart) {
+                window.breakdownDonutChart.destroy();
+            }
+
+            // Create new chart with specific size settings
+            window.breakdownDonutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.categories.map(c => c.name),
+                    datasets: [{
+                        data: data.categories.map(c => c.percentage),
+                        backgroundColor: data.categories.map(c => c.color),
+                        borderWidth: 0,
+                        hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '70%',
+                    layout: {
+                        padding: 0
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(70, 70, 70, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            callbacks: {
+                                label: function (context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
