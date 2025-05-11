@@ -3,6 +3,7 @@ from app import app, db
 from app.database import *
 from app.models.user import User
 from app.models.activitylog import ActivityLog
+from app.models.receipts import Receipts,ReceiptsShareRequest,Status
 from app.models import views
 
 # adds 3 users to the database so testing can be done
@@ -33,46 +34,70 @@ def test_database():
     db.session.commit()
     
     # Add some Mood records for the test user
-    mood1 = Mood(
-        author_id=test_user.uid,
-        app_name="Netflix",
-        app_type="procrastination",
-        minutes_spent=60,
-        mood_emoji="😴"
+    mood1 = ActivityLog(
+        user_id=test_user.uid,
+        application="Netflix",
+        category="procrastination",
+        hours=0,
+        minutes=60,
+        mood="😴",
+        timestamp=db.func.current_timestamp()
     )
-    mood2 = Mood(
-        author_id=test_user.uid,
-        app_name="Steam",
-        app_type="gaming",
-        minutes_spent=120,
-        mood_emoji="😀"
+    mood2 = ActivityLog(
+        user_id=test_user.uid,
+        application="Steam",
+        category="gaming",
+        hours=2,
+        minutes=0,
+        mood="😀",
+        timestamp=db.func.current_timestamp()
     )
-    mood3 = Mood(
-        author_id=test_user.uid,
-        app_name="VSCode",
-        app_type="productive",
-        minutes_spent=30,
-        mood_emoji="💻"
-    )
-    
-    mood2_1 = Mood(
-        author_id=test_user2.uid,
-        app_name="Tetr.io",
-        app_type="gaming",
-        minutes_spent=240,
-        mood_emoji="😀"
+    mood3 = ActivityLog(
+        user_id=test_user.uid,
+        application="VSCode",
+        category="productive",
+        hours=0,
+        minutes=30,
+        mood="💻",
+        timestamp=db.func.current_timestamp()
     )
     
-    mood2_2 = Mood(
-        author_id=test_user2.uid,
-        app_name="csmarks",
-        app_type="productive",
-        minutes_spent=1,
-        mood_emoji="😀"
+    mood2_1 = ActivityLog(
+        user_id=test_user2.uid,
+        application="Tetr.io",
+        category="gaming",
+        hours=3,
+        minutes=0,
+        mood="😀",
+        timestamp=db.func.current_timestamp()
     )
     
-    db.session.add_all([mood1, mood2, mood3,mood2_1,mood2_2])
+    mood2_2 = ActivityLog(
+        user_id=test_user2.uid,
+        application="csmarks",
+        category="productive",
+        hours=0,
+        minutes=1,
+        mood="😀",
+        timestamp=db.func.current_timestamp()
+    )
+    receipt = Receipts(
+        author_id = test_user2.uid,
+        time = db.func.current_timestamp(),
+        hours_procrastinated = 70,
+        hours_gaming = 80,
+        hours_productive = 99
+    )
+    receipt_request = ReceiptsShareRequest(
+        sender_id = test_user2.uid,
+        receiver_id = test_user.uid,
+        shared_receipt_id = receipt.receipt_id,
+        status = Status.PENDING,
+        time = db.func.current_timestamp()
+    )
+    db.session.add_all([mood1, mood2, mood3,mood2_1,mood2_2,receipt,receipt_request])
     db.session.commit()
+
 
     # Reinitialize the Hours view (this creates/updates the view defined in views.py)
     views.create_hours_view()

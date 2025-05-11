@@ -1,7 +1,8 @@
 from app import db
-from . import User,BaseModel
+from app.models.base import BaseModel
 
 class Status:
+    ACCEPTED = 'Accepted'
     IGNORED = 'Ignored'
     PENDING = 'Pending'
     DECLINED = 'Declined'
