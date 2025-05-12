@@ -17,60 +17,66 @@
 #     ]
 #     return render_template('share.html', friends=friends_list)
 
-from sqlalchemy import select
+from sqlalchemy import select,and_
 from flask import Blueprint, render_template, request, flash, abort, redirect, url_for
 from flask_login import login_required, current_user
 
-from app.models.receipts import ReceiptsShareRequest, Status
+from app.models.receipts import ReceiptsShareRequest, Status, BlockedUsers
 from app.models.user import User
 from app import db
 
 share = Blueprint('share', __name__)
 
-@share.route('/share', methods=['GET', 'POST'])
+# internal methods
+def get_blocked_users_id(user_id):
+    blocked_list = BlockedUsers.query.filter(BlockedUsers.blocker_id == user_id).all()
+    return [blocked.target_user_id for blocked in blocked_list]
+
+def is_user_blocked(user_id,target_id):
+    blocked_list = BlockedUsers.query.filter(BlockedUsers.blocker_id == target_id, BlockedUsers.target_user_id == user_id).first()
+    if blocked_list: return True
+    return False
+    
+    
+def get_users_sharing(user_id,receipt_id):
+    users = User.query.filter(User.uid != user_id).all()
+    
+    #block query
+    blocked_id = get_blocked_users_id(user_id)
+    
+    #user filtering
+    ##TODO efficient current-request handler that doesnt involve requerying every loop
+    users = [user for user in users if user.uid not in blocked_id]
+    
+    return users
+
+@share.route('/share', methods=['GET'])
 @login_required
-def share_page():
-    if request.method == 'POST':
-        sender_id = current_user.id
-        recipient_id = request.form.get('recipient_id')
-        receipt_id = request.form.get('receipt_id')
-        
-        # Check if user exists
-        recipient_user = User.query.filter_by(uid=current_user.id).first()
-        if not recipient_user: 
-            flash("User not found!", 'error')
-            abort(403)
-        
-        # Check if request exists
-        query = ReceiptsShareRequest.query.filter_by(sender_id=sender_id,
-                                                     recipient_id=recipient_id,
-                                                     shared_receipt_id=receipt_id
-                                                    ).first()
-        if query:
-            if query.status != Status.IGNORED: abort(403)
-            elif query.status == Status.IGNORED:
-                # Update request (resend)
-                query.status = Status.PENDING
-                query.time = db.func.current_timestamp()
-                db.session.add(query)
-                db.session.commit()
-                flash(f"Resent request to {recipient_user.first_name}!")
-                return ('share.html'), 200
+def share_page(users=None):
+    if not users:
+        users = get_users_sharing(current_user.id,request.form.get('receipt_id'))
 
-        # Create a new share request
-        share_request = ReceiptsShareRequest(
-            sender_id=current_user.id,
-            recipient_id=recipient_id,
-            shared_receipt_id=receipt_id,
-            status = Status.PENDING,
-            time = db.func.current_timestamp()
-        )
+    return render_template('share.html', users=users)
+
+@share.route('/share/send/<int:receipt_id>/<int:target_user_id>', methods=['POST'])
+@login_required
+def send_request(receipt_id, target_user_id):
+    if is_user_blocked(current_user.uid,target_user_id):
+        abort(403)
+    else:
+        exists = ReceiptsShareRequest.query.filter_by(receiver_id=target_user_id,shared_receipt_id=receipt_id,status=Status.PENDING).first()
+        if exists: abort(403)
         
-        db.session.add(share_request)
+        request = ReceiptsShareRequest(sender_id=current_user.uid,
+                                       receiver_id=target_user_id,
+                                       shared_receipt_id=receipt_id,
+                                       status=Status.PENDING,
+                                       time=db.func.current_timestamp()
+                                       )
+        db.session.add(request)
         db.session.commit()
-        flash(f"Sent request to {recipient_user.first_name}!", 'success')
+        return 200
 
-    return render_template('share.html'), 200 
 
 @share.route('/share/requests', methods=['GET'])
 @login_required
@@ -81,7 +87,9 @@ def share_requests():
                            status=Status.PENDING).all())
     return render_template('share_requests.html', requests=requests)
 
-@share.route('/share/requests/<int:request_id>/accept', methods=['POST'])
+
+#Request Interaction APIs
+@share.route('/share/requests/accept/<int:request_id>', methods=['POST'])
 @login_required
 def accept_request(request_id):
     request = ReceiptsShareRequest.query.get_or_404(request_id)
@@ -91,7 +99,7 @@ def accept_request(request_id):
     
     return share_requests()
 
-@share.route('/share/requests/<int:request_id>/decline', methods=['POST'])
+@share.route('/share/requests/decline/<int:request_id>', methods=['POST'])
 @login_required
 def decline_request(request_id):
     request = ReceiptsShareRequest.query.get_or_404(request_id)
@@ -101,7 +109,7 @@ def decline_request(request_id):
     
     return share_requests()
 
-@share.route('/share/requests/<int:request_id>/ignore', methods=['POST'])
+@share.route('/share/requests/ignore/<int:request_id>', methods=['POST'])
 @login_required
 def ignore_request(request_id):
     request = ReceiptsShareRequest.query.get_or_404(request_id)

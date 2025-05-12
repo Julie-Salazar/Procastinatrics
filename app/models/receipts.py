@@ -23,8 +23,14 @@ class Receipts(BaseModel):
 class ReceiptsShareRequest(BaseModel):
     request_id = db.Column("request_id", db.Integer, primary_key=True)
     sender_id = db.Column("sender_id", db.Integer, db.ForeignKey("user.uid"))
-    receiver_id = db.Column("recipient_id", db.Integer, db.ForeignKey("user.uid"))
+    receiver_id = db.Column("receiver_id", db.Integer, db.ForeignKey("user.uid"))
     shared_receipt_id = db.Column("shared_receipt_id", db.Integer, db.ForeignKey("receipts.receipt_id"))
     status = db.Column("status",db.String(20))
     time = db.Column("time",db.Integer)
+    
+class BlockedUsers(BaseModel):
+    __tablename__ = 'blocked_users'
+    id = db.Column("id", db.Integer, primary_key=True)
+    blocker_id = db.Column("blocker_id", db.Integer, db.ForeignKey("user.uid"))
+    target_user_id = db.Column("target_user_id", db.Integer, db.ForeignKey("user.uid"))
     
