@@ -290,3 +290,10 @@
         grid-template-columns: repeat(5, 1fr);
     }
 }
+.Other{
+    font-size: 14px;
+    color: #555;
+    margin-top: 20px;
+    text-align: left;
+    margin-bottom: 20px;
+}

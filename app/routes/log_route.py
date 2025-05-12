@@ -7,19 +7,24 @@ from app.models.activitylog import ActivityLog
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField
 from wtforms.validators import DataRequired
+from forms import LogActivityForm
 
 log = Blueprint('log', __name__)
 
 @log.route('/log-activity', methods=['GET', 'POST'])
 @login_required
 def log_activity():
-    if request.method == 'POST':
-        app_name = request.form.get('application')
-        category = request.form.get('category')
-        hours = int(request.form.get('hours', 0))
-        minutes = int(request.form.get('minutes', 0))
-        mood = request.form.get('mood')
+    form = LogActivityForm()
 
+    if form.validate_on_submit():
+        # Use "other_application" if provided, otherwise use "application"
+        app_name = form.other_application.data or form.application.data
+        category = form.category.data
+        hours = form.hours.data
+        minutes = form.minutes.data
+        mood = form.mood.data
+
+        # Create a new log entry
         new_log = ActivityLog(
             user_id=current_user.id,
             application=app_name,
@@ -32,13 +37,5 @@ def log_activity():
         db.session.commit()
         flash('Activity logged successfully.', 'success')
         return redirect(url_for('views.analytics_home'))
-    
-    
 
-    return render_template('log-activity.html')
-
-
-
-
-# FOR TMORROW MAKE SURE THAT YOU TAKE OFF THE BACK BUTTON >> HAVE NAME INPUT ONLY FOR SIGNUP SO THAT IT SHOWS WHEN LOGGING IN 
-
+    return render_template('log-activity.html', form=form)

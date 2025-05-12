@@ -4,11 +4,12 @@
 
 {% block head_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/log-activity.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 {% endblock %}
 
 {% block content %}
-<h1 class="greeting-title">Hi, Slothie!</h1>
-<h2 class="page-subtitle">Log it champ!</h2>
+<h1 class="greeting-title">Hi, {{ current_user.first_name }}!</h1>
+<h2 class="page-subtitle">Log it champ!✨</h2>
 
 <div class="activity-form-container">
     <form id="activityForm" method="post">
@@ -71,7 +72,13 @@
                 <option value="battlenet">Battle.net</option>
                 <option value="origin">EA Origin</option>
             </select>
+        
+        <div class="form-group">
+        <label class="Other" for="application">Other Application</label>
+        <input type="text" id="application" name="application" class="form-input" placeholder="Enter application name" required>
         </div>
+</div>
+        
 
         <!-- Category Selection -->
         <div class="category-tabs">
@@ -83,6 +90,10 @@
 
             <input type="radio" id="gaming" name="category" value="gaming">
             <label for="gaming">Gaming</label>
+        </div>
+        <div class="Other" class="form-group">
+            <label for="category">Other Category</label>
+            <input type="text" id="category" name="category" class="form-input" placeholder="Enter category" required>
         </div>
 
         <!-- Time Tracking -->
@@ -144,6 +155,27 @@
 
 {% block scripts %}
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const applicationDropdown = document.getElementById('applicationDropdown');
+        const otherApplicationInput = document.getElementById('otherApplication');
+
+        // Disable dropdown if "Other Application" is filled
+        otherApplicationInput.addEventListener('input', function () {
+            if (this.value.trim() !== '') {
+                applicationDropdown.disabled = true;
+                applicationDropdown.value = ""; // Clear dropdown selection
+            } else {
+                applicationDropdown.disabled = false;
+            }
+        });
+
+        // Clear "Other Application" input if dropdown is selected
+        applicationDropdown.addEventListener('change', function () {
+            if (this.value !== "") {
+                otherApplicationInput.value = "";
+            }
+        });
+    });
     document.addEventListener('DOMContentLoaded', function () {
         // Category tabs styling
         const categoryLabels = document.querySelectorAll('.category-tabs label');
