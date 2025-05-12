@@ -7,6 +7,7 @@ from app.models.user import User
 
 
 def init():
+    return
     create_hours_view()
     
 def create_hours_view():

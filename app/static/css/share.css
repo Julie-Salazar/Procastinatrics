@@ -122,7 +122,60 @@
     flex-direction: column;
     justify-content: space-between;
   }
-  
+  /* Requests Card */
+  .requests-card {
+    flex: 1;
+    max-width: 900px;
+    background-color: #29292A;
+    border-radius: var(--border-radius-card, 12px);
+    padding: var(--padding-card, 24px);
+    min-height: 550px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .requests-list {
+    flex-grow: 1;
+    margin-bottom: 32px;
+  }
+
+  .requests-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  .request-btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  .request-button-container button {
+    color: #292929;
+    font-weight:600;
+    flex: 1;
+    margin: 0 5px;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #292929;
+  }
+  .button-ignore {
+    background-color: var(--accent3-soft-yellow);
+  }
+  .button-accept {
+    background-color: var(--accent1-mint-green, #D9FFE7);
+  }
+  .button-decline {
+    background-color: var(--accent2-pastel-pink, #FFD6DA);
+  }
+
   /* Friend List & Filter - keeping your existing styles */
   .friend-list {
     flex-grow: 1;

@@ -35,6 +35,9 @@ from app.routes.share_route import share
 from app.routes.friend_route import friends
 # from app.routes.profile_settings_route import settings  # if needed
 
+#default route
+from app.routes.default import default
+
 app.register_blueprint(views)
 app.register_blueprint(auth)
 app.register_blueprint(log)
