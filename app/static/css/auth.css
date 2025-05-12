@@ -81,7 +81,7 @@ body {
 }
 
 
-.back-button {
+/* .back-button {
     background: transparent;
     border: 1px solid #292929;
     border-radius: 6px;
@@ -91,7 +91,7 @@ body {
     color: #292929;
     cursor: pointer;
     padding: 0;
-}
+} */
 
 .auth-card h1 {
     font-family: var(--font-heading, 'Poppins'), sans-serif;

@@ -1,130 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
-    <title>Friend Receipts</title>
-</head>
-   <!-- Top bar with buttons -->
-   <div class="top-bar">
-    <div class="top-bar-buttons">
-      <button class="icon-button" aria-label="Notifications">
-        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
-      </button>
-      <button class="icon-button" aria-label="Settings">
-        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Settings">
-      </button>
-      <button class="icon-button" aria-label="Logout">
-        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
-      </button>
-    </div>
-  </div>
-<body>
-     <!-- Fixed Sidebar -->
-     <aside class="sidebar">
-        <div class="sidebar-logo">
-            <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
-        </div>
-        
-        <div class="sidebar-label">Admin tools</div>
-        
-        <nav class="sidebar-nav">
-            <a href="/analytics-home" class="sidebar-link">
-                <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
-                <span>Analytics</span>
-            </a>
-            <a href="/share" class="sidebar-link">
-                <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
-                <span>Share Progress</span>
-            </a>
-            
-            <a href="/friend-receipt" class="sidebar-link">
-                <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
-                <span>Friends Receipts</span>
-            </a>
-            <a href="/log-activity" class="sidebar-link">
-                <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
-                <span>Log Activity</span>
-            </a>
-        </nav>
-    </aside>
-    
-    <!-- Main Content Area -->
-<main class="main-content">
-    <h1 class="page-title">Friend Receipts</h1>
-    
-    <!-- Carousel Container -->
-    <div class="carousel-container">
-        <!-- Left Arrow -->
-        <button class="carousel-arrow left-arrow" id="prevBtn">
-            <img src="{{ url_for('static', filename='img/left-arrow.svg') }}" alt="Previous">
-        </button>
-        
-        <!-- Receipt Display -->
-        <div class="receipt-display">
-            <!-- Only one receipt is shown at a time -->
-            <img id="currentReceipt" src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="Receipt">
-        </div>
-        
-        <!-- Right Arrow -->
-        <button class="carousel-arrow right-arrow" id="nextBtn">
-            <img src="{{ url_for('static', filename='img/right-arrow.svg') }}" alt="Next">
-        </button>
+{% extends "base.html" %}
+
+{% block title %}Friend Receipts{% endblock %}
+
+{% block head_links %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Friend Receipts</h1>
+
+<!-- Carousel Container -->
+<div class="carousel-container">
+    <!-- Left Arrow -->
+    <button class="carousel-arrow left-arrow" id="prevBtn">
+        <img src="{{ url_for('static', filename='img/left-arrow.svg') }}" alt="Previous">
+    </button>
+
+    <!-- Receipt Display -->
+    <div class="receipt-display">
+        <!-- Only one receipt is shown at a time -->
+        <img id="currentReceipt" src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="Receipt">
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Receipt image sources (put all your receipt paths here)
-            const receipts = [
-                "{{ url_for('static', filename='img/receipt-sample.svg') }}",
-                "{{ url_for('static', filename='img/julie-receipt-sample.svg') }}",
-                "{{ url_for('static', filename='img/tyler-receipt-sample.svg') }}"
-                // Add more receipts as needed
-            ];
-            
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const currentReceipt = document.getElementById('currentReceipt');
-            
-            let currentIndex = 0;
-            
-            // Function to update displayed receipt
-            function updateReceipt() {
-                currentReceipt.src = receipts[currentIndex];
-                
-                // Update button states
-                prevBtn.disabled = currentIndex === 0;
-                prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
-                nextBtn.disabled = currentIndex === receipts.length - 1;
-                nextBtn.style.opacity = currentIndex === receipts.length - 1 ? 0.5 : 1;
+    <!-- Right Arrow -->
+    <button class="carousel-arrow right-arrow" id="nextBtn">
+        <img src="{{ url_for('static', filename='img/right-arrow.svg') }}" alt="Next">
+    </button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Receipt image sources (put all your receipt paths here)
+        const receipts = [
+            "{{ url_for('static', filename='img/receipt-sample.svg') }}",
+            "{{ url_for('static', filename='img/julie-receipt-sample.svg') }}",
+            "{{ url_for('static', filename='img/tyler-receipt-sample.svg') }}"
+            // Add more receipts as needed
+        ];
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentReceipt = document.getElementById('currentReceipt');
+
+        let currentIndex = 0;
+
+        // Function to update displayed receipt
+        function updateReceipt() {
+            currentReceipt.src = receipts[currentIndex];
+
+            // Update button states
+            prevBtn.disabled = currentIndex === 0;
+            prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
+            nextBtn.disabled = currentIndex === receipts.length - 1;
+            nextBtn.style.opacity = currentIndex === receipts.length - 1 ? 0.5 : 1;
+        }
+
+        // Previous button click
+        prevBtn.addEventListener('click', function () {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateReceipt();
             }
-            
-            // Previous button click
-            prevBtn.addEventListener('click', function() {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    updateReceipt();
-                }
-            });
-            
-            // Next button click
-            nextBtn.addEventListener('click', function() {
-                if (currentIndex < receipts.length - 1) {
-                    currentIndex++;
-                    updateReceipt();
-                }
-            });
-            
-            // Initialize
-            updateReceipt();
         });
-    </script>
-</main>
-</body>
-</html>
+
+        // Next button click
+        nextBtn.addEventListener('click', function () {
+            if (currentIndex < receipts.length - 1) {
+                currentIndex++;
+                updateReceipt();
+            }
+        });
+
+        // Initialize
+        updateReceipt();
+    });
+</script>
+{% endblock %}

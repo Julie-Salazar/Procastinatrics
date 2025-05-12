@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Email</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-buttons">
+      <button class="icon-button" aria-label="Notifications">
+        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
+      </button>
+      <a href="/profile-settings">
+        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Profile Settings" />
+      </a>
+      <a href="{{ url_for('auth.logout') }}" class="icon-button" aria-label="Logout">
+        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
+      </a>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
+    </div>
+    <div class="sidebar-label">Admin tools</div>
+    <nav class="sidebar-nav">
+      <a href="/analytics-home" class="sidebar-link">
+        <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
+        <span>Analytics</span>
+      </a>
+      <a href="/share" class="sidebar-link">
+        <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
+        <span>Share Progress</span>
+      </a>
+      <a href="/friend-receipt" class="sidebar-link">
+        <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
+        <span>Friends Receipts</span>
+      </a>
+      <a href="/log-activity" class="sidebar-link">
+        <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
+        <span>Log Activity</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <h1 class="page-title">Help and Support</h1>
+
+  </main>
+
+</body>
+</html>

@@ -1,8 +1,16 @@
 import flask
-from flask_login import *
-from app import app
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
+from app.models import db
+from app.models.activitylog import ActivityLog
 
-@app.route('/log-activity')
+from flask_wtf import FlaskForm
+from wtforms import StringField, IntegerField, SubmitField
+from wtforms.validators import DataRequired
+
+log = Blueprint('log', __name__)
+
+@log.route('/log-activity', methods=['GET', 'POST'])
 @login_required
 def log_activity():
     if request.method == 'POST':
@@ -32,4 +40,5 @@ def log_activity():
 
 
 
+# FOR TMORROW MAKE SURE THAT YOU TAKE OFF THE BACK BUTTON >> HAVE NAME INPUT ONLY FOR SIGNUP SO THAT IT SHOWS WHEN LOGGING IN 
 

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Share Requests{% endblock %}
+
+{% block content %}
+<!-- Page Title Header -->
+<header class="page-header">
+    <h1>Share Requests</h1>
+</header>
+
+<!-- Content Container -->
+<div class="content-wrapper">
+    <section class="requests-card">
+        <div class="requests-list">
+            <ul style="padding-left: 0;">
+                {% for req in requests %}
+                <li class="requests-item">
+                    <div style="display: flex; align-items: center;">
+                        <span>{{req.sender_id}}</span>
+                    </div>
+                    <div class="request-button-container">
+                        <form method="POST" action="{{ url_for('share.accept_request', request_id=req.request_id) }}">
+                            <input type="hidden" name="request_id" value="{{ req.request_id }}">
+                            <button type="submit" class="button-accept">accept</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('share.decline_request', request_id=req.request_id) }}">
+                            <input type="hidden" name="request_id" value="{{ req.request_id }}">
+                            <button type="submit" class="button-decline">decline</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('share.ignore_request', request_id=req.request_id) }}">
+                            <input type="hidden" name="request_id" value="{{ req.request_id }}">
+                            <button type="submit" class="button-ignore">ignore</button>
+                        </form>
+                    </div>
+                </li>
+                {% else %}
+                <div class="requests-item">
+                    <span>No requests found...</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
