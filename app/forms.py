@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileRequired
+from wtforms import EmailField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField, HiddenField, FileField, DateField, widgets, TextAreaField, StringField, IntegerField
 from wtforms import StringField, EmailField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField, HiddenField, FileField, DateField, widgets, TextAreaField, IntegerField
-from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Optional, InputRequired
+from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Optional, InputRequired, NumberRange
 
 # this is the form schema for loggin in 
 class LoginForm(FlaskForm):
@@ -17,9 +18,6 @@ class SignupForm(FlaskForm):
     confirm_password = PasswordField('Confirm password',validators=[DataRequired(message='Enter password again'),EqualTo('password', message='Must be equal to password')])
     submit = SubmitField('Sign Up')
 
-from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, IntegerField, HiddenField, SubmitField
-from wtforms.validators import DataRequired, NumberRange
 
 # Choices for the application dropdown
 application_choices = [
@@ -49,23 +47,12 @@ category_choices = [
 ]
 
 class LogActivityForm(FlaskForm):
-    # Dropdown for selecting an application
     application = SelectField('Application', choices=application_choices, validators=[DataRequired()])
-
-    # Input field for "Other Application"
     other_application = StringField('Other Application')
-
-    # Dropdown for selecting a category
     category = SelectField('Category', choices=category_choices, validators=[DataRequired()])
-
     other_category = StringField('Other Category')
-
-
-    # Input fields for hours and minutes
     hours = IntegerField('Hours', validators=[DataRequired(), NumberRange(min=0, max=24)])
     minutes = IntegerField('Minutes', validators=[DataRequired(), NumberRange(min=0, max=59)])
-
-    # Hidden field for mood (default value set)
     mood = HiddenField('Mood', default='😊')
 
     # Submit button
