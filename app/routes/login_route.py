@@ -20,6 +20,8 @@ class LoginForm(FlaskForm):
 # ---- Signup Form ----
 class SignupForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired(), Email()])
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Sign Up')
@@ -47,6 +49,8 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         email = form.email.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
         password = form.password.data
 
         if User.query.filter_by(email=email).first():
