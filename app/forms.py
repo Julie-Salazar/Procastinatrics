@@ -49,7 +49,7 @@ category_choices = [
 class LogActivityForm(FlaskForm):
     application = SelectField('Application', choices=application_choices, validators=[DataRequired()])
     other_application = StringField('Other Application')
-    category = SelectField('Category', choices=category_choices, validators=[DataRequired()]
+    category = SelectField('Category', choices=category_choices, validators=[DataRequired()])
     other_category = StringField('Other Category')
     hours = IntegerField('Hours', validators=[DataRequired(), NumberRange(min=0, max=24)])
     minutes = IntegerField('Minutes', validators=[DataRequired(), NumberRange(min=0, max=59)])
