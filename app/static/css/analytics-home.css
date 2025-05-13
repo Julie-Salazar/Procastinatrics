@@ -359,12 +359,15 @@ body {
 .recent-entry:hover {
     background-color: #444;
 }
-
-.recent-icon img {
+.recent-icon img,
+img[src*="/img/logos/"] {
     width: 36px;
     height: 36px;
     border-radius: 8px;
     object-fit: cover;
+    
+    filter: brightness(20) saturate(100%) invert(97%) sepia(30%) 
+            saturate(1000%) hue-rotate(65deg) brightness(120%) contrast(97%);
 }
 
 .recent-application {

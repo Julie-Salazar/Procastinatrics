@@ -4,85 +4,36 @@
 
 {% block head_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/log-activity.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 {% endblock %}
 
 {% block content %}
-<h1 class="greeting-title">Hi, Slothie!</h1>
-<h2 class="page-subtitle">Log it champ!</h2>
+<h1 class="greeting-title">Hi, {{ current_user.first_name }}!</h1>
+<h2 class="page-subtitle">Log it champ!✨</h2>
 
 <div class="activity-form-container">
     <form id="activityForm" method="post">
-        <!-- Application Selection -->
+        {{ form.hidden_tag() }}
+
+        <!-- Application Dropdown -->
         <div class="form-group">
-            <select id="application" name="application" class="app-select" required>
-                <option value="" disabled selected>select an application</option>
-
-                <!-- Browsers -->
-                <option value="chrome">Chrome</option>
-                <option value="firefox">Firefox</option>
-                <option value="safari">Safari</option>
-                <option value="edge">Microsoft Edge</option>
-
-                <!-- Social Media -->
-                <option value="discord">Discord</option>
-                <option value="slack">Slack</option>
-                <option value="instagram">Instagram</option>
-                <option value="facebook">Facebook</option>
-                <option value="twitter">Twitter</option>
-                <option value="tiktok">TikTok</option>
-                <option value="snapchat">Snapchat</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="telegram">Telegram</option>
-
-                <!-- Work/School -->
-                <option value="zoom">Zoom</option>
-                <option value="teams">Microsoft Teams</option>
-                <option value="vscode">VS Code</option>
-                <option value="word">Microsoft Word</option>
-                <option value="excel">Microsoft Excel</option>
-                <option value="powerpoint">PowerPoint</option>
-                <option value="outlook">Outlook</option>
-                <option value="gmail">Gmail</option>
-                <option value="googledocs">Google Docs</option>
-                <option value="googlesheets">Google Sheets</option>
-                <option value="photoshop">Photoshop</option>
-                <option value="illustrator">Illustrator</option>
-                <option value="figma">Figma</option>
-
-                <!-- Entertainment -->
-                <option value="netflix">Netflix</option>
-                <option value="hulu">Hulu</option>
-                <option value="disney">Disney+</option>
-                <option value="youtube">YouTube</option>
-                <option value="twitch">Twitch</option>
-                <option value="spotify">Spotify</option>
-                <option value="appletv">Apple TV</option>
-                <option value="amazonprime">Amazon Prime Video</option>
-
-                <!-- Gaming -->
-                <option value="steam">Steam</option>
-                <option value="epicgames">Epic Games</option>
-                <option value="leagueoflegends">League of Legends</option>
-                <option value="minecraft">Minecraft</option>
-                <option value="fortnite">Fortnite</option>
-                <option value="valorant">Valorant</option>
-                <option value="roblox">Roblox</option>
-                <option value="apexlegends">Apex Legends</option>
-                <option value="battlenet">Battle.net</option>
-                <option value="origin">EA Origin</option>
-            </select>
+            {{ form.application(class="form-control app-select", id="application") }}
         </div>
 
-        <!-- Category Selection -->
-        <div class="category-tabs">
-            <input type="radio" id="productive" name="category" value="productive" checked>
-            <label for="productive">Productive</label>
+        <!-- Other Application Input -->
+        <div class="form-group" id="otherApplicationContainer" style="display: none;">
+            {{ form.other_application(class="form-control", id="other_application", placeholder="Enter application name") }}
+        </div>
 
-            <input type="radio" id="social" name="category" value="social_media">
-            <label for="social">Social Media</label>
+         <!-- Category Dropdown -->
+        <div class="form-group">
+            {{ form.category(class="form-control", id="category") }}
+        </div>
 
-            <input type="radio" id="gaming" name="category" value="gaming">
-            <label for="gaming">Gaming</label>
+        <!-- Other Category Input -->
+        <div class="form-group" id="otherCategoryContainer" style="display: none;">
+            <label for="other_category">Other Category</label>
+            <input type="text" id="other_category" name="other_category" class="form-control" placeholder="Enter category name">
         </div>
 
         <!-- Time Tracking -->
@@ -90,10 +41,12 @@
             <div class="time-container">
                 <h3>Time Spent</h3>
                 <div class="time-inputs">
-                    <input type="number" id="hours" name="hours" min="0" max="24" value="6" required>
+                    <label for="hours">Hours</label>
+                    {{ form.hours(class="form-control", id="hours", min="0", max="24") }}
                     <span class="time-separator">hrs</span>
                     <span class="colon">:</span>
-                    <input type="number" id="minutes" name="minutes" min="0" max="59" value="59" required>
+                    <label for="minutes">Minutes</label>
+                    {{ form.minutes(class="form-control", id="minutes", min="0", max="59") }}
                     <span class="time-separator">mins</span>
                 </div>
             </div>
@@ -145,22 +98,39 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Category tabs styling
-        const categoryLabels = document.querySelectorAll('.category-tabs label');
-        const categoryInputs = document.querySelectorAll('.category-tabs input');
+        // Application Dropdown Logic
+        const applicationDropdown = document.getElementById('application');
+        const otherApplicationContainer = document.getElementById('otherApplicationContainer');
+        const otherApplicationInput = document.getElementById('other_application');
 
-        categoryInputs.forEach((input, index) => {
-            input.addEventListener('change', function () {
-                categoryLabels.forEach(label => label.classList.remove('active'));
-                if (this.checked) {
-                    categoryLabels[index].classList.add('active');
-                }
-            });
+        applicationDropdown.addEventListener('change', function () {
+            if (this.value === 'other') {
+                otherApplicationContainer.style.display = 'block';
+                otherApplicationInput.required = true;
+            } else {
+                otherApplicationContainer.style.display = 'none';
+                otherApplicationInput.required = false;
+                otherApplicationInput.value = '';
+            }
         });
 
-        categoryLabels[0].classList.add('active');
+        // Category Dropdown Logic
+        const categoryDropdown = document.getElementById('category');
+        const otherCategoryContainer = document.getElementById('otherCategoryContainer');
+        const otherCategoryInput = document.getElementById('other_category');
 
-        // Emoji picker functionality
+        categoryDropdown.addEventListener('change', function () {
+            if (this.value === 'other') {
+                otherCategoryContainer.style.display = 'block';
+                otherCategoryInput.required = true;
+            } else {
+                otherCategoryContainer.style.display = 'none';
+                otherCategoryInput.required = false;
+                otherCategoryInput.value = '';
+            }
+        });
+
+        // Emoji Picker Logic
         const emojiButton = document.getElementById('emojiButton');
         const emojiPicker = document.getElementById('emojiPicker');
         const emojiOptions = document.querySelectorAll('.emoji-option');
@@ -179,7 +149,6 @@
             });
         });
 
-        // Close emoji picker when clicking outside
         document.addEventListener('click', function (e) {
             if (!emojiButton.contains(e.target) && !emojiPicker.contains(e.target)) {
                 emojiPicker.classList.remove('show');
