@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileRequired
-from wtforms import StringField, EmailField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField, HiddenField, FileField, DateField, widgets, TextAreaField
+from wtforms import StringField, EmailField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField, HiddenField, FileField, DateField, widgets, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Optional, InputRequired
 
 # this is the form schema for loggin in 
@@ -17,36 +17,56 @@ class SignupForm(FlaskForm):
     confirm_password = PasswordField('Confirm password',validators=[DataRequired(message='Enter password again'),EqualTo('password', message='Must be equal to password')])
     submit = SubmitField('Sign Up')
 
+from flask_wtf import FlaskForm
+from wtforms import SelectField, StringField, IntegerField, HiddenField, SubmitField
+from wtforms.validators import DataRequired, NumberRange
+
+# Choices for the application dropdown
+application_choices = [
+    ('', 'Select an application'),
+    ('chrome', 'Chrome'), ('firefox', 'Firefox'), ('safari', 'Safari'), ('edge', 'Microsoft Edge'),
+    ('discord', 'Discord'), ('slack', 'Slack'), ('instagram', 'Instagram'), ('facebook', 'Facebook'),
+    ('twitter', 'Twitter'), ('tiktok', 'TikTok'), ('snapchat', 'Snapchat'), ('whatsapp', 'WhatsApp'),
+    ('telegram', 'Telegram'), ('zoom', 'Zoom'), ('teams', 'Microsoft Teams'), ('vscode', 'VS Code'),
+    ('word', 'Microsoft Word'), ('excel', 'Microsoft Excel'), ('powerpoint', 'PowerPoint'),
+    ('outlook', 'Outlook'), ('gmail', 'Gmail'), ('googledocs', 'Google Docs'), ('googlesheets', 'Google Sheets'),
+    ('photoshop', 'Photoshop'), ('illustrator', 'Illustrator'), ('figma', 'Figma'),
+    ('netflix', 'Netflix'), ('hulu', 'Hulu'), ('disney', 'Disney+'), ('youtube', 'YouTube'),
+    ('twitch', 'Twitch'), ('spotify', 'Spotify'), ('appletv', 'Apple TV'), ('amazonprime', 'Amazon Prime Video'),
+    ('steam', 'Steam'), ('epicgames', 'Epic Games'), ('leagueoflegends', 'League of Legends'),
+    ('minecraft', 'Minecraft'), ('fortnite', 'Fortnite'), ('valorant', 'Valorant'), ('roblox', 'Roblox'),
+    ('apexlegends', 'Apex Legends'), ('battlenet', 'Battle.net'), ('origin', 'EA Origin'),
+    ('other', 'Other')
+]
+
+# Choices for the category dropdown
+category_choices = [
+    ('', 'Select a category'),
+    ('productive', 'Productive'),
+    ('social_media', 'Social Media'),
+    ('gaming', 'Gaming'),
+    ('other', 'Other')
+]
+
 class LogActivityForm(FlaskForm):
-    application = SelectField(
-        'Application',
-        choices=[
-            ('', 'Select an application'),
-            ('chrome', 'Chrome'),
-            ('firefox', 'Firefox'),
-            ('discord', 'Discord'),
-            # Add other options here...
-        ],
-        validators=[Optional()]  # Optional because "Other Application" can be used
-    )
-    other_application = StringField('Other Application', validators=[Optional()])
-    category = StringField('Category', validators=[DataRequired()])
-    hours = IntegerField('Hours', validators=[DataRequired()])
-    minutes = IntegerField('Minutes', validators=[DataRequired()])
-    mood = StringField('Mood', validators=[DataRequired()])
-    submit = SubmitField('Log Activity')
+    # Dropdown for selecting an application
+    application = SelectField('Application', choices=application_choices, validators=[DataRequired()])
 
-    def validate(self):
-        # Call the default validation first
-        if not super().validate():
-            return False
+    # Input field for "Other Application"
+    other_application = StringField('Other Application')
 
-        # Ensure either "application" or "other_application" is filled, but not both
-        if not self.application.data and not self.other_application.data:
-            self.application.errors.append('You must select an application or provide another application.')
-            return False
-        if self.application.data and self.other_application.data:
-            self.other_application.errors.append('You cannot select an application and provide another application at the same time.')
-            return False
+    # Dropdown for selecting a category
+    category = SelectField('Category', choices=category_choices, validators=[DataRequired()])
 
-        return True
+    other_category = StringField('Other Category')
+
+
+    # Input fields for hours and minutes
+    hours = IntegerField('Hours', validators=[DataRequired(), NumberRange(min=0, max=24)])
+    minutes = IntegerField('Minutes', validators=[DataRequired(), NumberRange(min=0, max=59)])
+
+    # Hidden field for mood (default value set)
+    mood = HiddenField('Mood', default='😊')
+
+    # Submit button
+    submit = SubmitField('Submit')
