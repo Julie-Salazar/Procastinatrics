@@ -19,6 +19,7 @@ def log_activity():
             if not form.other_application.data.strip():
                 flash('Please provide a name for the other application.', 'warning')
                 return render_template('log-activity.html', form=form)
+
             app_name = form.other_application.data.strip()
 
         # Category logic
@@ -28,6 +29,7 @@ def log_activity():
                 flash('Please provide a name for the other category.', 'warning')
                 return render_template('log-activity.html', form=form)
             category = form.other_category.data.strip()
+
 
         new_log = ActivityLog(
             user_id=current_user.id,
@@ -44,4 +46,6 @@ def log_activity():
         flash('Activity logged successfully!', 'success')
         return redirect(url_for('views.analytics_home'))
 
+
     return render_template('log-activity.html', form=form)
+

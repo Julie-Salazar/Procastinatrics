@@ -60,6 +60,27 @@ def change_email():
 
     return flask.render_template('change-email.html')
 
+@app.route('/change-name', methods=['GET', 'POST'])
+@login_required
+def change_name():
+    if request.method == 'POST':
+        current_password = request.form['current_password']
+        new_firstname = request.form['new_firstname']
+        new_lastname = request.form['new_lastname']
+        
+        # Verify the current password
+        if not current_user.is_password_correct(current_password):
+            flash('Current password is incorrect.', 'name_change_error')
+        else:
+            # Update the user's first and last name
+            current_user.first_name = new_firstname
+            current_user.last_name = new_lastname
+            db.session.commit()
+            flash('Name updated successfully!', 'name_change_success')
+
+    return flask.render_template('change-name.html')
+
+
 
 @app.route('/help', methods=['GET', 'POST'])
 @login_required

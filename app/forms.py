@@ -1,10 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileRequired
 from wtforms import EmailField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField, HiddenField, FileField, DateField, widgets, TextAreaField, StringField, IntegerField
-from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Optional, InputRequired
+from wtforms import StringField, EmailField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField, HiddenField, FileField, DateField, widgets, TextAreaField, IntegerField
+from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Optional, InputRequired, NumberRange
 
-from wtforms import StringField, IntegerField, SubmitField, SelectField
-from wtforms.validators import DataRequired, Optional
 # this is the form schema for loggin in 
 class LoginForm(FlaskForm):
     email = EmailField('Email:', validators=[DataRequired()])
@@ -12,9 +11,13 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Log In')
     remember_me = BooleanField('Remember Me')
 
-from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, IntegerField, HiddenField, SubmitField
-from wtforms.validators import DataRequired, NumberRange
+# this is the form schema for signing up 
+class SignupForm(FlaskForm):
+    email = EmailField('Email',validators=[DataRequired(),Email(message='Please enter a valid email address')])
+    password = PasswordField('Create a password',validators=[DataRequired(message="Password can't be empty"), Length(min=8, message='Password must be at least 8 characters long')])
+    confirm_password = PasswordField('Confirm password',validators=[DataRequired(message='Enter password again'),EqualTo('password', message='Must be equal to password')])
+    submit = SubmitField('Sign Up')
+
 
 # Choices for the application dropdown
 application_choices = [
@@ -36,6 +39,7 @@ application_choices = [
 
 # Choices for the category dropdown
 category_choices = [
+    ('', 'Select a category'),
     ('productive', 'Productive'),
     ('social_media', 'Social Media'),
     ('gaming', 'Gaming'),
@@ -43,10 +47,13 @@ category_choices = [
 ]
 
 class LogActivityForm(FlaskForm):
-    application = SelectField('Application', choices=application_choices, validators=[Optional()])
+    application = SelectField('Application', choices=application_choices, validators=[DataRequired()])
     other_application = StringField('Other Application')
-    category = SelectField('Category', choices=category_choices, validators=[Optional()])
+    category = SelectField('Category', choices=category_choices, validators=[DataRequired()]
+    other_category = StringField('Other Category')
     hours = IntegerField('Hours', validators=[DataRequired(), NumberRange(min=0, max=24)])
     minutes = IntegerField('Minutes', validators=[DataRequired(), NumberRange(min=0, max=59)])
     mood = HiddenField('Mood', default='😊')
+
+    # Submit button
     submit = SubmitField('Submit')
