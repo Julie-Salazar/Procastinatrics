@@ -36,45 +36,85 @@ def analytics_home():
             for log in user_logs[:8]  # Limit to the 8 most recent logs
         ]
 
-        # Debugging: Print recent logs
-        print("Recent Logs:", recent_logs)
-
-        # Initialize productivity data with all months
-        productivity_data = defaultdict(lambda: {"labels": [], "productivity": []})
-        productivity_data["monthly"]["labels"] = list(month_name[1:])  # ['January', 'February', ..., 'December']
-        productivity_data["monthly"]["productivity"] = [0] * 12  # Initialize all months with 0 productivity
-
+        # Get all unique categories from user logs
+        categories = set()
+        for log in user_logs:
+            categories.add(log.category or "Other")
+        
+        # Make sure we always include these standard categories even if no logs exist yet
+        standard_categories = ["Productive", "Social Media", "Gaming", "Other"]
+        for category in standard_categories:
+            categories.add(category)
+        
+        # Create a more complex data structure to track activities by category
+        # Initialize data structure with all months and all categories
+        productivity_data = {
+            "monthly": {
+                "labels": list(month_name[1:])  # ['January', 'February', ..., 'December']
+            },
+            "weekly": {
+                "labels": []
+            },
+            "yearly": {
+                "labels": []
+            }
+        }
+        
+        # Initialize each category with zeros for all months
+        for category in categories:
+            category_key = category.lower().replace(' ', '_')  # Convert "Social Media" to "social_media"
+            productivity_data["monthly"][category_key] = [0] * 12  # Initialize all months with 0
+        
         # Prepare data for productivity chart grouped by year, month, and week
+        category_week_totals = defaultdict(lambda: defaultdict(float))  # To track weekly data by category
+        category_year_totals = defaultdict(lambda: defaultdict(float))  # To track yearly data by category
+        
+        weeks = set()  # To track unique weeks
+        years = set()  # To track unique years
+        
         for log in user_logs:
             if log.timestamp:
-                # Group by year
-                year = log.timestamp.strftime('%Y')
-                if year not in productivity_data["yearly"]["labels"]:
-                    productivity_data["yearly"]["labels"].append(year)
-                    productivity_data["yearly"]["productivity"].append(log.hours or 0)
-                else:
-                    index = productivity_data["yearly"]["labels"].index(year)
-                    productivity_data["yearly"]["productivity"][index] += log.hours or 0
-
+                # Convert category to a valid key
+                category = log.category or "Other"
+                category_key = category.lower().replace(' ', '_')
+                
+                # Calculate hours including minutes
+                hours = (log.hours or 0) + ((log.minutes or 0) / 60)
+                
                 # Group by month
-                month = log.timestamp.strftime('%B')
-                index = productivity_data["monthly"]["labels"].index(month)
-                productivity_data["monthly"]["productivity"][index] += log.hours or 0
-
-                # Group by week
+                month_index = log.timestamp.month - 1  # 0-based index for months
+                productivity_data["monthly"][category_key][month_index] += hours
+                
+                # Track weeks
                 week = log.timestamp.strftime('%U')  # Week number of the year (00-53)
-                if week not in productivity_data["weekly"]["labels"]:
-                    productivity_data["weekly"]["labels"].append(week)
-                    productivity_data["weekly"]["productivity"].append(log.hours or 0)
-                else:
-                    index = productivity_data["weekly"]["labels"].index(week)
-                    productivity_data["weekly"]["productivity"][index] += log.hours or 0
-
-        # Debugging: Print productivity data
-        print("Productivity Data (Yearly):", productivity_data["yearly"])
-        print("Productivity Data (Monthly):", productivity_data["monthly"])
-        print("Productivity Data (Weekly):", productivity_data["weekly"])
-
+                weeks.add(week)
+                category_week_totals[week][category_key] += hours
+                
+                # Track years
+                year = log.timestamp.strftime('%Y')
+                years.add(year)
+                category_year_totals[year][category_key] += hours
+        
+        # Sort weeks and years
+        sorted_weeks = sorted(weeks)
+        sorted_years = sorted(years)
+        
+        # Update the productivity_data structure with weekly data
+        productivity_data["weekly"]["labels"] = sorted_weeks
+        for category in categories:
+            category_key = category.lower().replace(' ', '_')
+            productivity_data["weekly"][category_key] = []
+            for week in sorted_weeks:
+                productivity_data["weekly"][category_key].append(category_week_totals[week][category_key])
+        
+        # Update the productivity_data structure with yearly data
+        productivity_data["yearly"]["labels"] = sorted_years
+        for category in categories:
+            category_key = category.lower().replace(' ', '_')
+            productivity_data["yearly"][category_key] = []
+            for year in sorted_years:
+                productivity_data["yearly"][category_key].append(category_year_totals[year][category_key])
+        
         # Prepare data for procrastination breakdown
         procrastination_breakdown = {"totalHours": 0, "categories": []}
         category_totals = defaultdict(int)
@@ -93,18 +133,18 @@ def analytics_home():
             })
         procrastination_breakdown["totalHours"] = total_hours_logged // 60
 
-        # Debugging: Print procrastination breakdown
+        # Debugging: Print data structures
+        print("Productivity Data (Monthly):", productivity_data["monthly"])
+        print("Productivity Data (Weekly):", productivity_data["weekly"])
+        print("Productivity Data (Yearly):", productivity_data["yearly"])
         print("Procrastination Breakdown:", procrastination_breakdown)
 
         # Combine all data into a single dictionary
         logs_data = {
             "recentLogs": recent_logs,
-            "productivityData": dict(productivity_data),
+            "productivityData": productivity_data,
             "procrastinationBreakdown": procrastination_breakdown
         }
-
-        # Debugging: Print logs_data
-        print("Logs Data:", logs_data)
 
         # Pass the data to the template
         return render_template('analytics-home.html', logs_data=logs_data)
