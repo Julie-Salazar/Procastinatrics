@@ -2,6 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from ..models.activitylog import ActivityLog
 from collections import defaultdict
+from calendar import month_name
 
 views = Blueprint('views', __name__)
 
@@ -22,23 +23,28 @@ def analytics_home():
         # Query the ActivityLog model for the current user's logged activities
         user_logs = ActivityLog.query.filter_by(user_id=current_user.id).order_by(ActivityLog.timestamp.desc()).all()
 
-        # Prepare data for recent logs
+        # Prepare data for recent logs (limit to the 8 most recent logs)
         recent_logs = [
             {
                 "application": log.application or "Unknown",
                 "category": log.category or "Other",
-                "time_spent_hours": log.hours or 0, 
+                "hours": log.hours or 0,
+                "minutes": log.minutes or 0,
                 "mood": log.mood or "N/A",
                 "timestamp": log.timestamp.strftime('%Y-%m-%d %H:%M:%S') if log.timestamp else "N/A"
             }
-            for log in user_logs[:5]  # Limit to the 5 most recent logs
+            for log in user_logs[:8]  # Limit to the 8 most recent logs
         ]
 
         # Debugging: Print recent logs
         print("Recent Logs:", recent_logs)
 
-        # Prepare data for productivity chart grouped by year, month, and week
+        # Initialize productivity data with all months
         productivity_data = defaultdict(lambda: {"labels": [], "productivity": []})
+        productivity_data["monthly"]["labels"] = list(month_name[1:])  # ['January', 'February', ..., 'December']
+        productivity_data["monthly"]["productivity"] = [0] * 12  # Initialize all months with 0 productivity
+
+        # Prepare data for productivity chart grouped by year, month, and week
         for log in user_logs:
             if log.timestamp:
                 # Group by year
@@ -52,12 +58,8 @@ def analytics_home():
 
                 # Group by month
                 month = log.timestamp.strftime('%B')
-                if month not in productivity_data["monthly"]["labels"]:
-                    productivity_data["monthly"]["labels"].append(month)
-                    productivity_data["monthly"]["productivity"].append(log.hours or 0)
-                else:
-                    index = productivity_data["monthly"]["labels"].index(month)
-                    productivity_data["monthly"]["productivity"][index] += log.hours or 0
+                index = productivity_data["monthly"]["labels"].index(month)
+                productivity_data["monthly"]["productivity"][index] += log.hours or 0
 
                 # Group by week
                 week = log.timestamp.strftime('%U')  # Week number of the year (00-53)
