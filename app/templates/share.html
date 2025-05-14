@@ -24,16 +24,12 @@
             </div>
 
             <ul style="padding-left: 0;">
-                {% for user in users %}
+                {% for i in range(6) %}
                 <li class="friend-item">
                     <div style="display: flex; align-items: center;">
-                        <span>{{user.email}}</span>
+                        <span>oogly boogly</span>
                     </div>
                     <button class="share-btn">share</button>
-                </li>
-                {% else %}
-                <li class="friend-item">
-                    <span>No users found :(</span>
                 </li>
                 {% endfor %}
             </ul>

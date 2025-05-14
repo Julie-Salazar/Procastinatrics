@@ -17,71 +17,8 @@
 
         <!-- Application Dropdown -->
         <div class="form-group">
-            <select id="application" name="application" class="app-select" required>
-                <option value="" disabled selected>select an application</option>
-
-                <!-- Browsers -->
-                <option value="chrome">Chrome</option>
-                <option value="firefox">Firefox</option>
-                <option value="safari">Safari</option>
-                <option value="edge">Microsoft Edge</option>
-
-                <!-- Social Media -->
-                <option value="discord">Discord</option>
-                <option value="slack">Slack</option>
-                <option value="instagram">Instagram</option>
-                <option value="facebook">Facebook</option>
-                <option value="twitter">Twitter</option>
-                <option value="tiktok">TikTok</option>
-                <option value="snapchat">Snapchat</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="telegram">Telegram</option>
-
-                <!-- Work/School -->
-                <option value="zoom">Zoom</option>
-                <option value="teams">Microsoft Teams</option>
-                <option value="vscode">VS Code</option>
-                <option value="word">Microsoft Word</option>
-                <option value="excel">Microsoft Excel</option>
-                <option value="powerpoint">PowerPoint</option>
-                <option value="outlook">Outlook</option>
-                <option value="gmail">Gmail</option>
-                <option value="googledocs">Google Docs</option>
-                <option value="googlesheets">Google Sheets</option>
-                <option value="photoshop">Photoshop</option>
-                <option value="illustrator">Illustrator</option>
-                <option value="figma">Figma</option>
-
-                <!-- Entertainment -->
-                <option value="netflix">Netflix</option>
-                <option value="hulu">Hulu</option>
-                <option value="disney">Disney+</option>
-                <option value="youtube">YouTube</option>
-                <option value="twitch">Twitch</option>
-                <option value="spotify">Spotify</option>
-                <option value="appletv">Apple TV</option>
-                <option value="amazonprime">Amazon Prime Video</option>
-
-                <!-- Gaming -->
-                <option value="steam">Steam</option>
-                <option value="epicgames">Epic Games</option>
-                <option value="leagueoflegends">League of Legends</option>
-                <option value="minecraft">Minecraft</option>
-                <option value="fortnite">Fortnite</option>
-                <option value="valorant">Valorant</option>
-                <option value="roblox">Roblox</option>
-                <option value="apexlegends">Apex Legends</option>
-                <option value="battlenet">Battle.net</option>
-                <option value="origin">EA Origin</option>
-            </select>
-        
-        <div class="form-group">
-        <label for="application">Other Application</label>
-        <input type="text" id="application" name="application" class="form-input" placeholder="Enter application name" required>
             {{ form.application(class="form-control app-select", id="application") }}
         </div>
-</div>
-        
 
         <!-- Other Application Input -->
         <div class="form-group" id="otherApplicationContainer" style="display: none;">
@@ -97,10 +34,6 @@
         <div class="form-group" id="otherCategoryContainer" style="display: none;">
             <label for="other_category">Other Category</label>
             <input type="text" id="other_category" name="other_category" class="form-control" placeholder="Enter category name">
-        </div>
-        <div class="form-group">
-            <label for="category">Category</label>
-            <input type="text" id="category" name="category" class="form-input" placeholder="Enter category" required>
         </div>
 
         <!-- Time Tracking -->
