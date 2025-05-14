@@ -21,11 +21,11 @@
         
         <!-- Only render receipt text if receipt_data exists -->
         {% if receipt_data is defined %}
-        <div class="receipt-text receipt-date-time" style="top: 105px; left: 140px;">
+        <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
     {{ receipt_data.date }} • {{ receipt_data.time }}
 </div>
 
-<div class="receipt-text receipt-number" style="top: 140px; left: 235px;">
+<div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
      #{{ receipt_data.receipt_number }}
 </div>
 
@@ -33,7 +33,7 @@
     {{ receipt_data.status }}
 </div>
 
-<div class="receipt-text customer-value" style="top: 245px; left: 220px;">
+<div class="receipt-text customer-value" style="top: 265px; left: 220px;">
     {{ receipt_data.customer_name }}
 </div>
 
@@ -41,20 +41,20 @@
     % TIME RATIO %
 </div>
 
-<div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
+<div class="receipt-text proc-hours-value" style="top: 355px; left: 360px;">
     {{ receipt_data.procrastination_hours }}%
 </div>
 
-<div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
+<div class="receipt-text gaming-hours-value" style="top: 385px; left: 360px;">
     {{ receipt_data.gaming_hours }}%
 </div>
 
-<div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
+<div class="receipt-text productive-hours-value" style="top: 418px; left: 360px;">
     {{ receipt_data.productive_hours }}%
 </div>
 
 
-<div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
+<div class="receipt-text total-hours-value" style="top: 480px; left: 360px;">
     {{ receipt_data.total_hours }} hrs
 </div>
         {% endif %}

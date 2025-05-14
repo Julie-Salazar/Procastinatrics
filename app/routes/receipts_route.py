@@ -186,6 +186,7 @@ def view_receipt(receipt_id):
         "procrastination_hours": receipt.hours_procrastinated,
         "gaming_hours": receipt.hours_gaming,
         "productive_hours": receipt.hours_productive,
+        "oother_categories": receipt.hours_other,
         "total_hours": receipt.hours_procrastinated + receipt.hours_gaming + receipt.hours_productive,
         "operator": "SLOTHIE :)"
     }
