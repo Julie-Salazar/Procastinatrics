@@ -14,6 +14,9 @@ class ActivityLog(db.Model):
     mood = db.Column(db.String(10), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __repr__(self):
+        return f'<ActivityLog {self.application} - {self.category}>'
+
 
 
 

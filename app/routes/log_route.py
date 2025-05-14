@@ -34,6 +34,7 @@ def log_activity():
         db.session.add(new_log)
         db.session.commit()
         flash('Activity logged successfully!', 'success')
+        #needs view to redirect recents 
         return redirect(url_for('views.analytics_home'))
 
     return render_template('log-activity.html', form=form)

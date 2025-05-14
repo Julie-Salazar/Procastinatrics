@@ -93,13 +93,23 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Embed logs_data as a JavaScript object -->
+<script id="logs-data-script" type="application/json">
+    {{ logs_data|tojson|safe }}
+    
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
-        initProductivityChart('monthly');
-        initBreakdownChart('december');
+        const jsonData = JSON.parse(document.getElementById('logs-data-script').textContent);
 
-        // Add event listeners for dropdown changes
+        console.log("JSON Data:", jsonData);
+
+        // Initialize the charts with the data
+        initBreakdownChart();
+
         document.getElementById('productivity-timeframe').addEventListener('change', function () {
             initProductivityChart(this.value);
         });
@@ -108,17 +118,14 @@
             initBreakdownChart(this.value);
         });
 
-        // Function to initialize the productivity chart
         function initProductivityChart(timeframe) {
             const ctx = document.getElementById('productivityChart').getContext('2d');
             const data = jsonData.productivityData[timeframe];
 
-            // Clear any existing chart
             if (window.productivityBarChart) {
                 window.productivityBarChart.destroy();
             }
 
-            // Create new chart
             window.productivityBarChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -130,6 +137,8 @@
                         borderWidth: 0,
                         borderRadius: 4
                     }]
+                    
+
                 },
                 options: {
                     responsive: true,
@@ -175,15 +184,12 @@
             });
         }
 
-        // Function to initialize the breakdown donut chart
         function initBreakdownChart(month) {
             const ctx = document.getElementById('breakdownChart').getContext('2d');
-            const data = jsonData.procrastinationBreakdown[month];
+            const data = jsonData.procrastinationBreakdown;
 
-            // Update total hours display
             document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
 
-            // Update categories list
             const categoriesContainer = document.getElementById('breakdown-categories');
             categoriesContainer.innerHTML = '';
 
@@ -197,12 +203,10 @@
                 categoriesContainer.appendChild(item);
             });
 
-            // Clear any existing chart
             if (window.breakdownDonutChart) {
                 window.breakdownDonutChart.destroy();
             }
 
-            // Create new chart with specific size settings
             window.breakdownDonutChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
