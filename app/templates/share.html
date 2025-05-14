@@ -68,17 +68,13 @@
                 <input type="text" id="friend-search" placeholder="Search friends..." aria-label="Search friends">
             </div>
 
-            <ul id="friends-list" style="padding-left: 0;">
-                {% for user in users %}
+            <ul style="padding-left: 0;">
+                {% for i in range(6) %}
                 <li class="friend-item">
                     <div style="display: flex; align-items: center;">
-                        <span>{{user.email}}</span>
+                        <span>oogly boogly</span>
                     </div>
                     <button class="share-btn" data-user-id="{{ user.uid }}">share</button>
-                </li>
-                {% else %}
-                <li class="friend-item">
-                    <span>No users found, sorry... </span>
                 </li>
                 {% endfor %}
             </ul>

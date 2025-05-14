@@ -5,6 +5,7 @@
 {% block form_card %}
 <div class="auth-card signup-card"> 
     <div class="card-header-icons">
+         <button class="back-button"> &lt; </button> 
     </div>
 
     <h1>Sign up! 📝</h1>
@@ -18,29 +19,6 @@
             {% if form.email.errors %}
             <div class="error">
                 {% for error in form.email.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div class="" class="form-group">
-            <label for="firstname">First name</label>
-            {{ form.first_name(id="first_name", placeholder="Your first name", required=true) }}
-            {% if form.first_name.errors %}
-            <div class="error">
-                {% for error in form.first_name.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            </div>
-            <div class="form-group">
-            <label for="lastname">Last name</label>
-            {{ form.last_name(id="last_name", placeholder="Your last name", required=true) }}
-            {% if form.last_name.errors %}
-            <div class="error">
-                {% for error in form.lastname.errors %}
                 <p>{{ error }}</p>
                 {% endfor %}
             </div>
