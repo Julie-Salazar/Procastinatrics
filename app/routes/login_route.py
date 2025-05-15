@@ -59,6 +59,8 @@ def signup():
 
         new_user = User(email=email, usertype='default')
         new_user.set_password(password)
+        new_user.first_name = first_name
+        new_user.last_name = last_name
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
