@@ -204,10 +204,10 @@
                             beginAtZero: true,
                             stacked: true,  // This makes the bars stack!
                             ticks: {
-                                color: 'rgba(0, 0, 0, 0.5)' 
+                                color: 'rgba(0, 0, 0, 0.5)'
                             },
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.05)' 
+                                color: 'rgba(0, 0, 0, 0.05)'
                             }
                         },
                         x: {
@@ -225,7 +225,7 @@
                             display: true,
                             position: 'top',
                             labels: {
-                                color: '#333' 
+                                color: '#333'
                             }
                         },
                         tooltip: {
@@ -247,12 +247,33 @@
             const ctx = document.getElementById('breakdownChart').getContext('2d');
             const data = jsonData.procrastinationBreakdown;
 
-            document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
+           // Define colors for different categories
+            const categoryColorMap = {
+                'productive': '#FFF3CA',      // Yellow
+                'social_media': '#F3C9C4',   // Pink 
+                'gaming': '#BCFFDB',          // Green
+                'other': '#595A5D'           // Light Grey
+            };
+            const defaultColor = categoryColorMap['other']; // User defined categories default to 'other' color
+
+            const chartLabels = [];
+            const chartData = [];
+            const chartBackgroundColors = [];
+
+            // Get chart data from JSON
+            data.categories.forEach(category => {
+                chartLabels.push(category.name);
+                chartData.push(category.percentage);
+
+                // Get color according to category name
+                const categoryNameKey = category.name.toLowerCase(); 
+                chartBackgroundColors.push(categoryColorMap[categoryNameKey] || defaultColor);
+            });
 
             const categoriesContainer = document.getElementById('breakdown-categories');
-            categoriesContainer.innerHTML = '';
+            categoriesContainer.innerHTML = ''; 
 
-            data.categories.forEach(category => {
+            data.categories.forEach(category => { 
                 const item = document.createElement('div');
                 item.className = 'category-item';
                 item.innerHTML = `
@@ -262,6 +283,8 @@
                 categoriesContainer.appendChild(item);
             });
 
+            document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
+
             if (window.breakdownDonutChart) {
                 window.breakdownDonutChart.destroy();
             }
@@ -269,10 +292,10 @@
             window.breakdownDonutChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: data.categories.map(c => c.name),
+                    labels: chartLabels,
                     datasets: [{
-                        data: data.categories.map(c => c.percentage),
-                        backgroundColor: data.categories.map(c => c.color),
+                        data: chartData, 
+                        backgroundColor: chartBackgroundColors, // use the colors defined above
                         borderWidth: 0,
                         hoverOffset: 5
                     }]
