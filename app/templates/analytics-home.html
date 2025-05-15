@@ -9,7 +9,7 @@
 
 {% block content %}
 <header class="dashboard-header">
-<h1>Hi, {{ current_user.first_name }}</h1>
+    <h1>Hi, {{ current_user.first_name }}</h1>
     <h2>Dashboard</h2>
 </header>
 
@@ -67,28 +67,28 @@
     </div>
 
     <!-- Recents Panel -->
-<div class="recents-panel">
-    <div class="recent-header">
-        Recents
-    </div>
-    <div class="recent-list">
-        {% if logs_data.recentLogs %}
-        {% for log in logs_data.recentLogs %}
-        <div class="recent-entry">
-            <div class="recent-icon">
-                <img src="{{ url_for('static', filename='img/logos/' ~ log.application|lower ~ '.svg') }}"
-                    alt="{{ log.application }} logo">
-            </div>
-            <div class="recent-application">{{ log.application }}</div>
-            <div class="recent-time">{{ log.hours }}h {{ log.minutes }}m</div>
-            <div class="recent-emoji">{{ log.mood }}</div>
+    <div class="recents-panel">
+        <div class="recent-header">
+            Recents
         </div>
-        {% endfor %}
-        {% else %}
-        <p style="color: white;">No recent activity yet.</p>
-        {% endif %}
+        <div class="recent-list">
+            {% if logs_data.recentLogs %}
+            {% for log in logs_data.recentLogs %}
+            <div class="recent-entry">
+                <div class="recent-icon"
+                    data-svg-url="{{ url_for('static', filename='img/logos/' ~ log.application|lower ~ '.svg') }}"
+                    data-alt-text="{{ log.application }} logo">
+                </div>
+                <div class="recent-application">{{ log.application }}</div>
+                <div class="recent-time">{{ log.hours }}h {{ log.minutes }}m</div>
+                <div class="recent-emoji">{{ log.mood }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p style="color: white;">No recent activity yet.</p>
+            {% endif %}
+        </div>
     </div>
-</div>
 </div>
 {% endblock %}
 
@@ -100,43 +100,77 @@
     {{ logs_data|tojson|safe }}
 </script>
 
+<!-- SVG Loading Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.recent-icon[data-svg-url]').forEach(iconContainer => {
+            const svgUrl = iconContainer.dataset.svgUrl;
+            const altText = iconContainer.dataset.altText;
+
+            fetch(svgUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('SVG_not_found: ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(svgText => {
+                    iconContainer.innerHTML = svgText;
+                    const svgElement = iconContainer.querySelector('svg');
+                    if (svgElement) {
+                        svgElement.setAttribute('aria-label', altText);
+                        svgElement.classList.add('loaded-svg-logo');
+                        svgElement.style.width = '100%';
+                        svgElement.style.height = '100%';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading SVG:', svgUrl, error);
+                    iconContainer.innerHTML = `<span class="svg-fallback-text">${altText}</span>`;
+                    iconContainer.classList.add('svg-load-error');
+                });
+        });
+    });
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const jsonData = JSON.parse(document.getElementById('logs-data-script').textContent);
-        
+
         console.log("JSON Data:", jsonData);
-        
+
         // Initialize the charts with the data
         initProductivityChart('monthly');
         initBreakdownChart('january');
-        
+
         document.getElementById('productivity-timeframe').addEventListener('change', function () {
             initProductivityChart(this.value);
         });
-        
+
         document.getElementById('breakdown-month').addEventListener('change', function () {
             initBreakdownChart(this.value);
         });
-        
+
         function initProductivityChart(timeframe) {
             const ctx = document.getElementById('productivityChart').getContext('2d');
             const data = jsonData.productivityData[timeframe];
-            
+
             if (window.productivityBarChart) {
                 window.productivityBarChart.destroy();
             }
-            
+
             // Define colors for different categories
-            const categoryColors = {
-                'productive': 'rgba(76, 175, 80, 0.7)',      // Green
-                'social_media': 'rgba(33, 150, 243, 0.7)',   // Blue
-                'gaming': 'rgba(255, 152, 0, 0.7)',          // Orange
-                'other': 'rgba(158, 158, 158, 0.7)'          // Grey
+            const newCategoryColors = {
+                'productive': '#FFF3CA',      // Yellow
+                'social_media': '#F3C9C4',   // Pink
+                'gaming': '#BCFFDB',          // Green
+                'other': '#595A5D'           // Light Grey
             };
-            
+            const defaultColor = newCategoryColors['other']; // User defined categories default to 'other' color
+
             // Find all categories in the data (excluding 'labels')
             const categories = Object.keys(data).filter(key => key !== 'labels');
-            
+
             // Create datasets for each category
             const datasets = categories.map(category => {
                 // Format display name (convert social_media to Social Media)
@@ -144,16 +178,18 @@
                     .split('_')
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                     .join(' ');
-                
+
+                const backgroundColor = newCategoryColors[category.toLowerCase()] || defaultColor;
+
                 return {
                     label: displayName,
                     data: data[category],
-                    backgroundColor: categoryColors[category] || 'rgba(128, 128, 128, 0.7)',
+                    backgroundColor: backgroundColor,
                     borderWidth: 0,
                     borderRadius: 4
                 };
             });
-            
+
             window.productivityBarChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -187,7 +223,10 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                color: '#333'
+                            }
                         },
                         tooltip: {
                             backgroundColor: 'rgba(70, 70, 70, 0.9)',
@@ -208,12 +247,33 @@
             const ctx = document.getElementById('breakdownChart').getContext('2d');
             const data = jsonData.procrastinationBreakdown;
 
-            document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
+           // Define colors for different categories
+            const categoryColorMap = {
+                'productive': '#FFF3CA',      // Yellow
+                'social_media': '#F3C9C4',   // Pink 
+                'gaming': '#BCFFDB',          // Green
+                'other': '#595A5D'           // Light Grey
+            };
+            const defaultColor = categoryColorMap['other']; // User defined categories default to 'other' color
+
+            const chartLabels = [];
+            const chartData = [];
+            const chartBackgroundColors = [];
+
+            // Get chart data from JSON
+            data.categories.forEach(category => {
+                chartLabels.push(category.name);
+                chartData.push(category.percentage);
+
+                // Get color according to category name
+                const categoryNameKey = category.name.toLowerCase(); 
+                chartBackgroundColors.push(categoryColorMap[categoryNameKey] || defaultColor);
+            });
 
             const categoriesContainer = document.getElementById('breakdown-categories');
-            categoriesContainer.innerHTML = '';
+            categoriesContainer.innerHTML = ''; 
 
-            data.categories.forEach(category => {
+            data.categories.forEach(category => { 
                 const item = document.createElement('div');
                 item.className = 'category-item';
                 item.innerHTML = `
@@ -223,6 +283,8 @@
                 categoriesContainer.appendChild(item);
             });
 
+            document.getElementById('total-hours').textContent = `${data.totalHours}hrs`;
+
             if (window.breakdownDonutChart) {
                 window.breakdownDonutChart.destroy();
             }
@@ -230,10 +292,10 @@
             window.breakdownDonutChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: data.categories.map(c => c.name),
+                    labels: chartLabels,
                     datasets: [{
-                        data: data.categories.map(c => c.percentage),
-                        backgroundColor: data.categories.map(c => c.color),
+                        data: chartData, 
+                        backgroundColor: chartBackgroundColors, // use the colors defined above
                         borderWidth: 0,
                         hoverOffset: 5
                     }]
