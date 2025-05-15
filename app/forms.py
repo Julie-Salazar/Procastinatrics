@@ -53,7 +53,6 @@ class LogActivityForm(FlaskForm):
     other_category = StringField('Other Category')
     hours = IntegerField('Hours', validators=[DataRequired(), NumberRange(min=0, max=24)])
     minutes = IntegerField('Minutes', validators=[DataRequired(), NumberRange(min=0, max=59)])
-    mood = HiddenField('Mood', default='😊')
 
     # Submit button
     submit = SubmitField('Submit')
