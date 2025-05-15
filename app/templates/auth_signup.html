@@ -40,7 +40,7 @@
             {{ form.last_name(id="last_name", placeholder="Your last name", required=true) }}
             {% if form.last_name.errors %}
             <div class="error">
-                {% for error in form.lastname.errors %}
+                {% for error in form.last_name.errors %}
                 <p>{{ error }}</p>
                 {% endfor %}
             </div>
