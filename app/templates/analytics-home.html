@@ -160,12 +160,13 @@
             }
 
             // Define colors for different categories
-            const categoryColors = {
-                'productive': 'rgba(76, 175, 80, 0.7)',      // Green
-                'social_media': 'rgba(33, 150, 243, 0.7)',   // Blue
-                'gaming': 'rgba(255, 152, 0, 0.7)',          // Orange
-                'other': 'rgba(158, 158, 158, 0.7)'          // Grey
+            const newCategoryColors = {
+                'productive': '#FFF3CA',      // Yellow
+                'social_media': '#F3C9C4',   // Pink
+                'gaming': '#BCFFDB',          // Green
+                'other': '#595A5D'           // Light Grey
             };
+            const defaultColor = newCategoryColors['other']; // User defined categories default to 'other' color
 
             // Find all categories in the data (excluding 'labels')
             const categories = Object.keys(data).filter(key => key !== 'labels');
@@ -178,10 +179,12 @@
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                     .join(' ');
 
+                const backgroundColor = newCategoryColors[category.toLowerCase()] || defaultColor;
+
                 return {
                     label: displayName,
                     data: data[category],
-                    backgroundColor: categoryColors[category] || 'rgba(128, 128, 128, 0.7)',
+                    backgroundColor: backgroundColor,
                     borderWidth: 0,
                     borderRadius: 4
                 };
@@ -201,10 +204,10 @@
                             beginAtZero: true,
                             stacked: true,  // This makes the bars stack!
                             ticks: {
-                                color: 'rgba(0, 0, 0, 0.5)'
+                                color: 'rgba(0, 0, 0, 0.5)' 
                             },
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
+                                color: 'rgba(0, 0, 0, 0.05)' 
                             }
                         },
                         x: {
@@ -220,7 +223,10 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                color: '#333' 
+                            }
                         },
                         tooltip: {
                             backgroundColor: 'rgba(70, 70, 70, 0.9)',
