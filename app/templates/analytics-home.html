@@ -9,7 +9,7 @@
 
 {% block content %}
 <header class="dashboard-header">
-    <h1>Hi, {{ current_user.first_name }}</h1>
+    <h1>Hi, {{ current_user.first_name }}! ✨</h1>
     <h2>Dashboard</h2>
 </header>
 
@@ -36,19 +36,10 @@
         <div class="chart-header">
             <h3>Monthly Procrastination Breakdown</h3>
             <div class="chart-dropdown">
-                <select id="breakdown-month">
-                    <option value="december" selected>December</option>
-                    <option value="november">November</option>
-                    <option value="october">October</option>
-                    <option value="september">September</option>
-                    <option value="august">August</option>
-                    <option value="july">July</option>
-                    <option value="june">June</option>
-                    <option value="may">May</option>
-                    <option value="april">April</option>
-                    <option value="march">March</option>
-                    <option value="february">February</option>
-                    <option value="january">January</option>
+                <select id="productivity-timeframe">
+                    <option value="monthly" selected>Monthly</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="yearly">Yearly</option>
                 </select>
             </div>
         </div>
@@ -162,7 +153,7 @@
             // Define colors for different categories
             const newCategoryColors = {
                 'productive': '#FFF3CA',      // Yellow
-                'social_media': '#F3C9C4',   // Pink
+                'social_media': '#d4a2a2',   // Pink
                 'gaming': '#BCFFDB',          // Green
                 'other': '#595A5D'           // Light Grey
             };

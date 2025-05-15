@@ -106,18 +106,7 @@
                     </div>
             </a>
             
-            <!-- Batman Mode Toggle -->
-            <div class="settings-card">
-                <div class="settings-info">
-                    <h2 class="settings-title">Batman mode</h2>
-                </div>
-                <div class="toggle-container">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="batmanToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
+            
             
             <!-- Help Section -->
             <a href="{{ url_for('help') }}" class="settings-card clickable">
@@ -154,77 +143,5 @@
         {% block form_card %}{% endblock %}
     </main>
       
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle toggle switches
-            const notificationToggle = document.getElementById('notificationToggle');
-            const batmanToggle = document.getElementById('batmanToggle');
-            
-            notificationToggle.addEventListener('change', function() {
-                // Call API to update notification settings
-                updateSetting('notifications', this.checked);
-            });
-            
-            batmanToggle.addEventListener('change', function() {
-                // Call API to update batman mode
-                updateSetting('batman_mode', this.checked);
-            });
-            
-            // Handle clickable cards
-            const clickableCards = document.querySelectorAll('.clickable');
-            
-            clickableCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const title = this.querySelector('.settings-title').textContent.trim().toLowerCase();
-                    
-                    if (title === 'change email or password') {
-                        window.location.href = '/settings/account';
-                    } else if (title === 'help') {
-                        window.location.href = '/help';
-                    } else if (title === 'log out') {
-                        logOut();
-                    }
-                });
-            });
-            
-            // Function to update settings
-            function updateSetting(setting, value) {
-                // Example API call - replace with your actual implementation
-                console.log(`Updating ${setting} to ${value}`);
-                
-                fetch('/api/settings/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        setting: setting,
-                        value: value
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            }
-            
-            // Function to log out
-            function logOut() {
-                // Example logout - replace with your actual implementation
-                fetch('/logout', {
-                    method: 'POST',
-                })
-                .then(() => {
-                    window.location.href = '/login';
-                })
-                .catch((error) => {
-                    console.error('Error logging out:', error);
-                });
-            }
-        });
-    </script> -->
 </body>
 </html>
