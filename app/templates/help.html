@@ -1,63 +1,295 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Change Email</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="top-bar-buttons">
-      <button class="icon-button" aria-label="Notifications">
-        <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
-      </button>
-      <a href="/profile-settings">
-        <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Profile Settings" />
-      </a>
-      <a href="{{ url_for('auth.logout') }}" class="icon-button" aria-label="Logout">
-        <img src="{{ url_for('static', filename='img/logout-icon.svg') }}" alt="Logout">
-      </a>
-    </div>
+{% block title %}Help and Support{% endblock %}
+
+{% block content %}
+<main class="main-content">
+  <header class="dashboard-header">
+    <h1>Help and Support</h1>
+    <h2>Managing Procrastination & Burnout</h2>
+  </header>
+  
+  <div class="support-container">
+    <section class="support-section">
+      <div class="support-cards">
+        <div class="support-card">
+          <h3>Understanding Burnout</h3>
+          <p>Burnout is a state of chronic stress that leads to physical and emotional exhaustion, cynicism, detachment, and feelings of ineffectiveness. It's not just being tired—it's a deep depletion of your mental and physical resources.</p>
+          
+          <h4>Common Signs of Burnout:</h4>
+          <ul>
+            <li>Persistent exhaustion and lack of energy</li>
+            <li>Decreased satisfaction and sense of accomplishment</li>
+            <li>Feeling overwhelmed and unable to meet constant demands</li>
+            <li>Reduced performance and productivity</li>
+            <li>Increased cynicism or detachment from work</li>
+            <li>Physical symptoms like headaches or sleep disturbances</li>
+          </ul>
+        </div>
+        
+        <div class="support-card">
+          <h3>Understanding Procrastination</h3>
+          <p>Procrastination is the act of delaying important tasks despite knowing there will be negative consequences. Contrary to popular belief, procrastination isn't about laziness—it's often an emotional regulation problem related to managing difficult feelings.</p>
+          
+          <h4>Why We Procrastinate:</h4>
+          <ul>
+            <li>Fear of failure or perfectionism</li>
+            <li>Task aversion (finding tasks boring or unpleasant)</li>
+            <li>Poor time management skills</li>
+            <li>Difficulty focusing or getting started</li>
+            <li>Underlying anxiety or depression</li>
+            <li>Poor self-regulation and impulse control</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    
+    <section class="support-section">
+      <h3 class="section-title">Breaking the Cycle</h3>
+      
+      <div class="strategies-container">
+        <div class="strategy-card pink-bg">
+          <h4>For Burnout:</h4>
+          <ol>
+            <li><strong>Recognize the warning signs</strong> early before burnout becomes severe</li>
+            <li><strong>Set boundaries</strong> between work and personal life</li>
+            <li><strong>Practice self-care</strong> routines including proper sleep, nutrition, and exercise</li>
+            <li><strong>Ask for help</strong> from friends, family, or mental health professionals</li>
+            <li><strong>Take breaks</strong> throughout the day to recharge</li>
+            <li><strong>Reassess priorities</strong> and learn to say no to excessive demands</li>
+          </ol>
+        </div>
+        
+        <div class="strategy-card blue-bg">
+          <h4>For Procrastination:</h4>
+          <ol>
+            <li><strong>Break tasks down</strong> into smaller, manageable steps</li>
+            <li><strong>Use time management techniques</strong> like the Pomodoro Technique (25 minutes of focus followed by a 5-minute break)</li>
+            <li><strong>Create accountability</strong> through deadlines or study partners</li>
+            <li><strong>Identify and address underlying emotions</strong> that trigger procrastination</li>
+            <li><strong>Reduce distractions</strong> in your environment</li>
+            <li><strong>Reward yourself</strong> for completing tasks to build positive associations</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    
+    <section class="support-section">
+      <h3 class="section-title">When to Seek Help</h3>
+      <div class="help-notice">
+        <p>If you're experiencing persistent symptoms of burnout or procrastination that significantly impact your daily functioning, consider seeking professional help. Mental health professionals can provide strategies tailored to your specific situation.</p>
+      </div>
+    </section>
+    
+    <section class="support-section">
+      <h3 class="section-title">Helpful Resources</h3>
+      
+      <div class="resources-grid">
+        <div class="resource-category">
+          <h4>For Burnout:</h4>
+          <ul>
+            <li><a href="https://www.helpguide.org/articles/stress/burnout-prevention-and-recovery.htm" target="_blank">HelpGuide: Burnout Prevention and Treatment</a></li>
+            <li><a href="https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/burnout/art-20046642" target="_blank">Mayo Clinic: Job Burnout</a></li>
+            <li>Book: "Burnout: The Secret to Unlocking the Stress Cycle" by Emily Nagoski and Amelia Nagoski</li>
+          </ul>
+        </div>
+        
+        <div class="resource-category">
+          <h4>For Procrastination:</h4>
+          <ul>
+            <li><a href="https://procrastination.ca/" target="_blank">The Procrastination Research Group</a></li>
+            <li><a href="https://www.mindtools.com/pages/article/newHTE_96.htm" target="_blank">MindTools: Overcoming Procrastination</a></li>
+            <li>Book: "Solving the Procrastination Puzzle" by Timothy A. Pychyl</li>
+          </ul>
+        </div>
+        
+        <div class="resource-category">
+          <h4>Apps and Tools:</h4>
+          <ul>
+            <li>Forest (App that helps you stay focused and present)</li>
+            <li>Todoist (Task management app)</li>
+            <li>Focus@Will (Music scientifically optimized to help you focus)</li>
+            <li>Headspace (Meditation app to reduce stress and improve focus)</li>
+          </ul>
+        </div>
+        
+        <div class="resource-category">
+          <h4>Campus Resources:</h4>
+          <ul>
+            <li><a href="https://www.uwa.edu.au/students/Support-services/Mental-health-and-wellbeing" target="_blank">UWA Counselling Services</a></li>
+            <li><a href="https://www.uwa.edu.au/students/Support-services/Academic-support" target="_blank">Academic Success Centers</a></li>
+            <li><a href="https://www.uwa.edu.au/students/Support-services/Health-and-wellbeing" target="_blank">Student Wellness Programs</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="closing-message">
+        <p>Remember, both burnout and procrastination are common experiences that can be effectively managed with the right strategies and support. You're not alone in facing these challenges, and reaching out for help is a sign of strength, not weakness.</p>
+      </div>
+    </section>
   </div>
+</main>
+{% endblock %}
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <img src="{{ url_for('static', filename='img/sloth-hourglass.png') }}" alt="Sloth Logo" />
-    </div>
-    <div class="sidebar-label">Admin tools</div>
-    <nav class="sidebar-nav">
-      <a href="/analytics-home" class="sidebar-link">
-        <img src="{{ url_for('static', filename='img/analytics.svg') }}" alt="Analytics" />
-        <span>Analytics</span>
-      </a>
-      <a href="/share" class="sidebar-link">
-        <img src="{{ url_for('static', filename='img/progress-icon.svg') }}" alt="Share Progress" />
-        <span>Share Progress</span>
-      </a>
-      <a href="/friend-receipt" class="sidebar-link">
-        <img src="{{ url_for('static', filename='img/friends-icon.svg') }}" alt="Friends Receipts" />
-        <span>Friends Receipts</span>
-      </a>
-      <a href="/log-activity" class="sidebar-link">
-        <img src="{{ url_for('static', filename='img/add-icon.svg') }}" alt="Log Activity" />
-        <span>Log Activity</span>
-      </a>
-    </nav>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <h1 class="page-title">Help and Support</h1>
-
-  </main>
-
-</body>
-</html>
+{% block head_links %}
+<style>
+  .support-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .support-section {
+    margin-bottom: 40px;
+  }
+  
+  .section-title {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  .support-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .support-card {
+    background-color: #333;
+    border-radius: 16px;
+    padding: 24px;
+    color: var(--text-primary);
+  }
+  
+  .support-card h3, .support-card h4 {
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    margin-top: 0;
+  }
+  
+  .support-card ul, .support-card ol {
+    padding-left: 20px;
+    color: var(--text-secondary);
+  }
+  
+  .support-card li {
+    margin-bottom: 8px;
+  }
+  
+  .strategies-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .strategy-card {
+    border-radius: 16px;
+    padding: 24px;
+    color: #333;
+  }
+  
+  .strategy-card h4 {
+    color: #333;
+    font-family: var(--font-heading);
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+  
+  .strategy-card ol {
+    padding-left: 20px;
+  }
+  
+  .strategy-card li {
+    margin-bottom: 12px;
+  }
+  
+  .pink-bg {
+    background-color: var(--card-pink);
+  }
+  
+  .blue-bg {
+    background-color: var(--card-blue);
+  }
+  
+  .help-notice {
+    background-color: #333;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #FFD700;
+  }
+  
+  .help-notice p {
+    margin: 0;
+    color: var(--text-primary);
+  }
+  
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .resource-category {
+    background-color: #333;
+    border-radius: 16px;
+    padding: 20px;
+  }
+  
+  .resource-category h4 {
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+  }
+  
+  .resource-category ul {
+    padding-left: 20px;
+    color: var(--text-secondary);
+  }
+  
+  .resource-category li {
+    margin-bottom: 10px;
+  }
+  
+  .closing-message {
+    background-color: #333;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 30px;
+    text-align: center;
+    border-top: 4px solid #4CAF50;
+  }
+  
+  .closing-message p {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 16px;
+  }
+  
+  a {
+    color: #61A0FF;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  a:hover {
+    color: #90C1FF;
+    text-decoration: underline;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .support-cards, 
+    .strategies-container,
+    .resources-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}

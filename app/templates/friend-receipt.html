@@ -4,77 +4,166 @@
 
 {% block head_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/receipt-styles.css') }}">
 {% endblock %}
 
 {% block content %}
-<h1 class="page-title">Friend Receipts</h1>
+<main class="main-content">
+  <h1>Friend Receipts</h1>
 
-<!-- Carousel Container -->
-<div class="carousel-container">
+  <!-- Carousel Container -->
+  <div class="carousel-container">
     <!-- Left Arrow -->
     <button class="carousel-arrow left-arrow" id="prevBtn">
-        <img src="{{ url_for('static', filename='img/left-arrow.svg') }}" alt="Previous">
+      <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M31 12L17 24L31 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
 
-    <!-- Receipt Display -->
-    <div class="receipt-display">
-        <!-- Only one receipt is shown at a time -->
-        <img id="currentReceipt" src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="Receipt">
+    <!-- Receipt Display Area -->
+    <div class="receipt-display" id="receiptCarousel">
+      {% if friend_receipts %}
+        {% for item in friend_receipts %}
+          <div class="receipt-wrapper" data-index="{{ loop.index0 }}" {% if not loop.first %}style="display: none;"{% endif %}>
+            <div class="receipt-container" id="receipt-container-{{ loop.index }}">
+              <img src="{{ url_for('static', filename='img/receipt-base.svg') }}" alt="receipt" />
+              
+              <!-- Fixed: Don't use strftime on potentially string values -->
+              <!-- Default display dates/times -->
+              {% set receipt_date = 'May 27, 2025' %}
+              {% set receipt_time = '9:27:53 AM' %}
+              
+              <!-- Generate random percentages for the visualization -->
+              {% set proc_percent = [10, 20, 30, 40]|random %}
+              {% set gaming_percent = [10, 20, 30, 40, 50]|random %}
+              {% set prod_percent = 100 - proc_percent - gaming_percent %}
+              
+              <!-- Generate a status message based on productivity -->
+              {% if prod_percent < 20 %}
+                {% set status_message = "HELLA BAD BRUH" %}
+              {% elif prod_percent < 40 %}
+                {% set status_message = "NOT SO SHABBY" %}
+              {% elif prod_percent < 60 %}
+                {% set status_message = "GETTING BETTER" %}
+              {% elif prod_percent < 80 %}
+                {% set status_message = "DOING GREAT" %}
+              {% else %}
+                {% set status_message = "DOPAMINE RECEPTORS FRIED" %}
+              {% endif %}
+              
+              <!-- Receipt Text Elements -->
+              <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
+                {{ receipt_date }} • {{ receipt_time }}
+              </div>
+              
+              <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
+                #{{ item.receipt.receipt_id }}
+              </div>
+              
+              <div class="receipt-text status-value" style="top: 210px; left: 280px;">
+                {{ status_message }}
+              </div>
+              
+              <div class="receipt-text customer-value" style="top: 260px; left: 220px;">
+                {{ item.sender.first_name }} {{ item.sender.last_name }}
+              </div>
+              
+              <div class="receipt-text proc-hours-label" style="top: 295px; left: 140px;">
+                % TIME RATIO %
+              </div>
+              
+              <div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
+                {{ proc_percent }}%
+              </div>
+              
+              <div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
+                {{ gaming_percent }}%
+              </div>
+              
+              <div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
+                {{ prod_percent }}%
+              </div>
+              
+              <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
+                {{ item.receipt.total_hours|int if item.receipt.total_hours else 500 }} hrs
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📬</div>
+          <h3>No Friend Receipts Yet</h3>
+          <p>When friends share their productivity receipts with you, they'll appear here.</p>
+          <a href="{{ url_for('share.share_requests') }}" class="action-btn">Check Pending Requests</a>
+        </div>
+      {% endif %}
     </div>
 
     <!-- Right Arrow -->
     <button class="carousel-arrow right-arrow" id="nextBtn">
-        <img src="{{ url_for('static', filename='img/right-arrow.svg') }}" alt="Next">
+      <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 12L31 24L17 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
-</div>
+  </div>
+</main>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Receipt image sources (put all your receipt paths here)
-        const receipts = [
-            "{{ url_for('static', filename='img/receipt-sample.svg') }}",
-            "{{ url_for('static', filename='img/julie-receipt-sample.svg') }}",
-            "{{ url_for('static', filename='img/tyler-receipt-sample.svg') }}"
-            // Add more receipts as needed
-        ];
-
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const currentReceipt = document.getElementById('currentReceipt');
-
-        let currentIndex = 0;
-
-        // Function to update displayed receipt
-        function updateReceipt() {
-            currentReceipt.src = receipts[currentIndex];
-
-            // Update button states
-            prevBtn.disabled = currentIndex === 0;
-            prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
-            nextBtn.disabled = currentIndex === receipts.length - 1;
-            nextBtn.style.opacity = currentIndex === receipts.length - 1 ? 0.5 : 1;
-        }
-
-        // Previous button click
-        prevBtn.addEventListener('click', function () {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateReceipt();
-            }
-        });
-
-        // Next button click
-        nextBtn.addEventListener('click', function () {
-            if (currentIndex < receipts.length - 1) {
-                currentIndex++;
-                updateReceipt();
-            }
-        });
-
-        // Initialize
-        updateReceipt();
+  document.addEventListener('DOMContentLoaded', function () {
+    const receiptWrappers = document.querySelectorAll('.receipt-wrapper');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // If no receipts, disable both buttons but keep them visible
+    if (!receiptWrappers.length) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      prevBtn.style.opacity = 0.5;
+      nextBtn.style.opacity = 0.5;
+      return;
+    }
+    
+    let currentIndex = 0;
+    const maxIndex = receiptWrappers.length - 1;
+    
+    // Function to update displayed receipt
+    function updateDisplay() {
+      // Hide all receipts
+      receiptWrappers.forEach(wrapper => {
+        wrapper.style.display = 'none';
+      });
+      
+      // Show current receipt
+      receiptWrappers[currentIndex].style.display = 'block';
+      
+      // Update button states
+      prevBtn.disabled = currentIndex === 0;
+      prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
+      nextBtn.disabled = currentIndex === maxIndex;
+      nextBtn.style.opacity = currentIndex === maxIndex ? 0.5 : 1;
+    }
+    
+    // Previous button click
+    prevBtn.addEventListener('click', function () {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateDisplay();
+      }
     });
+    
+    // Next button click
+    nextBtn.addEventListener('click', function () {
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updateDisplay();
+      }
+    });
+    
+    // Initialize display
+    updateDisplay();
+  });
 </script>
 {% endblock %}
