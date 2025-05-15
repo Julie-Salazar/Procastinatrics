@@ -114,17 +114,16 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Only run this code if we have a receipt container with receipt data
         const receiptContainer = document.getElementById('receipt-container');
         if (!receiptContainer || !receiptContainer.querySelector('.receipt-text')) {
-            return; // No receipt data, so exit early
+            return; 
         }
         
         const timeframeSelect = document.getElementById('timeframe');
         const downloadButton = document.getElementById('download-receipt');
         const shareButtons = document.querySelectorAll('.share-btn');
         
-        // Create a toast element if it doesn't exist
+        
         let toast = document.getElementById('toast');
         if (!toast) {
             toast = document.createElement('div');
