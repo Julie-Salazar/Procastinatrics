@@ -2,6 +2,11 @@
 
 {% block title %}Share Your Shame{% endblock %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/receipt-styles.css') }}">
+{% endblock %}
+
 {% block content %}
 <!-- Page Title Header -->
 <header class="page-header">
@@ -11,8 +16,48 @@
 <!-- Content Container -->
 <div class="content-wrapper">
     <!-- Receipt Container -->
-    <div class="receipt-container">
-        <img src="{{ url_for('static', filename='img/receipt-sample.svg') }}" alt="receipt" />
+    <div class="receipt-container" id="receipt-container">
+        <img src="{{ url_for('static', filename='img/receipt-base.svg') }}" alt="receipt" />
+        
+        <!-- Only render receipt text if receipt_data exists -->
+        {% if receipt_data is defined %}
+        <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
+    {{ receipt_data.date }} • {{ receipt_data.time }}
+</div>
+
+<div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
+     #{{ receipt_data.receipt_number }}
+</div>
+
+<div class="receipt-text status-value" style="top: 210px; left: 280px;">
+    {{ receipt_data.status }}
+</div>
+
+<div class="receipt-text customer-value" style="top: 260px; left: 220px;">
+    {{ receipt_data.customer_name }}
+</div>
+
+<div class="receipt-text proc-hours-label" style="top: 295px; left: 140px;">
+    % TIME RATIO %
+</div>
+
+<div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
+    {{ receipt_data.procrastination_hours }}%
+</div>
+
+<div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
+    {{ receipt_data.gaming_hours }}%
+</div>
+
+<div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
+    {{ receipt_data.productive_hours }}%
+</div>
+
+
+<div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
+    {{ receipt_data.total_hours }} hrs
+</div>
+        {% endif %}
     </div>
 
     <!-- Share Options -->
@@ -20,16 +65,20 @@
         <div class="friend-list">
             <div class="search-bar">
                 <img src="{{ url_for('static', filename='img/search-icon.svg') }}" alt="Search" class="search-icon">
-                <input type="text" placeholder="Search friends..." aria-label="Search friends">
+                <input type="text" id="friend-search" placeholder="Search friends..." aria-label="Search friends">
             </div>
 
-            <ul style="padding-left: 0;">
-                {% for i in range(6) %}
+            <ul id="friends-list" style="padding-left: 0;">
+                {% for user in users %}
                 <li class="friend-item">
                     <div style="display: flex; align-items: center;">
-                        <span>oogly boogly</span>
+                        <span>{{user.email}}</span>
                     </div>
-                    <button class="share-btn">share</button>
+                    <button class="share-btn" data-user-id="{{ user.uid }}">share</button>
+                </li>
+                {% else %}
+                <li class="friend-item">
+                    <span>No users found, sorry... </span>
                 </li>
                 {% endfor %}
             </ul>
@@ -39,21 +88,187 @@
         <div class="filter-dropdown">
             <label for="timeframe">Choose a timeframe:</label>
             <select name="timeframe" id="timeframe">
-                <option>Day</option>
-                <option>Week</option>
-                <option selected>Month</option>
-                <option>Year</option>
+                <option value="daily" {% if timeframe == 'daily' %}selected{% endif %}>Day</option>
+                <option value="weekly" {% if timeframe == 'weekly' %}selected{% endif %}>Week</option>
+                <option value="monthly" {% if timeframe == 'monthly' %}selected{% endif %}>Month</option>
+                <option value="yearly" {% if timeframe == 'yearly' %}selected{% endif %}>Year</option>
             </select>
         </div>
 
         <!-- Download Button -->
         <div class="download-btn">
-            <button class="download-btn-inner">
+            <button class="download-btn-inner" id="download-receipt">
                 <img src="{{ url_for('static', filename='img/import-icon.svg') }}" alt="Download" />
                 <span>Get PDF Receipt</span>
             </button>
         </div>
     </section>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const receiptContainer = document.getElementById('receipt-container');
+        if (!receiptContainer || !receiptContainer.querySelector('.receipt-text')) {
+            return; 
+        }
+        
+        const timeframeSelect = document.getElementById('timeframe');
+        const downloadButton = document.getElementById('download-receipt');
+        const shareButtons = document.querySelectorAll('.share-btn');
+        
+        
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        
+        // Function to capture receipt as image
+        function captureReceipt() {
+            return new Promise((resolve, reject) => {
+                html2canvas(receiptContainer, {
+                    scale: 2, // Higher scale for better quality
+                    useCORS: true,
+                    backgroundColor: '#fef9e7'
+                }).then(canvas => {
+                    resolve(canvas.toDataURL('image/png'));
+                }).catch(err => {
+                    reject(err);
+                });
+            });
+        }
+        
+        // Function to show toast notification
+        function showToast(message, duration = 3000) {
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, duration);
+        }
+        
+        // Handle timeframe change
+        if (timeframeSelect) {
+            timeframeSelect.addEventListener('change', function() {
+                window.location.href = `/share?timeframe=${this.value}`;
+            });
+        }
+        
+        // Handle download button click
+        if (downloadButton) {
+            downloadButton.addEventListener('click', async function() {
+                try {
+                    const imageData = await captureReceipt();
+                    
+                    // Send image data to server to generate PDF
+                    const response = await fetch('/download-receipt', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ imageData }),
+                    });
+                    
+                    if (response.ok) {
+                        // If response is OK, create a blob from the PDF data
+                        const blob = await response.blob();
+                        
+                        // Create a link element to download the PDF
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'productivity_receipt.pdf';
+                        document.body.appendChild(a);
+                        a.click();
+                        
+                        // Clean up
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        
+                        showToast('Receipt downloaded successfully!');
+                    } else {
+                        showToast('Error downloading receipt. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error downloading receipt:', error);
+                    showToast('Error downloading receipt. Please try again.');
+                }
+            });
+        }
+        
+        // Handle share button clicks
+        shareButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const userId = this.getAttribute('data-user-id');
+                
+                try {
+                    // Get receipt ID from the page
+                    const receiptId = '{{ receipt_id|default("0") }}';
+                    
+                    // For direct sharing using the existing endpoint
+                    fetch(`/share/send/${receiptId}/${userId}`, {
+                        method: 'POST',
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            showToast('Receipt shared successfully!');
+                            
+                            // Change button text temporarily
+                            const originalText = this.textContent;
+                            this.textContent = 'Shared!';
+                            this.disabled = true;
+                            this.style.backgroundColor = '#4CAF50';
+                            
+                            // Reset after a few seconds
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.disabled = false;
+                                this.style.backgroundColor = '';
+                            }, 3000);
+                        } else {
+                            showToast('Error sharing receipt. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error sharing receipt:', error);
+                        showToast('Error sharing receipt. Please try again.');
+                    });
+                } catch (error) {
+                    console.error('Error sharing receipt:', error);
+                    showToast('Error sharing receipt. Please try again.');
+                }
+            });
+        });
+        
+        // Add search functionality for the friend list
+        const searchInput = document.getElementById('friend-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const friendItems = document.querySelectorAll('.friend-item');
+                
+                friendItems.forEach(item => {
+                    const email = item.querySelector('span').textContent.toLowerCase();
+                    if (email.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}  
 
