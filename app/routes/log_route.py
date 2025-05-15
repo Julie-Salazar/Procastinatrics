@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash,request
 from flask_login import login_required, current_user
 from app.models import db
 from app.models.activitylog import ActivityLog
@@ -11,6 +11,11 @@ log = Blueprint('log', __name__)
 @login_required
 def log_activity():
     form = LogActivityForm()
+    
+    if request.method == 'POST':
+        # Debug what's in the request
+        print(f"Request form data: {request.form}")
+        print(f"'mood' in form data: {request.form.get('mood', 'NOT PRESENT')}")
 
     if form.validate_on_submit():
         # Application logic
@@ -37,7 +42,7 @@ def log_activity():
             category=category,
             hours=form.hours.data,
             minutes=form.minutes.data,
-            mood=form.mood.data,
+            mood=request.form.get('mood'),
             timestamp=datetime.utcnow()
         )
 
