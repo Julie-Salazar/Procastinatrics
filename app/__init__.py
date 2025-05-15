@@ -33,6 +33,7 @@ from app.routes.login_route import auth
 from app.routes.log_route import log
 from app.routes.share_route import share
 from app.routes.friend_route import friends
+from app.routes.receipts_route import receipts
 # from app.routes.profile_settings_route import settings  # if needed
 
 #default route
@@ -43,6 +44,8 @@ app.register_blueprint(auth)
 app.register_blueprint(log)
 app.register_blueprint(share)
 app.register_blueprint(friends)
+app.register_blueprint(receipts)
+
 # app.register_blueprint(settings)
 
 # Application context setup
