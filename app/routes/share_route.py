@@ -89,7 +89,7 @@ def accept_request(request_id):
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.ACCEPTED
-    db.session.commit()  # Add this line to save the changes
+    db.session.commit()
     
     return redirect(url_for('share.share_requests'))
 
@@ -100,7 +100,7 @@ def decline_request(request_id):
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.DECLINED
-    db.session.commit()  # Add this line to save the changes
+    db.session.commit()
     
     return redirect(url_for('share.share_requests'))
 

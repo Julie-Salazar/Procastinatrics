@@ -1,11 +1,12 @@
 # receipts_route.py - Fix the username attribute issue
 
-from flask import Blueprint, render_template, request, jsonify, send_file, abort
+from flask import Blueprint, render_template, request, jsonify, send_file, abort, current_app
 from flask_login import login_required, current_user
 from datetime import datetime
 import io
 import base64
-from PIL import Image
+import os
+from PIL import Image, ImageDraw, ImageFont
 from collections import defaultdict
 
 from app.models.receipts import Receipts
@@ -15,6 +16,16 @@ from app import db
 
 receipts = Blueprint('receipts', __name__)
 
+def draw_right_aligned(draw_obj, text, x_right, y, font, fill="black"):
+    text_width = draw_obj.textlength(text, font=font)
+    x_left = x_right - text_width
+    draw_obj.text((x_left, y), text, fill=fill, font=font)
+    
+def draw_center_aligned(draw_obj, text, center_x, y, font, fill="black"):
+    text_width = draw_obj.textlength(text, font=font)
+    x_left = center_x - (text_width / 2)
+    draw_obj.text((x_left, y), text, fill=fill, font=font)
+    
 def generate_receipt_data(user_id, timeframe='monthly'):
     """Generate the data needed for the receipt"""
     # Query user logs
@@ -153,7 +164,7 @@ def download_receipt():
         download_name=f'productivity_receipt_{datetime.now().strftime("%Y%m%d")}.pdf'
     )
 
-@receipts.route('/view-receipt/<int:receipt_id>', methods=['GET'])
+@receipts.route('/receipts/<int:receipt_id>/view', methods=['GET'])
 @login_required
 def view_receipt(receipt_id):
     """View a specific receipt"""
@@ -203,3 +214,74 @@ def get_status_from_productivity(productive_percent):
         return "NEEDS IMPROVEMENT"
     else:
         return "HELLA BAD BRUH"
+
+@receipts.route('/receipts/<int:receipt_id>/img', methods=['GET'])
+@login_required
+def view_receipt_img(receipt_id):
+    """Generate and return an image of the receipt"""
+    receipt = Receipts.query.get_or_404(receipt_id)
+    
+    if receipt.author_id != current_user.uid:
+        # Check if this receipt was shared with the current user
+        from app.models.receipts import ReceiptsShareRequest, Status
+        share_request = ReceiptsShareRequest.query.filter_by(
+            shared_receipt_id=receipt_id,
+            receiver_id=current_user.uid,
+            status=Status.ACCEPTED
+        ).first()
+        
+        if not share_request:
+            abort(403)
+    
+    # Get author's email
+    author = User.query.get(receipt.author_id)
+    author_email = author.email if author and hasattr(author, 'email') else f"User-{receipt.author_id}"
+    
+    # Create receipt data for image
+    receipt_data = {
+        "date": datetime.fromtimestamp(receipt.time).strftime("%a, %b %d, %Y"),
+        "time": datetime.fromtimestamp(receipt.time).strftime("%I:%M:%S %p"),
+        "receipt_number": f"{receipt.receipt_id:04d}",
+        "status": get_status_from_productivity(receipt.hours_productive),
+        "customer_name": author_email,
+        "procrastination_hours": receipt.hours_procrastinated,
+        "gaming_hours": receipt.hours_gaming,
+        "productive_hours": receipt.hours_productive,
+        "total_hours": receipt.hours_procrastinated + receipt.hours_gaming + receipt.hours_productive,
+    }
+    
+    template = os.path.join(current_app.static_folder, 'img', 'receipt-base.png')
+    img = Image.open(template)
+    draw = ImageDraw.Draw(img)
+    
+    #need monospace font
+    font_path = os.path.join(current_app.static_folder, 'fonts', 'poppins', 'Poppins-Regular.ttf')
+    font_small = ImageFont.truetype(font_path, 14)
+    font_medium = ImageFont.truetype(font_path, 16)
+    font_large = ImageFont.truetype(font_path, 18)
+    
+    draw_center_aligned(draw, f"{receipt_data['date']} • {receipt_data['time']}", 230, 150, font_small)
+    draw_center_aligned(draw, f"#{receipt_data['receipt_number']}", 230, 205, font_medium)
+
+    # Info (needs text alignment adjustment)
+    draw.text((260, 300), receipt_data['status'], fill="black", font=font_large)
+    draw.text((250, 370), receipt_data['customer_name'], fill="black", font=font_medium)
+
+    # Hours
+    draw_right_aligned(draw, f"{receipt_data['procrastination_hours']}%", 410, 490, font_medium)
+    draw_right_aligned(draw, f"{receipt_data['gaming_hours']}%", 410, 535, font_medium)
+    draw_right_aligned(draw, f"{receipt_data['productive_hours']}%", 410, 575, font_medium)
+
+    # Total
+    draw_right_aligned(draw, f"{receipt_data['total_hours']} hrs", 400, 660, font_medium)
+    
+    img_io = io.BytesIO()
+    img.save(img_io, 'PNG')
+    img_io.seek(0)
+    
+    # Return the image
+    return send_file(
+        img_io, 
+        mimetype='image/png',
+        as_attachment=False
+    )
