@@ -34,18 +34,18 @@
               {% set receipt_time = '9:27:53 AM' %}
               
               <!-- Generate random percentages for the visualization -->
-              {% set proc_percent = [10, 20, 30, 40]|random %}
+              {% set procrastination_percent = [10, 20, 30, 40]|random %}
               {% set gaming_percent = [10, 20, 30, 40, 50]|random %}
-              {% set prod_percent = 100 - proc_percent - gaming_percent %}
+              {% set productive_percent = 100 - procrastination_percent - gaming_percent %}
               
               <!-- Generate a status message based on productivity -->
-              {% if prod_percent < 20 %}
+              {% if productive_percent < 20 %}
                 {% set status_message = "HELLA BAD BRUH" %}
-              {% elif prod_percent < 40 %}
+              {% elif productive_percent < 40 %}
                 {% set status_message = "NOT SO SHABBY" %}
-              {% elif prod_percent < 60 %}
+              {% elif productive_percent < 60 %}
                 {% set status_message = "GETTING BETTER" %}
-              {% elif prod_percent < 80 %}
+              {% elif productive_percent < 80 %}
                 {% set status_message = "DOING GREAT" %}
               {% else %}
                 {% set status_message = "DOPAMINE RECEPTORS FRIED" %}
@@ -73,7 +73,7 @@
               </div>
               
               <div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
-                {{ proc_percent }}%
+                {{ procrastination_percent }}%
               </div>
               
               <div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
@@ -81,7 +81,7 @@
               </div>
               
               <div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
-                {{ prod_percent }}%
+                {{ productive_percent }}%
               </div>
               
               <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
@@ -119,8 +119,8 @@
     
     // If no receipts, disable both buttons but keep them visible
     if (!receiptWrappers.length) {
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
       prevBtn.style.opacity = 0.5;
       nextBtn.style.opacity = 0.5;
       return;
