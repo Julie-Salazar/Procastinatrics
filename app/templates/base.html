@@ -19,9 +19,47 @@
     <!-- Top bar with buttons -->
     <div class="top-bar">
         <div class="top-bar-buttons">
-            <button class="icon-button" aria-label="Notifications">
-                <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
-            </button>
+            <div class="notif-wrapper" style="position: relative; display: inline-block;">
+                <button class="icon-button notif-button" aria-label="Notifications" type="button"
+                    onclick="
+                        const box = this.nextElementSibling;
+                        if (box.style.display === 'block') {
+                            box.style.display = 'none';
+                        } else {
+                            box.style.display = 'block';
+                        }
+                    "
+                    style="position: relative;">
+                    <img src="{{ url_for('static', filename='img/notif-icon.svg') }}" alt="Notifications">
+                    {% if pending_share_requests|length > 0 %}
+                        <span class="notif-indicator" style="position: absolute; top: 0; right: 0; background: red; width: 10px; height: 10px; border-radius: 50%;"></span>
+                    {% endif %}
+                </button>
+              
+                <div class="notif-box">
+                    {% for item in pending_share_requests %}
+                        <div class="request-box" style="margin-bottom: 16px;">
+                            <p>{{ item.sender_username }} want to share a receipt.</p>
+                            <form method="post" action="{{ url_for('share.accept_request', request_id=item.request_id) }}" style="margin-bottom: 8px;">
+                                <button type="submit" class="button-accept" style="border-radius: 8px; width: 100%;">Accept</button>
+                            </form>
+                            <form method="post" action="{{ url_for('share.decline_request', request_id=item.request_id) }}" style="margin-bottom: 8px;">
+                                <button type="submit" class="button-decline" style="border-radius: 8px; width: 100%;">Decline</button>
+                            </form>
+                            <form method="post" action="{{ url_for('share.ignore_request', request_id=item.request_id) }}">
+                                <button type="submit" class="button-block" style="border-radius: 8px; width: 100%;">Ignore</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <p style="color: #666;">No pending requests.</p>
+                    {% endfor %}
+                </div>
+              </div>
+              
+              
+            
+            
+            
             <a href="/profile-settings">
                 <img src="{{ url_for('static', filename='img/setting-icon.svg') }}" alt="Profile Settings" />
             </a>

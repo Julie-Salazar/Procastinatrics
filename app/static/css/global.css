@@ -257,3 +257,88 @@ a {
   font-size: 16px;
 }
 
+
+/* this is for the notification button */
+.button-block {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.button-block:hover {
+  background-color: #222;
+}
+
+/* Adjust the notif-box background to match the block button bg */
+
+
+
+.notif-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notif-wrapper summary {
+  list-style: none;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notif-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.notif-box {
+  background-color: var(--accent3-soft-yellow);
+  color: #000;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  position: absolute;
+  right: 0;
+  top: 110%;
+  width: 260px;
+  z-index: 100;
+  display: none; /* default hidden, toggled by JS */
+}
+
+
+
+.notif-wrapper[open] .notif-box {
+  display: block;
+}
+
+.request-box {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.request-box:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.request-box button {
+  margin-right: 6px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

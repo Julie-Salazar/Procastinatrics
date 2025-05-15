@@ -11,6 +11,14 @@ from app import db
 share = Blueprint('share', __name__)
 
 # internal methods
+def get_pending_requests():
+    return (ReceiptsShareRequest
+            .query
+            .filter_by(receiver_id=current_user.uid,
+                       status=Status.PENDING).all())
+
+
+
 def get_blocked_users_id(user_id):
     blocked_list = BlockedUsers.query.filter(BlockedUsers.blocker_id == user_id).all()
     return [blocked.target_user_id for blocked in blocked_list]
