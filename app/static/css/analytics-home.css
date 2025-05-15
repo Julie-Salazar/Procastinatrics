@@ -8,8 +8,8 @@
     --secondary-background: #1b1b1b;
     --text-primary: #FAFAFA;
     --text-secondary: #CCCCCC;
-    --card-pink: #ffe6e6;
-    --card-blue: #dce8ff;
+    --card-pink: #d4a2a2;
+    --card-blue: #a1b5d6;
     --sidebar-width: 220px;
     --topbar-height: 60px;
     --font-body: 'Inter', sans-serif;
@@ -359,8 +359,10 @@ body {
 .recent-entry:hover {
     background-color: #444;
 }
+/*
 .recent-icon img,
 img[src*="/img/logos/"] {
+    color: #BCFFDB;
     width: 36px;
     height: 36px;
     border-radius: 8px;
@@ -368,6 +370,34 @@ img[src*="/img/logos/"] {
     
     filter: brightness(20) saturate(100%) invert(97%) sepia(30%) 
             saturate(1000%) hue-rotate(65deg) brightness(120%) contrast(97%);
+}
+*/
+.recent-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.recent-icon .loaded-svg-logo path,
+.recent-icon .loaded-svg-logo circle,
+.recent-icon .loaded-svg-logo rect,
+.recent-icon .loaded-svg-logo polygon {
+    fill: #BCFFDB !important;
+}
+
+.recent-icon.svg-load-error {
+    background-color: #4A4A4A;
+}
+.svg-fallback-text {
+    color: #BCFFDB;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.2;
+    padding: 2px;
+    overflow-wrap: break-word;
 }
 
 .recent-application {
