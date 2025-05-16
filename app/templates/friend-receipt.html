@@ -55,9 +55,9 @@
               
               <!-- Receipt Text Elements -->
               <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
-                {{ receipt_date }} • {{ receipt_time }}
+              {{ item.time_shared | timestamp_to_date }} • {{ item.time_shared | timestamp_to_time }}
               </div>
-              
+
               <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
                 #{{ item.receipt.receipt_id }}
               </div>

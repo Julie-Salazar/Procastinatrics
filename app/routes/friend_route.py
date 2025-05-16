@@ -10,19 +10,35 @@ from collections import defaultdict
 
 friends = Blueprint('friends', __name__)
 
+from datetime import datetime
+
 @friends.app_template_filter('timestamp_to_date')
-def timestamp_to_date(timestamp, format='%a, %b %d, %Y'):
+def timestamp_to_date(value, format='%a, %b %d, %Y'):
     try:
-        return datetime.fromtimestamp(int(timestamp)).strftime(format) if timestamp else "Date unavailable"
+        if hasattr(value, 'strftime'):
+            return value.strftime(format)
+        # Try parsing string to datetime
+        if isinstance(value, str):
+            value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        elif isinstance(value, (int, float)):
+            value = datetime.fromtimestamp(value)
+        return value.strftime(format)
     except (ValueError, TypeError):
         return "Date unavailable"
 
 @friends.app_template_filter('timestamp_to_time')
-def timestamp_to_time(timestamp, format='%I:%M:%S %p'):
+def timestamp_to_time(value, format='%I:%M:%S %p'):
     try:
-        return datetime.fromtimestamp(int(timestamp)).strftime(format) if timestamp else "Time unavailable"
+        if hasattr(value, 'strftime'):
+            return value.strftime(format)
+        if isinstance(value, str):
+            value = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        elif isinstance(value, (int, float)):
+            value = datetime.fromtimestamp(value)
+        return value.strftime(format)
     except (ValueError, TypeError):
         return "Time unavailable"
+
 
 def calculate_percentages(user_id):
     user_logs = ActivityLog.query.filter_by(user_id=user_id).all()
