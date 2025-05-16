@@ -161,15 +161,7 @@ def display_receipts():
                 'time_shared': request.time
             })
 
-            # return jsonify([
-            #     {
-            #         "request_id": f['request_id'],
-            #         "receipt_id": f['receipt'].receipt_id,
-            #         "sender": f['sender'].email,
-            #         "time_shared": f['time_shared']
-            #     } for f in friend_receipts
-            # ])
-        flash(f"{len(friend_receipts)} shared receipts loaded.", "info")
+          
 
     
     return render_template('friend-receipt.html', 
