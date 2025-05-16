@@ -27,11 +27,20 @@ def draw_center_aligned(draw_obj, text, center_x, y, font, fill="black"):
     draw_obj.text((x_left, y), text, fill=fill, font=font)
     
 def generate_receipt_data(user_id, timeframe='monthly'):
-    """Generate the data needed for the receipt"""
+    """
+    Generates receipt data for a user, calculating time spent across activity categories.
+
+    Args:
+        user_id (int): ID of the user whose activity is being analyzed.
+        timeframe (str): The timeframe for analysis (e.g., 'monthly'). Currently not used for filtering.
+
+    Returns:
+        dict: A dictionary containing all necessary receipt information.
+    """
+
     # Query user logs
     user_logs = ActivityLog.query.filter_by(user_id=user_id).all()
     
-    # Calculate total hours logged
     total_hours = sum((log.hours or 0) + (log.minutes or 0) / 60 for log in user_logs)
     
     # Calculate category percentages
@@ -54,31 +63,14 @@ def generate_receipt_data(user_id, timeframe='monthly'):
     # Combined procrastination percent (gaming + social + other)
     procrastination_percent = gaming_percent + social_percent + other_percent
     
-    # If all percentages are 0, set some default values
-    if productive_percent == 0 and gaming_percent == 0 and procrastination_percent == 0:
-        print(f"DEBUG - No activity data for user {user_id}, using default percentages")
-        productive_percent = 40
-        gaming_percent = 30
-        procrastination_percent = 30
-    
-    # Get current date and time
     now = datetime.now()
     
-    # Generate a receipt number (just use timestamp)
     receipt_number = f"{now.strftime('%Y%m%d%H%M%S')}"[-4:]
     
-    # Get user info - always use email
     user = User.query.get(user_id)
     user_email = user.email if user and hasattr(user, 'email') else f"User-{user_id}"
     
-    # Get status based on productivity
     status_message = get_status_from_productivity(productive_percent)
-    
-    # Debug output
-    print(f"DEBUG - Generated receipt data for user {user_id}")
-    print(f"  Procrastination: {procrastination_percent}%")
-    print(f"  Gaming: {gaming_percent}%")
-    print(f"  Productive: {productive_percent}%")
     
     # Construct the receipt data
     receipt_data = {
@@ -86,11 +78,11 @@ def generate_receipt_data(user_id, timeframe='monthly'):
         "time": now.strftime("%I:%M:%S %p"),
         "receipt_number": receipt_number,
         "status": status_message,
-        "customer_name": user_email,  # Use email instead of username
+        "customer_name": user_email, 
         "procrastination_hours": procrastination_percent,
         "gaming_hours": gaming_percent,
         "productive_hours": productive_percent,
-        "total_hours": round(total_hours) if total_hours > 0 else 100,
+        "total_hours": round(total_hours),
         "operator": "SLOTHIE :)"
     }
     
@@ -98,17 +90,17 @@ def generate_receipt_data(user_id, timeframe='monthly'):
 
 
 def save_receipt_to_db(user_id):
-    """Save receipt data to the database and return the receipt object"""
+    """
+    Saves or updates a daily receipt for the given user based on their activity log.
+
+    Args:
+        user_id (int): ID of the user.
+
+    Returns:
+        Receipts: The created or updated Receipts SQLAlchemy object.
+    """
     # Calculate receipt data
     receipt_data = generate_receipt_data(user_id)
-    
-    # Debug print
-    print(f"DEBUG - Saving receipt for user {user_id}")
-    print(f"  Procrastination: {receipt_data['procrastination_hours']}%")
-    print(f"  Gaming: {receipt_data['gaming_hours']}%")
-    print(f"  Productive: {receipt_data['productive_hours']}%")
-    
-    # Check if a receipt already exists for today
     today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     today_timestamp = int(today_start.timestamp())
     
@@ -140,19 +132,51 @@ def save_receipt_to_db(user_id):
     return new_receipt
 
 def get_receipt_data(user_id, timeframe='monthly'):
-    """Get receipt data and the receipt object"""
-    # Generate receipt data
-    receipt_data = generate_receipt_data(user_id, timeframe)
-    
-    # Get or create a receipt in the database
+    """
+    Combines data generation and database save into a single function.
+
+    Args:
+        user_id (int): The user ID.
+        timeframe (str): Timeframe for which receipt is generated.
+
+    Returns:
+        tuple: (dict of receipt display data, Receipts database object).
+    """
+    from app.utils.receipt_helper import ensure_receipt_percentages
+
+    # Ensure receipt is calculated and saved correctly
     receipt = save_receipt_to_db(user_id)
-    
+
+    # Make sure percentages are fixed on the DB record
+    ensure_receipt_percentages(receipt)
+
+    # Now re-generate the display dictionary based on the updated receipt
+    receipt_data = {
+        "date": datetime.fromtimestamp(receipt.time).strftime("%a, %b %d, %Y"),
+        "time": datetime.fromtimestamp(receipt.time).strftime("%I:%M:%S %p"),
+        "receipt_number": f"{receipt.receipt_id:04d}",
+        "status": get_status_from_productivity(receipt.hours_productive),
+        "customer_name": User.query.get(user_id).email,
+        "procrastination_hours": receipt.hours_procrastinated,
+        "gaming_hours": receipt.hours_gaming,
+        "productive_hours": receipt.hours_productive,
+        "total_hours": receipt.hours_procrastinated + receipt.hours_gaming + receipt.hours_productive,
+        "operator": "SLOTHIE :)"
+    }
+
     return receipt_data, receipt
+
 
 @receipts.route('/download-receipt', methods=['POST'])
 @login_required
 def download_receipt():
-    """Generate and download a receipt PDF"""
+    """
+    Converts a base64-encoded image to a PDF and serves it for download.
+
+    Returns:
+        Response: Flask response containing the generated PDF file.
+    """
+
     # Get image data from the request
     data = request.json
     image_data = data.get('imageData', '')
@@ -177,10 +201,20 @@ def download_receipt():
         download_name=f'productivity_receipt_{datetime.now().strftime("%Y%m%d")}.pdf'
     )
 
+
 @receipts.route('/receipts/<int:receipt_id>/view', methods=['GET'])
 @login_required
 def view_receipt(receipt_id):
-    """View a specific receipt"""
+    """
+    Displays a previously generated receipt in a readable HTML format.
+
+    Args:
+        receipt_id (int): ID of the receipt to view.
+
+    Returns:
+        Response: Rendered HTML view of the receipt.
+    """
+
     receipt = Receipts.query.get_or_404(receipt_id)
     
     # Check if user has permission to view this receipt
