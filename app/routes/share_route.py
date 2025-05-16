@@ -153,7 +153,7 @@ def send_request(receipt_id, target_user_id):
         return redirect(url_for('share.share_page'))
 
     # 🧾 Fetch the receipt
-    receipt = Receipts.query.get(receipt_id)
+    receipt = db.session.get(Receipts,receipt_id)
     if not receipt:
         flash("Receipt not found.", "danger")
         return redirect(url_for('share.share_page'))
@@ -221,7 +221,7 @@ def accept_request(request_id):
     Returns:
         redirects to /share/requests
     """
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+    request = db.session.get(ReceiptsShareRequest,request_id)
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.ACCEPTED
@@ -240,7 +240,7 @@ def decline_request(request_id):
     Returns:
         redirects to /share/requests
     """
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+    request = db.session.get(ReceiptsShareRequest,request_id)
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.DECLINED
@@ -259,7 +259,7 @@ def ignore_request(request_id):
     Returns:
         redirects to /share/requests
     """
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+    request = db.session.get(ReceiptsShareRequest,request_id)
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.IGNORED
