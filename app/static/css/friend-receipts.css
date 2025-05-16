@@ -8,30 +8,31 @@
   color: white;
 }
 
- .remove-form {
-  position: absolute;
-  top: 640px;
-  left: 380px;
+.remove-form {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  position: relative; /* needed if you want fine-tune absolute child placement */
+  width: 100%;
 }
 
 .remove-btn {
   padding: 8px 16px;
   font-size: 14px;
-  background-color:rgb(255, 193, 193); /* soft red tone */
+  background-color: rgb(255, 193, 193); /* soft red tone */
   color: #fff;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
   transition: background-color 0.3s ease, transform 0.2s ease;
-  position: absolute;
-  
 }
 
 .remove-btn:hover {
   background-color: #e05a5a;
   transform: translateY(-2px);
 }
+
 
 /* Carousel container */
 .carousel-container {
@@ -47,7 +48,7 @@
 .carousel-arrow {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-60%);
   z-index: 10;
   background: transparent;
   border: none;
@@ -55,11 +56,11 @@
 }
 
 .left-arrow {
-  left: 50px;
+  left: 20px;
 }
 
 .right-arrow {
-  right: 50px;
+  right: 20px;
 }
 
 /* Arrow SVG styling */

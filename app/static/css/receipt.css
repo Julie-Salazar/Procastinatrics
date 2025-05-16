@@ -1,0 +1,53 @@
+/* Outer carousel container */
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Each slide wrapper */
+.receipt-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Center content inside receipt-container-wrapper */
+.receipt-container-wrapper {
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Actual receipt container (SVG + overlay) */
+.receipt-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 3 / 4; /* maintain proportions */
+  overflow: hidden;
+}
+
+/* Make SVG responsive */
+.receipt-container img.receipt-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Text overlays */
+.receipt-text {
+  position: absolute;
+  font-size: 14px;
+  color: black;
+  font-family: 'Inter', sans-serif;
+  pointer-events: none;
+  white-space: nowrap;
+}

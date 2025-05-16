@@ -39,7 +39,7 @@
                 <div class="notif-box">
                     {% for item in pending_share_requests %}
                         <div class="request-box" style="margin-bottom: 16px;">
-                            <p>{{ item.sender_username }} want to share a receipt.</p>
+                            <p>{{ item.sender_username }} wants to share a receipt!</p>
                             <form method="post" action="{{ url_for('share.accept_request', request_id=item.request_id) }}" style="margin-bottom: 8px;">
                                 <button type="submit" class="button-accept" style="border-radius: 8px; width: 100%;">Accept</button>
                             </form>

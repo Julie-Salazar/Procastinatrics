@@ -12,111 +12,108 @@
 
   <!-- Carousel Container -->
   <div class="carousel-container">
-    <!-- Left Arrow -->
-    <button class="carousel-arrow left-arrow" id="prevBtn">
-      <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M31 12L17 24L31 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
+    <div class="carousel-inner">
+      
+      <!-- Left Arrow -->
+      <button class="carousel-arrow left-arrow" id="prevBtn">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M31 12L17 24L31 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
 
-    <!-- Receipt Display Area -->
-    <div class="receipt-display" id="receiptCarousel">
-      {% if friend_receipts %}
-        {% for item in friend_receipts %}
+      <!-- Receipt Display Area -->
+      <div class="receipt-display" id="receiptCarousel">
+        {% if friend_receipts %}
+          {% for item in friend_receipts %}
           <div class="receipt-wrapper" data-index="{{ loop.index0 }}" {% if not loop.first %}style="display: none;"{% endif %}>
-            <div class="receipt-container" id="receipt-container-{{ loop.index }}">
-              <img src="{{ url_for('static', filename='img/receipt-base.svg') }}" alt="receipt" />
-              
-              <!-- Fixed: Don't use strftime on potentially string values -->
-              <!-- Default display dates/times -->
-              {% set receipt = item.receipt %}
-              {% set total_hours = item.total_hours | default(0) %}
-              {% set receipt_date = receipt.time | timestamp_to_date %}
-              {% set receipt_time = receipt.time | timestamp_to_time %}
-              
+            <div class="receipt-container-wrapper">
+              <div class="receipt-container" id="receipt-container-{{ loop.index }}">
+                <img src="{{ url_for('static', filename='img/receipt-base.svg') }}" alt="receipt" class="receipt-img" />
 
-              <!-- Generate random percentages for the visualization -->
-              {% set procrastination_percent = [10, 20, 30, 40]|random %}
-              {% set gaming_percent = [10, 20, 30, 40, 50]|random %}
-              {% set productive_percent = 100 - procrastination_percent - gaming_percent %}
-              
-              <!-- Generate a status message based on productivity -->
-              {% if productive_percent < 20 %}
-                {% set status_message = "HELLA BAD BRUH" %}
-              {% elif productive_percent < 40 %}
-                {% set status_message = "NOT SO SHABBY" %}
-              {% elif productive_percent < 60 %}
-                {% set status_message = "GETTING BETTER" %}
-              {% elif productive_percent < 80 %}
-                {% set status_message = "DOING GREAT" %}
-              {% else %}
-                {% set status_message = "DOPAMINE RECEPTORS FRIED" %}
-              {% endif %}
-              
-              <!-- Receipt Text Elements -->
-              <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
-              {{ item.time_shared | timestamp_to_date }} • {{ item.time_shared | timestamp_to_time }}
+                {% set receipt = item.receipt %}
+                {% set total_hours = item.total_hours | default(0) %}
+                {% set receipt_date = receipt.time | timestamp_to_date %}
+                {% set receipt_time = receipt.time | timestamp_to_time %}
+
+                {% set procrastination_percent = [10, 20, 30, 40] | random %}
+                {% set gaming_percent = [10, 20, 30, 40, 50] | random %}
+                {% set productive_percent = 100 - procrastination_percent - gaming_percent %}
+
+                {% if productive_percent < 20 %}
+                  {% set status_message = "HELLA BAD BRUH" %}
+                {% elif productive_percent < 40 %}
+                  {% set status_message = "NOT SO SHABBY" %}
+                {% elif productive_percent < 60 %}
+                  {% set status_message = "GETTING BETTER" %}
+                {% elif productive_percent < 80 %}
+                  {% set status_message = "DOING GREAT" %}
+                {% else %}
+                  {% set status_message = "DOPAMINE RECEPTORS FRIED" %}
+                {% endif %}
+
+                <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
+                  {{ item.time_shared | timestamp_to_date }} • {{ item.time_shared | timestamp_to_time }}
+                </div>
+
+                <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
+                  #{{ item.receipt.receipt_id }}
+                </div>
+
+                <div class="receipt-text status-value" style="top: 210px; left: 240px;">
+                  {{ status_message }}
+                </div>
+
+                <div class="receipt-text customer-value" style="top: 260px; left: 220px;">
+                  {{ item.sender.first_name }} {{ item.sender.last_name }}
+                </div>
+
+                <div class="receipt-text proc-hours-label" style="top: 295px; left: 140px;">
+                  % TIME RATIO %
+                </div>
+
+                <div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
+                  {{ procrastination_percent }}%
+                </div>
+
+                <div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
+                  {{ gaming_percent }}%
+                </div>
+
+                <div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
+                  {{ productive_percent }}%
+                </div>
+
+                <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
+                  {{ total_hours }} hrs
+                </div>
               </div>
 
-              <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
-                #{{ item.receipt.receipt_id }}
-              </div>
-              
-              <div class="receipt-text status-value" style="top: 210px; left: 240px;">
-                {{ status_message }}
-              </div>
-              
-              <div class="receipt-text customer-value" style="top: 260px; left: 220px;">
-                {{ item.sender.first_name }} {{ item.sender.last_name }}
-              </div>
-              
-              <div class="receipt-text proc-hours-label" style="top: 295px; left: 140px;">
-                % TIME RATIO %
-              </div>
-              
-              <div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
-                {{ procrastination_percent }}%
-              </div>
-              
-              <div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
-                {{ gaming_percent }}%
-              </div>
-              
-              <div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
-                {{ productive_percent }}%
-              </div>
-              
-              <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
-                {{ item.total_hours }} hrs
-              </div>
+              <form action="{{ url_for('friends.remove_shared_receipt', request_id=item.request_id) }}" method="post" class="remove-form">
+                <button type="submit" class="remove-btn">Remove</button>
+              </form>
             </div>
-            <form action="{{ url_for('friends.remove_shared_receipt', request_id=item.request_id) }}" method="post" class="remove-form">
-            <button type="submit" class="remove-btn">Remove</button>
-            </form>
           </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <div class="empty-icon">📬</div>
-          <h3>No Friend Receipts Yet</h3>
-          <p>When friends share their productivity receipts with you, they'll appear here.</p>
-          <a href="{{ url_for('share.share_requests') }}" class="action-btn">Check Pending Requests</a>
-        </div>
-      {% endif %}
-    </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-icon">📬</div>
+            <h3>No Friend Receipts Yet</h3>
+            <p>When friends share their productivity receipts with you, they'll appear here.</p>
+            <a href="{{ url_for('share.share_requests') }}" class="action-btn">Check Pending Requests</a>
+          </div>
+        {% endif %}
+      </div>
 
-    <!-- Right Arrow -->
-    <button class="carousel-arrow right-arrow" id="nextBtn">
-      <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M17 12L31 24L17 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-    
+      <!-- Right Arrow -->
+      <button class="carousel-arrow right-arrow" id="nextBtn">
+        <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 12L31 24L17 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+    </div>
   </div>
 </main>
-
-
-
 {% endblock %}
 
 {% block scripts %}

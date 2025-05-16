@@ -136,7 +136,7 @@ def remove_shared_receipt(request_id):
         abort(403)
 
     # Update status
-    request_record.status = Status.BLOCKED
+    request_record.status = Status.IGNORED
     db.session.commit()
 
     flash('The shared receipt has been removed from your list.', 'success')

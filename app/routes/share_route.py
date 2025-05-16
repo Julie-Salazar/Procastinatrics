@@ -1,5 +1,3 @@
-# share_route.py - Fix username reference
-
 from sqlalchemy import select, and_
 from flask import Blueprint, render_template, request, flash, abort, redirect, url_for
 from flask_login import login_required, current_user
@@ -81,9 +79,6 @@ def send_request(receipt_id, target_user_id):
         flash("Receipt not found.", "danger")
         return redirect(url_for('share.share_page'))
 
-    print(f"DEBUG - Preparing to share receipt {receipt_id} with user {target_user_id}")
-    print(f"  Current Values → P: {receipt.hours_procrastinated}%, G: {receipt.hours_gaming}%, Prod: {receipt.hours_productive}%")
-
     if (
         receipt.hours_procrastinated == 0 and 
         receipt.hours_gaming == 0 and 
@@ -97,7 +92,6 @@ def send_request(receipt_id, target_user_id):
         receipt.hours_productive = percentages["productive_percent"]
         db.session.commit()
 
-        print(f"DEBUG - Recalculated and updated receipt {receipt_id} before sharing")
 
     # ➕ Create new share request
     new_request = ReceiptsShareRequest(
@@ -156,6 +150,6 @@ def ignore_request(request_id):
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.IGNORED
-    db.session.commit()  # Add this line to save the changes
+    db.session.commit()  
     
     return redirect(url_for('share.share_requests'))
