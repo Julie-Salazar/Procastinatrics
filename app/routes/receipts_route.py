@@ -54,6 +54,13 @@ def generate_receipt_data(user_id, timeframe='monthly'):
     # Combined procrastination percent (gaming + social + other)
     procrastination_percent = gaming_percent + social_percent + other_percent
     
+    # If all percentages are 0, set some default values
+    if productive_percent == 0 and gaming_percent == 0 and procrastination_percent == 0:
+        print(f"DEBUG - No activity data for user {user_id}, using default percentages")
+        productive_percent = 40
+        gaming_percent = 30
+        procrastination_percent = 30
+    
     # Get current date and time
     now = datetime.now()
     
@@ -64,36 +71,42 @@ def generate_receipt_data(user_id, timeframe='monthly'):
     user = User.query.get(user_id)
     user_email = user.email if user and hasattr(user, 'email') else f"User-{user_id}"
     
-    # Decide on a status message based on productivity
-    if productive_percent >= 70:
-        status = "PRODUCTIVITY MASTER"
-    elif productive_percent >= 50:
-        status = "DOING GOOD"
-    elif productive_percent >= 30:
-        status = "NEEDS IMPROVEMENT"
-    else:
-        status = "HELLA BAD BRUH"
+    # Get status based on productivity
+    status_message = get_status_from_productivity(productive_percent)
+    
+    # Debug output
+    print(f"DEBUG - Generated receipt data for user {user_id}")
+    print(f"  Procrastination: {procrastination_percent}%")
+    print(f"  Gaming: {gaming_percent}%")
+    print(f"  Productive: {productive_percent}%")
     
     # Construct the receipt data
     receipt_data = {
         "date": now.strftime("%a, %b %d, %Y"),
         "time": now.strftime("%I:%M:%S %p"),
         "receipt_number": receipt_number,
-        "status": status,
+        "status": status_message,
         "customer_name": user_email,  # Use email instead of username
         "procrastination_hours": procrastination_percent,
         "gaming_hours": gaming_percent,
         "productive_hours": productive_percent,
-        "total_hours": round(total_hours),
+        "total_hours": round(total_hours) if total_hours > 0 else 100,
         "operator": "SLOTHIE :)"
     }
     
     return receipt_data
 
+
 def save_receipt_to_db(user_id):
     """Save receipt data to the database and return the receipt object"""
     # Calculate receipt data
     receipt_data = generate_receipt_data(user_id)
+    
+    # Debug print
+    print(f"DEBUG - Saving receipt for user {user_id}")
+    print(f"  Procrastination: {receipt_data['procrastination_hours']}%")
+    print(f"  Gaming: {receipt_data['gaming_hours']}%")
+    print(f"  Productive: {receipt_data['productive_hours']}%")
     
     # Check if a receipt already exists for today
     today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)

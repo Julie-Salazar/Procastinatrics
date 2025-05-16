@@ -11,6 +11,28 @@
 <main class="main-content">
   <h1>Friend Receipts</h1>
 
+  <!-- Hidden Debug Info (Press 'd' key to toggle) -->
+  <div id="debug-info" style="background-color: #f0f0f0; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; display: none;">
+    <h3>Debug Info</h3>
+    {% if friend_receipts %}
+      <ul>
+      {% for item in friend_receipts %}
+        <li>
+          <p><strong>Receipt ID:</strong> {{ item.receipt.receipt_id }}</p>
+          <p><strong>Receipt Time:</strong> {{ item.receipt.time }}</p>
+          <p><strong>Formatted Date:</strong> {{ item.receipt.time|timestamp_to_date }}</p>
+          <p><strong>Procrastination:</strong> {{ item.receipt.hours_procrastinated }}</p>
+          <p><strong>Gaming:</strong> {{ item.receipt.hours_gaming }}</p>
+          <p><strong>Productive:</strong> {{ item.receipt.hours_productive }}</p>
+          <p><strong>Sender Email:</strong> {{ item.sender.email }}</p>
+        </li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>No receipts found</p>
+    {% endif %}
+  </div>
+
   <!-- Carousel Container -->
   <div class="carousel-container">
     <!-- Left Arrow -->
@@ -28,27 +50,29 @@
             <div class="receipt-container" id="receipt-container-{{ loop.index }}">
               <img src="{{ url_for('static', filename='img/receipt-base.svg') }}" alt="receipt" />
               
-              <!-- Fixed: Don't use strftime on potentially string values -->
-              <!-- Default display dates/times -->
-              {% set receipt_date = 'May 27, 2025' %}
-              {% set receipt_time = '9:27:53 AM' %}
-              
-              <!-- Generate random percentages for the visualization -->
-              {% set procrastination_percent = [10, 20, 30, 40]|random %}
-              {% set gaming_percent = [10, 20, 30, 40, 50]|random %}
-              {% set productive_percent = 100 - procrastination_percent - gaming_percent %}
-              
-              <!-- Generate a status message based on productivity -->
-              {% if productive_percent < 20 %}
-                {% set status_message = "HELLA BAD BRUH" %}
-              {% elif productive_percent < 40 %}
-                {% set status_message = "NOT SO SHABBY" %}
-              {% elif productive_percent < 60 %}
-                {% set status_message = "GETTING BETTER" %}
-              {% elif productive_percent < 80 %}
-                {% set status_message = "DOING GREAT" %}
+              <!-- Use the timestamp from the friend's receipt to format date/time -->
+              {% if item.receipt.time %}
+                {% set receipt_date = item.receipt.time|timestamp_to_date('%a, %b %d, %Y') %}
+                {% set receipt_time = item.receipt.time|timestamp_to_time('%I:%M:%S %p') %}
               {% else %}
-                {% set status_message = "DOPAMINE RECEPTORS FRIED" %}
+                {% set receipt_date = 'Date unavailable' %}
+                {% set receipt_time = 'Time unavailable' %}
+              {% endif %}
+              
+              <!-- Use actual percentages from the friend's receipt with explicit type conversion -->
+              {% set procrastination_percent = item.receipt.hours_procrastinated|int|default(0) %}
+              {% set gaming_percent = item.receipt.hours_gaming|int|default(0) %}
+              {% set productive_percent = item.receipt.hours_productive|int|default(0) %}
+              
+              <!-- Generate a status message based on actual productivity -->
+              {% if productive_percent >= 70 %}
+                {% set status_message = "PRODUCTIVITY MASTER" %}
+              {% elif productive_percent >= 50 %}
+                {% set status_message = "DOING GOOD" %}
+              {% elif productive_percent >= 30 %}
+                {% set status_message = "NEEDS IMPROVEMENT" %}
+              {% else %}
+                {% set status_message = "HELLA BAD BRUH" %}
               {% endif %}
               
               <!-- Receipt Text Elements -->
@@ -57,7 +81,7 @@
               </div>
               
               <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
-                #{{ item.receipt.receipt_id }}
+                #{{ item.receipt.receipt_id|default('0000') }}
               </div>
               
               <div class="receipt-text status-value" style="top: 210px; left: 280px;">
@@ -65,7 +89,7 @@
               </div>
               
               <div class="receipt-text customer-value" style="top: 260px; left: 220px;">
-                {{ item.sender.first_name }} {{ item.sender.last_name }}
+                {{ item.sender.email|default('Unknown User') }}
               </div>
               
               <div class="receipt-text proc-hours-label" style="top: 295px; left: 140px;">
@@ -84,8 +108,9 @@
                 {{ productive_percent }}%
               </div>
               
+              <!-- Calculate actual total hours from percentages -->
               <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
-                {{ item.receipt.total_hours|int if item.receipt.total_hours else 500 }} hrs
+                {{ total_hours|default(0) }} hrs
               </div>
             </div>
           </div>
@@ -113,6 +138,14 @@
 {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    // Add debug toggle with 'd' key press
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'd') {
+        const debugDiv = document.getElementById('debug-info');
+        debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+      }
+    });
+    
     const receiptWrappers = document.querySelectorAll('.receipt-wrapper');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
