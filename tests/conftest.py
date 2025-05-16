@@ -13,20 +13,20 @@ def client():
     )
     with app.test_client() as client:
         with app.app_context():
-            db.drop_all()
             db.create_all()
             test_user = User(first_name='test',
                              last_name='user',
                              email='test@example.com')
-            test_user_2= User(first_name='2test',
+            test_user_2 = User(first_name='2test',
                              last_name='2user',
                              email='test2@example.com')
             test_user.set_password('password')
             test_user_2.set_password('password')
-            db.session.add(test_user)
+            db.session.add_all([test_user,test_user_2])
             db.session.commit()
         yield client
         with app.app_context():
+            db.session.remove()
             db.drop_all()
 
 @pytest.fixture
