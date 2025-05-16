@@ -122,3 +122,25 @@ def display_receipts():
             })
 
     return render_template('friend-receipt.html', friend_receipts=friend_receipts)
+
+@friends.route('/friend-receipt/remove/<int:request_id>', methods=['POST'])
+@login_required
+def remove_shared_receipt(request_id):
+    """
+    Remove a shared receipt from your list (change status to REMOVED)
+    """
+    request_record = ReceiptsShareRequest.query.get_or_404(request_id)
+
+    # Only the receiver can remove a receipt from their view
+    if request_record.receiver_id != current_user.uid:
+        abort(403)
+
+    # Update status
+    request_record.status = Status.BLOCKED
+    db.session.commit()
+
+    flash('The shared receipt has been removed from your list.', 'success')
+    return redirect(url_for('friends.display_receipts'))
+
+
+
