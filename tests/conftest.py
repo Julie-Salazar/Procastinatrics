@@ -18,7 +18,11 @@ def client():
             test_user = User(first_name='test',
                              last_name='user',
                              email='test@example.com')
+            test_user_2= User(first_name='2test',
+                             last_name='2user',
+                             email='test2@example.com')
             test_user.set_password('password')
+            test_user_2.set_password('password')
             db.session.add(test_user)
             db.session.commit()
         yield client
@@ -26,7 +30,13 @@ def client():
             db.drop_all()
 
 @pytest.fixture
-def client_logged(client):
+def client_1(client):
     client.post('/login', data={'email':'test@example.com',
+                                'password':'password'})
+    return client
+
+@pytest.fixture
+def client_2(client):
+    client.post('/login', data={'email':'test2@example.com',
                                 'password':'password'})
     return client
