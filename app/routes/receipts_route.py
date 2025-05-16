@@ -1,11 +1,12 @@
 # receipts_route.py - Fix the username attribute issue
 
-from flask import Blueprint, render_template, request, jsonify, send_file, abort
+from flask import Blueprint, render_template, request, jsonify, send_file, abort, current_app
 from flask_login import login_required, current_user
 from datetime import datetime
 import io
 import base64
-from PIL import Image
+import os
+from PIL import Image, ImageDraw, ImageFont
 from collections import defaultdict
 
 from app.models.receipts import Receipts
@@ -15,6 +16,16 @@ from app import db
 
 receipts = Blueprint('receipts', __name__)
 
+def draw_right_aligned(draw_obj, text, x_right, y, font, fill="black"):
+    text_width = draw_obj.textlength(text, font=font)
+    x_left = x_right - text_width
+    draw_obj.text((x_left, y), text, fill=fill, font=font)
+    
+def draw_center_aligned(draw_obj, text, center_x, y, font, fill="black"):
+    text_width = draw_obj.textlength(text, font=font)
+    x_left = center_x - (text_width / 2)
+    draw_obj.text((x_left, y), text, fill=fill, font=font)
+    
 def generate_receipt_data(user_id, timeframe='monthly'):
     """Generate the data needed for the receipt"""
     # Query user logs
@@ -43,6 +54,13 @@ def generate_receipt_data(user_id, timeframe='monthly'):
     # Combined procrastination percent (gaming + social + other)
     procrastination_percent = gaming_percent + social_percent + other_percent
     
+    # If all percentages are 0, set some default values
+    if productive_percent == 0 and gaming_percent == 0 and procrastination_percent == 0:
+        print(f"DEBUG - No activity data for user {user_id}, using default percentages")
+        productive_percent = 40
+        gaming_percent = 30
+        procrastination_percent = 30
+    
     # Get current date and time
     now = datetime.now()
     
@@ -53,36 +71,42 @@ def generate_receipt_data(user_id, timeframe='monthly'):
     user = User.query.get(user_id)
     user_email = user.email if user and hasattr(user, 'email') else f"User-{user_id}"
     
-    # Decide on a status message based on productivity
-    if productive_percent >= 70:
-        status = "PRODUCTIVITY MASTER"
-    elif productive_percent >= 50:
-        status = "DOING GOOD"
-    elif productive_percent >= 30:
-        status = "NEEDS IMPROVEMENT"
-    else:
-        status = "HELLA BAD BRUH"
+    # Get status based on productivity
+    status_message = get_status_from_productivity(productive_percent)
+    
+    # Debug output
+    print(f"DEBUG - Generated receipt data for user {user_id}")
+    print(f"  Procrastination: {procrastination_percent}%")
+    print(f"  Gaming: {gaming_percent}%")
+    print(f"  Productive: {productive_percent}%")
     
     # Construct the receipt data
     receipt_data = {
         "date": now.strftime("%a, %b %d, %Y"),
         "time": now.strftime("%I:%M:%S %p"),
         "receipt_number": receipt_number,
-        "status": status,
+        "status": status_message,
         "customer_name": user_email,  # Use email instead of username
         "procrastination_hours": procrastination_percent,
         "gaming_hours": gaming_percent,
         "productive_hours": productive_percent,
-        "total_hours": round(total_hours),
+        "total_hours": round(total_hours) if total_hours > 0 else 100,
         "operator": "SLOTHIE :)"
     }
     
     return receipt_data
 
+
 def save_receipt_to_db(user_id):
     """Save receipt data to the database and return the receipt object"""
     # Calculate receipt data
     receipt_data = generate_receipt_data(user_id)
+    
+    # Debug print
+    print(f"DEBUG - Saving receipt for user {user_id}")
+    print(f"  Procrastination: {receipt_data['procrastination_hours']}%")
+    print(f"  Gaming: {receipt_data['gaming_hours']}%")
+    print(f"  Productive: {receipt_data['productive_hours']}%")
     
     # Check if a receipt already exists for today
     today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -153,7 +177,7 @@ def download_receipt():
         download_name=f'productivity_receipt_{datetime.now().strftime("%Y%m%d")}.pdf'
     )
 
-@receipts.route('/view-receipt/<int:receipt_id>', methods=['GET'])
+@receipts.route('/receipts/<int:receipt_id>/view', methods=['GET'])
 @login_required
 def view_receipt(receipt_id):
     """View a specific receipt"""
@@ -203,3 +227,74 @@ def get_status_from_productivity(productive_percent):
         return "NEEDS IMPROVEMENT"
     else:
         return "HELLA BAD BRUH"
+
+@receipts.route('/receipts/<int:receipt_id>/img', methods=['GET'])
+@login_required
+def view_receipt_img(receipt_id):
+    """Generate and return an image of the receipt"""
+    receipt = Receipts.query.get_or_404(receipt_id)
+    
+    if receipt.author_id != current_user.uid:
+        # Check if this receipt was shared with the current user
+        from app.models.receipts import ReceiptsShareRequest, Status
+        share_request = ReceiptsShareRequest.query.filter_by(
+            shared_receipt_id=receipt_id,
+            receiver_id=current_user.uid,
+            status=Status.ACCEPTED
+        ).first()
+        
+        if not share_request:
+            abort(403)
+    
+    # Get author's email
+    author = User.query.get(receipt.author_id)
+    author_email = author.email if author and hasattr(author, 'email') else f"User-{receipt.author_id}"
+    
+    # Create receipt data for image
+    receipt_data = {
+        "date": datetime.fromtimestamp(receipt.time).strftime("%a, %b %d, %Y"),
+        "time": datetime.fromtimestamp(receipt.time).strftime("%I:%M:%S %p"),
+        "receipt_number": f"{receipt.receipt_id:04d}",
+        "status": get_status_from_productivity(receipt.hours_productive),
+        "customer_name": author_email,
+        "procrastination_hours": receipt.hours_procrastinated,
+        "gaming_hours": receipt.hours_gaming,
+        "productive_hours": receipt.hours_productive,
+        "total_hours": receipt.hours_procrastinated + receipt.hours_gaming + receipt.hours_productive,
+    }
+    
+    template = os.path.join(current_app.static_folder, 'img', 'receipt-base.png')
+    img = Image.open(template)
+    draw = ImageDraw.Draw(img)
+    
+    #need monospace font
+    font_path = os.path.join(current_app.static_folder, 'fonts', 'poppins', 'Poppins-Regular.ttf')
+    font_small = ImageFont.truetype(font_path, 14)
+    font_medium = ImageFont.truetype(font_path, 16)
+    font_large = ImageFont.truetype(font_path, 18)
+    
+    draw_center_aligned(draw, f"{receipt_data['date']} • {receipt_data['time']}", 230, 150, font_small)
+    draw_center_aligned(draw, f"#{receipt_data['receipt_number']}", 230, 205, font_medium)
+
+    # Info (needs text alignment adjustment)
+    draw.text((260, 300), receipt_data['status'], fill="black", font=font_large)
+    draw.text((250, 370), receipt_data['customer_name'], fill="black", font=font_medium)
+
+    # Hours
+    draw_right_aligned(draw, f"{receipt_data['procrastination_hours']}%", 410, 490, font_medium)
+    draw_right_aligned(draw, f"{receipt_data['gaming_hours']}%", 410, 535, font_medium)
+    draw_right_aligned(draw, f"{receipt_data['productive_hours']}%", 410, 575, font_medium)
+
+    # Total
+    draw_right_aligned(draw, f"{receipt_data['total_hours']} hrs", 400, 660, font_medium)
+    
+    img_io = io.BytesIO()
+    img.save(img_io, 'PNG')
+    img_io.seek(0)
+    
+    # Return the image
+    return send_file(
+        img_io, 
+        mimetype='image/png',
+        as_attachment=False
+    )
