@@ -11,11 +11,6 @@ log = Blueprint('log', __name__)
 @login_required
 def log_activity():
     form = LogActivityForm()
-    
-    if request.method == 'POST':
-        # Debug what's in the request
-        print(f"Request form data: {request.form}")
-        print(f"'mood' in form data: {request.form.get('mood', 'NOT PRESENT')}")
 
     if form.validate_on_submit():
         # Application logic
