@@ -265,7 +265,14 @@ def get_status_from_productivity(productive_percent):
 @receipts.route('/receipts/<int:receipt_id>/img', methods=['GET'])
 @login_required
 def view_receipt_img(receipt_id):
-    """Generate and return an image of the receipt"""
+    """Alternative method to retrieve server-rendered receipts (png)
+
+    Args:
+        receipt_id (int): receipt_id to be rendered.
+
+    Returns:
+        send_file(): rendered image not sent as attachment
+    """
     receipt = Receipts.query.get_or_404(receipt_id)
     
     if receipt.author_id != current_user.uid:

@@ -10,6 +10,10 @@ log = Blueprint('log', __name__)
 @log.route('/log-activity', methods=['GET', 'POST'])
 @login_required
 def log_activity():
+    """Displays the log activity UI, or logs an activity through a POST request.
+    Returns:
+        Rendered HTML
+    """
     form = LogActivityForm()
 
     if form.validate_on_submit():
