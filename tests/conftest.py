@@ -1,6 +1,7 @@
 import pytest
 from app import app, db
 from app.database import User
+from app.models.activitylog import ActivityLog
 
 @pytest.fixture
 def client():
@@ -12,9 +13,20 @@ def client():
     )
     with app.test_client() as client:
         with app.app_context():
+            db.drop_all()
             db.create_all()
-            test_user = User(email="rex@orange.com", first_name="Alex", last_name="O'Connor", usertype="tester")
-            test_user.set_password("Apr!cotPr!nc355")
+            test_user = User(first_name='test',
+                             last_name='user',
+                             email='test@example.com')
+            test_user.set_password('password')
+            db.session.add(test_user)
+            db.session.commit()
         yield client
         with app.app_context():
             db.drop_all()
+
+@pytest.fixture
+def client_logged(client):
+    client.post('/login', data={'email':'test@example.com',
+                                'password':'password'})
+    return client
