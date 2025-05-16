@@ -47,10 +47,10 @@ def share_page(users=None):
     receipt_data, receipt = get_receipt_data(current_user.uid, timeframe)
     
     return render_template('share.html', 
-                          users=users, 
-                          receipt_data=receipt_data,
-                          receipt_id=receipt.receipt_id if receipt else None,
-                          timeframe=timeframe)
+                               users=users, 
+                               receipt_data=receipt_data,
+                               receipt_id=receipt.receipt_id if receipt else None,
+                               timeframe=timeframe)
 
 @share.route('/share/send/<int:receipt_id>/<int:target_user_id>', methods=['POST'])
 @login_required

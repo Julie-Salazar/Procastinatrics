@@ -222,7 +222,6 @@ def view_receipt_img(receipt_id):
     receipt = Receipts.query.get_or_404(receipt_id)
     
     if receipt.author_id != current_user.uid:
-        # Check if this receipt was shared with the current user
         from app.models.receipts import ReceiptsShareRequest, Status
         share_request = ReceiptsShareRequest.query.filter_by(
             shared_receipt_id=receipt_id,
