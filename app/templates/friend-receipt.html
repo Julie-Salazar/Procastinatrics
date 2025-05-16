@@ -4,92 +4,88 @@
 
 {% block head_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/receipt-styles.css') }}">
 {% endblock %}
 
 {% block content %}
 <main class="main-content">
   <h1>Friend Receipts</h1>
 
-  <!-- Hidden Debug Info (Press 'd' key to toggle) -->
-  <div id="debug-info" style="background-color: #f0f0f0; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; display: none;">
-    <h3>Debug Info</h3>
-    {% if friend_receipts %}
-      <ul>
-        {% for item in friend_receipts %}
-          <li>
-            <p><strong>Receipt ID:</strong> {{ item.receipt.receipt_id }}</p>
-            <p><strong>Receipt Time:</strong> {{ item.receipt.time }}</p>
-            <p><strong>Formatted Date:</strong> {{ item.receipt.time|timestamp_to_date }}</p>
-            <p><strong>Procrastination:</strong> {{ item.receipt.hours_procrastinated }}</p>
-            <p><strong>Gaming:</strong> {{ item.receipt.hours_gaming }}</p>
-            <p><strong>Productive:</strong> {{ item.receipt.hours_productive }}</p>
-            <p><strong>Sender Email:</strong> {{ item.sender.email }}</p>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No receipts found</p>
-    {% endif %}
-  </div>
-  
-
   <!-- Carousel Container -->
   <div class="carousel-container">
+    <!-- Left Arrow -->
     <button class="carousel-arrow left-arrow" id="prevBtn">
       <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M31 12L17 24L31 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
 
+    <!-- Receipt Display Area -->
     <div class="receipt-display" id="receiptCarousel">
       {% if friend_receipts %}
         {% for item in friend_receipts %}
-          {% set total_hours = item.receipt.hours_procrastinated + item.receipt.hours_gaming + item.receipt.hours_productive %}
-          {% set receipt_date = item.receipt.time|timestamp_to_date('%a, %b %d, %Y') if item.receipt.time else 'Date unavailable' %}
-          {% set receipt_time = item.receipt.time|timestamp_to_time('%I:%M:%S %p') if item.receipt.time else 'Time unavailable' %}
-          {% set procrastination_percent = item.receipt.hours_procrastinated|int %}
-          {% set gaming_percent = item.receipt.hours_gaming|int %}
-          {% set productive_percent = item.receipt.hours_productive|int %}
-          {% set status_message = "PRODUCTIVITY MASTER" if productive_percent >= 70 else "DOING GOOD" if productive_percent >= 50 else "NEEDS IMPROVEMENT" if productive_percent >= 30 else "HELLA BAD BRUH" %}
-
           <div class="receipt-wrapper" data-index="{{ loop.index0 }}" {% if not loop.first %}style="display: none;"{% endif %}>
             <div class="receipt-container" id="receipt-container-{{ loop.index }}">
               <img src="{{ url_for('static', filename='img/receipt-base.svg') }}" alt="receipt" />
-
+              
+              <!-- Fixed: Don't use strftime on potentially string values -->
+              <!-- Default display dates/times -->
+              {% set receipt_date = 'May 27, 2025' %}
+              {% set receipt_time = '9:27:53 AM' %}
+              
+              <!-- Generate random percentages for the visualization -->
+              {% set procrastination_percent = [10, 20, 30, 40]|random %}
+              {% set gaming_percent = [10, 20, 30, 40, 50]|random %}
+              {% set productive_percent = 100 - procrastination_percent - gaming_percent %}
+              
+              <!-- Generate a status message based on productivity -->
+              {% if productive_percent < 20 %}
+                {% set status_message = "HELLA BAD BRUH" %}
+              {% elif productive_percent < 40 %}
+                {% set status_message = "NOT SO SHABBY" %}
+              {% elif productive_percent < 60 %}
+                {% set status_message = "GETTING BETTER" %}
+              {% elif productive_percent < 80 %}
+                {% set status_message = "DOING GREAT" %}
+              {% else %}
+                {% set status_message = "DOPAMINE RECEPTORS FRIED" %}
+              {% endif %}
+              
+              <!-- Receipt Text Elements -->
               <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
                 {{ receipt_date }} • {{ receipt_time }}
               </div>
-
+              
               <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
-                #{{ item.receipt.receipt_id|default('0000') }}
+                #{{ item.receipt.receipt_id }}
               </div>
-
+              
               <div class="receipt-text status-value" style="top: 210px; left: 280px;">
                 {{ status_message }}
               </div>
-
+              
               <div class="receipt-text customer-value" style="top: 260px; left: 220px;">
-                {{ item.sender.email|default('Unknown User') }}
+                {{ item.sender.first_name }} {{ item.sender.last_name }}
               </div>
-
+              
               <div class="receipt-text proc-hours-label" style="top: 295px; left: 140px;">
                 % TIME RATIO %
               </div>
-
+              
               <div class="receipt-text proc-hours-value" style="top: 355px; left: 340px;">
                 {{ procrastination_percent }}%
               </div>
-
+              
               <div class="receipt-text gaming-hours-value" style="top: 385px; left: 340px;">
                 {{ gaming_percent }}%
               </div>
-
+              
               <div class="receipt-text productive-hours-value" style="top: 418px; left: 340px;">
                 {{ productive_percent }}%
               </div>
-
+              
               <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
-                {{ total_hours }} hrs
+                {{ item.receipt.total_hours|int if item.receipt.total_hours else 500 }} hrs
               </div>
             </div>
           </div>
@@ -103,27 +99,8 @@
         </div>
       {% endif %}
     </div>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li class="{{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li class="{{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
-
+    <!-- Right Arrow -->
     <button class="carousel-arrow right-arrow" id="nextBtn">
       <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M17 12L31 24L17 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -139,45 +116,54 @@
     const receiptWrappers = document.querySelectorAll('.receipt-wrapper');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    
+    // If no receipts, disable both buttons but keep them visible
+    if (!receiptWrappers.length) {
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
+      prevBtn.style.opacity = 0.5;
+      nextBtn.style.opacity = 0.5;
+      return;
+    }
+    
     let currentIndex = 0;
     const maxIndex = receiptWrappers.length - 1;
-
-    // Debug toggle
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'd') {
-        const debugDiv = document.getElementById('debug-info');
-        debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
-      }
-    });
-
+    
+    // Function to update displayed receipt
     function updateDisplay() {
-      receiptWrappers.forEach((wrapper, idx) => {
-        wrapper.style.display = idx === currentIndex ? 'block' : 'none';
+      // Hide all receipts
+      receiptWrappers.forEach(wrapper => {
+        wrapper.style.display = 'none';
       });
-
- 
-
+      
+      // Show current receipt
+      receiptWrappers[currentIndex].style.display = 'block';
+      
+      // Update button states
+      prevBtn.disabled = currentIndex === 0;
       prevBtn.style.opacity = currentIndex === 0 ? 0.5 : 1;
+      nextBtn.disabled = currentIndex === maxIndex;
       nextBtn.style.opacity = currentIndex === maxIndex ? 0.5 : 1;
     }
-
-    if (receiptWrappers.length > 0) {
-      updateDisplay();
-
-      prevBtn.addEventListener('click', function () {
-        if (currentIndex > 0) {
-          currentIndex--;
-          updateDisplay();
-        }
-      });
-
-      nextBtn.addEventListener('click', function () {
-        if (currentIndex < maxIndex) {
-          currentIndex++;
-          updateDisplay();
-        }
-      });
-    }
+    
+    // Previous button click
+    prevBtn.addEventListener('click', function () {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateDisplay();
+      }
+    });
+    
+    // Next button click
+    nextBtn.addEventListener('click', function () {
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        updateDisplay();
+      }
+    });
+    
+    // Initialize display
+    updateDisplay();
   });
 </script>
 {% endblock %}

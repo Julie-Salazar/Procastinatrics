@@ -63,32 +63,47 @@ def share_page(users=None):
 @share.route('/share/send/<int:receipt_id>/<int:target_user_id>', methods=['POST'])
 @login_required
 def send_request(receipt_id, target_user_id):
+    # 🚫 Blocked user check
     if is_user_blocked(current_user.uid, target_user_id):
         abort(403)
 
-    # Get the receipt
+    # ✅ Prevent duplicate pending request
+    existing_request = ReceiptsShareRequest.query.filter_by(
+        receiver_id=target_user_id,
+        shared_receipt_id=receipt_id,
+        status=Status.PENDING
+    ).first()
+
+    if existing_request:
+        flash("A pending request for this receipt already exists.", "warning")
+        return redirect(url_for('share.share_page'))
+
+    # 🧾 Fetch the receipt
     receipt = Receipts.query.get(receipt_id)
-    if receipt:
-        print(f"DEBUG - Sharing receipt {receipt_id} with user {target_user_id}")
-        print(f"  Procrastination: {receipt.hours_procrastinated}%")
-        print(f"  Gaming: {receipt.hours_gaming}%")
-        print(f"  Productive: {receipt.hours_productive}%")
-        
-        # Calculate and update if all zeros
-        if (receipt.hours_procrastinated == 0 and 
-            receipt.hours_gaming == 0 and 
-            receipt.hours_productive == 0):
-            
-            from app.routes.friend_route import calculate_percentages
-            percentages = calculate_percentages(receipt.author_id)
+    if not receipt:
+        flash("Receipt not found.", "danger")
+        return redirect(url_for('share.share_page'))
 
-            receipt.hours_procrastinated = percentages["procrastination_percent"]
-            receipt.hours_gaming = percentages["gaming_percent"]
-            receipt.hours_productive = percentages["productive_percent"]
+    print(f"DEBUG - Preparing to share receipt {receipt_id} with user {target_user_id}")
+    print(f"  Current Values → P: {receipt.hours_procrastinated}%, G: {receipt.hours_gaming}%, Prod: {receipt.hours_productive}%")
 
-            db.session.commit()
-            print(f"DEBUG - Updated receipt {receipt_id} with calculated percentages before sharing")
+    # ♻️ Recalculate if all values are zero
+    if (
+        receipt.hours_procrastinated == 0 and 
+        receipt.hours_gaming == 0 and 
+        receipt.hours_productive == 0
+    ):
+        from app.routes.friend_route import calculate_percentages
+        percentages = calculate_percentages(receipt.author_id)
 
+        receipt.hours_procrastinated = percentages["procrastination_percent"]
+        receipt.hours_gaming = percentages["gaming_percent"]
+        receipt.hours_productive = percentages["productive_percent"]
+        db.session.commit()
+
+        print(f"DEBUG - Recalculated and updated receipt {receipt_id} before sharing")
+
+    # ➕ Create new share request
     new_request = ReceiptsShareRequest(
         sender_id=current_user.uid,
         receiver_id=target_user_id,
@@ -100,8 +115,10 @@ def send_request(receipt_id, target_user_id):
     db.session.add(new_request)
     db.session.commit()
 
-    print(f"✅ Shared receipt {receipt_id} with user {target_user_id} as request #{new_request.request_id}")
-    return "200"
+    print(f"✅ Share request #{new_request.request_id} created: receipt {receipt_id} → user {target_user_id}")
+    flash("Receipt shared successfully!", "success")
+    return redirect(url_for('share.share_page'))
+
 
 
 @share.route('/share/requests', methods=['GET'])
