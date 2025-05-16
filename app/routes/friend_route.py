@@ -1,6 +1,3 @@
-# ----------------------------
-# app/routes/friend_route.py
-# ----------------------------
 
 from flask import Blueprint, render_template, request, abort, redirect, url_for, flash
 from flask_login import login_required, current_user
@@ -51,6 +48,7 @@ def calculate_percentages(user_id):
         "procrastination_percent": procrastination_percent,
         "gaming_percent": gaming_percent,
         "productive_percent": productive_percent,
+        "other_percent": other_percent,
         "total_hours": round(total_hours)
     }
 
@@ -69,30 +67,42 @@ def display_receipts():
         receipt = Receipts.query.get(request.shared_receipt_id)
 
         if sender and receipt:
+            # Always calculate total hours from logs
+            user_logs = ActivityLog.query.filter_by(user_id=receipt.author_id).all()
+            total_hours = sum((log.hours or 0) + (log.minutes or 0) / 60 for log in user_logs)
+            total_hours = round(total_hours)
+
             if all(v == 0 for v in [
                 receipt.hours_procrastinated,
                 receipt.hours_gaming,
                 receipt.hours_productive
             ]):
+                # Get fresh percentages from logs
                 percentages = calculate_percentages(receipt.author_id)
                 receipt.hours_procrastinated = percentages["procrastination_percent"]
                 receipt.hours_gaming = percentages["gaming_percent"]
                 receipt.hours_productive = percentages["productive_percent"]
                 db.session.commit()
+
+                # Use updated percentages
+                procrastination = percentages["procrastination_percent"]
+                gaming = percentages["gaming_percent"]
+                productive = percentages["productive_percent"]
             else:
-                percentages = {
-                    "procrastination_percent": receipt.hours_procrastinated,
-                    "gaming_percent": receipt.hours_gaming,
-                    "productive_percent": receipt.hours_productive,
-                    "total_hours": 0
-                }
+                # Use stored values
+                procrastination = receipt.hours_procrastinated
+                gaming = receipt.hours_gaming
+                productive = receipt.hours_productive
 
             friend_receipts.append({
                 'request_id': request.request_id,
                 'sender': sender,
                 'receipt': receipt,
                 'time_shared': request.time,
-                'total_hours': percentages.get("total_hours", 0)
+                'total_hours': total_hours,
+                'procrastination_percent': procrastination,
+                'gaming_percent': gaming,
+                'productive_percent': productive
             })
 
     return render_template('friend-receipt.html', friend_receipts=friend_receipts)

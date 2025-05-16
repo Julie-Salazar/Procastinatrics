@@ -63,11 +63,9 @@ def share_page(users=None):
 @share.route('/share/send/<int:receipt_id>/<int:target_user_id>', methods=['POST'])
 @login_required
 def send_request(receipt_id, target_user_id):
-    # 🚫 Blocked user check
     if is_user_blocked(current_user.uid, target_user_id):
         abort(403)
 
-    # ✅ Prevent duplicate pending request
     existing_request = ReceiptsShareRequest.query.filter_by(
         receiver_id=target_user_id,
         shared_receipt_id=receipt_id,
@@ -78,7 +76,6 @@ def send_request(receipt_id, target_user_id):
         flash("A pending request for this receipt already exists.", "warning")
         return redirect(url_for('share.share_page'))
 
-    # 🧾 Fetch the receipt
     receipt = Receipts.query.get(receipt_id)
     if not receipt:
         flash("Receipt not found.", "danger")
@@ -87,7 +84,6 @@ def send_request(receipt_id, target_user_id):
     print(f"DEBUG - Preparing to share receipt {receipt_id} with user {target_user_id}")
     print(f"  Current Values → P: {receipt.hours_procrastinated}%, G: {receipt.hours_gaming}%, Prod: {receipt.hours_productive}%")
 
-    # ♻️ Recalculate if all values are zero
     if (
         receipt.hours_procrastinated == 0 and 
         receipt.hours_gaming == 0 and 
@@ -115,7 +111,7 @@ def send_request(receipt_id, target_user_id):
     db.session.add(new_request)
     db.session.commit()
 
-    print(f"✅ Share request #{new_request.request_id} created: receipt {receipt_id} → user {target_user_id}")
+    print(f"Share request #{new_request.request_id} created: receipt {receipt_id} → user {target_user_id}")
     flash("Receipt shared successfully!", "success")
     return redirect(url_for('share.share_page'))
 
