@@ -55,21 +55,3 @@ But for more in-depth testing, we have already implemented testcases via [pytest
 ```shell
 pytest
 ```
-
-### Install dependencies (for all the node_modules)
-npm install 
-
-
-### Files
-
-### `__init__.py`
-Initialises the Flask app and sets up configurations
-
-### `models.py`
-Defines the data models (tables) 
-
-### `routes.py`
-Defines the routes of each page 
-
-### `database.py`
-Performs easy manipulation of the database
