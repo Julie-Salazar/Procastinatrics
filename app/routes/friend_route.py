@@ -1,4 +1,3 @@
-# COMPREHENSIVE FIX FOR ALL FILES
 
 # --------------------- 1. friend_route.py ---------------------
 
@@ -10,8 +9,12 @@ from app.models.activitylog import ActivityLog
 from app import db
 from datetime import datetime
 from collections import defaultdict
+from flask import jsonify, flash
+
 
 friends = Blueprint('friends', __name__)
+
+
 
 @friends.app_template_filter('timestamp_to_date')
 def timestamp_to_date(timestamp, format='%a, %b %d, %Y'):
@@ -74,8 +77,9 @@ def calculate_percentages(user_id):
         "procrastination_percent": procrastination_percent,
         "gaming_percent": gaming_percent,
         "productive_percent": productive_percent,
-        "total_hours": total_hours
+        "total_hours": round(total_hours)
     }
+
 
 @friends.route('/friend-receipt')
 @login_required
@@ -84,15 +88,23 @@ def display_receipts():
     Display a list of all accepted receipt shares from friends
     """
     # Get all accepted receipt share requests where the current user is the receiver
-    accepted_requests = (ReceiptsShareRequest
-                        .query
-                        .filter_by(receiver_id=current_user.uid, status=Status.ACCEPTED)
-                        .all())
+    accepted_requests = ReceiptsShareRequest.query.filter_by(
+    receiver_id=current_user.uid,
+    status=Status.ACCEPTED
+    ).all()
+
+    print(f"[DEBUG] {len(accepted_requests)} accepted requests")
+    for r in accepted_requests:
+        print(f"Request ID: {r.request_id} | Receipt ID: {r.shared_receipt_id} | Sender ID: {r.sender_id} | Time: {r.time}")
+
     
     # Create a list with sender information and receipt data
     friend_receipts = []
     
+    print(f"[SHARE DEBUG] {len(accepted_requests)} accepted shares found")
     for request in accepted_requests:
+        print(f" - Request #{request.request_id} | receipt_id={request.shared_receipt_id} | from={request.sender_id} to={request.receiver_id}")
+
         # Get the sender's information
         sender = User.query.get(request.sender_id)
         
@@ -132,36 +144,52 @@ def display_receipts():
                 else:
                     # If still zero, set some default values for better visualization
                     print(f"DEBUG - Setting default values for receipt {receipt.receipt_id}")
-                    receipt.hours_procrastinated = 20
-                    receipt.hours_gaming = 30
-                    receipt.hours_productive = 50
+                    receipt.hours_procrastinated 
+                    receipt.hours_gaming 
+                    receipt.hours_productive 
+
                     # Not committing these default values to database
-            
+            print(f"[ROUTE DEBUG] Found {len(accepted_requests)} accepted requests")
+
+            for r in accepted_requests:
+                print(f"Request ID: {r.request_id}, Receipt ID: {r.shared_receipt_id}, Sender ID: {r.sender_id}, Receiver ID: {r.receiver_id}, Status: {r.status}")
+
             friend_receipts.append({
                 'request_id': request.request_id,
                 'sender': sender,
                 'receipt': receipt,
                 'time_shared': request.time
             })
+
+            # return jsonify([
+            #     {
+            #         "request_id": f['request_id'],
+            #         "receipt_id": f['receipt'].receipt_id,
+            #         "sender": f['sender'].email,
+            #         "time_shared": f['time_shared']
+            #     } for f in friend_receipts
+            # ])
+        flash(f"{len(friend_receipts)} shared receipts loaded.", "info")
+
     
     return render_template('friend-receipt.html', 
                           friend_receipts=friend_receipts)
 
-@friends.route('/friend-receipt/remove/<int:request_id>', methods=['POST'])
-@login_required
-def remove_shared_receipt(request_id):
-    """
-    Remove a shared receipt from your list (change status to REMOVED)
-    """
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+# @friends.route('/friend-receipt/remove/<int:request_id>', methods=['POST'])
+# @login_required
+# def remove_shared_receipt(request_id):
+#     """
+#     Remove a shared receipt from your list (change status to REMOVED)
+#     """
+#     request = ReceiptsShareRequest.query.get_or_404(request_id)
     
-    # Check if the current user is the receiver
-    if request.receiver_id != current_user.uid:
-        abort(403)  # Forbidden
+#     # Check if the current user is the receiver
+#     if request.receiver_id != current_user.uid:
+#         abort(403)  # Forbidden
     
-    # Change status to removed
-    request.status = Status.REMOVED
-    db.session.commit()
+#     # Change status to removed
+#     request.status = Status.REMOVED
+#     db.session.commit()
     
-    flash('The shared receipt has been removed from your list.', 'success')
-    return redirect(url_for('friends.display_receipts'))
+#     flash('The shared receipt has been removed from your list.', 'success')
+#     return redirect(url_for('friends.display_receipts'))
