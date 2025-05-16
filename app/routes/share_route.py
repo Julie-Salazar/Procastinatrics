@@ -77,6 +77,11 @@ def timestamp_to_time(value, format='%I:%M:%S %p'):
 @share.route('/share', methods=['GET'])
 @login_required
 def share_page():
+    """Routing function for /share, generates receipt upon sharing.
+
+    Returns:
+        HTML file for share with a receipt.
+    """
     from app.routes.receipts_route import get_receipt_data
     from app.utils.receipt_helper import calculate_percentages
     
@@ -125,6 +130,15 @@ def share_page():
 @share.route('/share/send/<int:receipt_id>/<int:target_user_id>', methods=['POST'])
 @login_required
 def send_request(receipt_id, target_user_id):
+    """Routing for sending a receipt share request.
+
+    Args:
+        receipt_id (int): receipt_id to be shared.
+        target_user_id (int): user_id to send a request to.
+
+    Returns:
+        redirects to /share
+    """
     if is_user_blocked(current_user.uid, target_user_id):
         abort(403)
 
@@ -139,7 +153,7 @@ def send_request(receipt_id, target_user_id):
         return redirect(url_for('share.share_page'))
 
     # 🧾 Fetch the receipt
-    receipt = Receipts.query.get(receipt_id)
+    receipt = db.session.get(Receipts,receipt_id)
     if not receipt:
         flash("Receipt not found.", "danger")
         return redirect(url_for('share.share_page'))
@@ -184,6 +198,11 @@ def send_request(receipt_id, target_user_id):
 @share.route('/share/requests', methods=['GET'])
 @login_required
 def share_requests():
+    """Route for share requests.
+
+    Returns:
+        HTML file for /share/requests
+    """
     requests = (ReceiptsShareRequest
                 .query
                 .filter_by(receiver_id=current_user.uid,
@@ -194,7 +213,15 @@ def share_requests():
 @share.route('/share/requests/accept/<int:request_id>', methods=['POST'])
 @login_required
 def accept_request(request_id):
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+    """Route function to accept request_id
+
+    Args:
+        request_id (int): request_id to be accepted.
+
+    Returns:
+        redirects to /share/requests
+    """
+    request = db.session.get(ReceiptsShareRequest,request_id)
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.ACCEPTED
@@ -205,7 +232,15 @@ def accept_request(request_id):
 @share.route('/share/requests/decline/<int:request_id>', methods=['POST'])
 @login_required
 def decline_request(request_id):
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+    """Route function to decline request_id, blocks user from sending another request to the decliner.
+
+    Args:
+        request_id (int): request_id to be declined.
+
+    Returns:
+        redirects to /share/requests
+    """
+    request = db.session.get(ReceiptsShareRequest,request_id)
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.DECLINED
@@ -216,7 +251,15 @@ def decline_request(request_id):
 @share.route('/share/requests/ignore/<int:request_id>', methods=['POST'])
 @login_required
 def ignore_request(request_id):
-    request = ReceiptsShareRequest.query.get_or_404(request_id)
+    """Route function to ignore request_id. Ignoring allows the user to resend another duplicate request.
+
+    Args:
+        request_id (int): request_id to be ignored.
+
+    Returns:
+        redirects to /share/requests
+    """
+    request = db.session.get(ReceiptsShareRequest,request_id)
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.IGNORED

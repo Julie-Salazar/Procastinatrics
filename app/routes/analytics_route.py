@@ -19,6 +19,11 @@ def get_category_color(category):
 @views.route('/analytics-home', methods=['GET'])
 @login_required
 def analytics_home():
+    """Routing function for analytics-home.
+
+    Returns:
+        HTML for analytics-home.
+    """
     try:
         # Query the ActivityLog model for the current user's logged activities
         user_logs = ActivityLog.query.filter_by(user_id=current_user.id).order_by(ActivityLog.timestamp.desc()).all()

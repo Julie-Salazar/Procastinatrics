@@ -1,6 +1,8 @@
 # receipts_route.py - Fix the username attribute issue
 
 from flask import Blueprint, render_template, request, jsonify, send_file, abort, current_app
+from sqlalchemy.orm import Session
+
 from flask_login import login_required, current_user
 from datetime import datetime
 import io
@@ -67,7 +69,7 @@ def generate_receipt_data(user_id, timeframe='monthly'):
     
     receipt_number = f"{now.strftime('%Y%m%d%H%M%S')}"[-4:]
     
-    user = User.query.get(user_id)
+    user = db.session.get(User,user_id)
     user_email = user.email if user and hasattr(user, 'email') else f"User-{user_id}"
     
     status_message = get_status_from_productivity(productive_percent)
@@ -156,7 +158,7 @@ def get_receipt_data(user_id, timeframe='monthly'):
         "time": datetime.fromtimestamp(receipt.time).strftime("%I:%M:%S %p"),
         "receipt_number": f"{receipt.receipt_id:04d}",
         "status": get_status_from_productivity(receipt.hours_productive),
-        "customer_name": User.query.get(user_id).email,
+        "customer_name": db.session.get(User,user_id).email,
         "procrastination_hours": receipt.hours_procrastinated,
         "gaming_hours": receipt.hours_gaming,
         "productive_hours": receipt.hours_productive,
@@ -231,7 +233,7 @@ def view_receipt(receipt_id):
             abort(403)
     
     # Get author's email
-    author = User.query.get(receipt.author_id)
+    author = db.session.get(User,receipt.author_id)
     author_email = author.email if author and hasattr(author, 'email') else f"User-{receipt.author_id}"
     
     # Create receipt data for display
@@ -265,7 +267,14 @@ def get_status_from_productivity(productive_percent):
 @receipts.route('/receipts/<int:receipt_id>/img', methods=['GET'])
 @login_required
 def view_receipt_img(receipt_id):
-    """Generate and return an image of the receipt"""
+    """Alternative method to retrieve server-rendered receipts (png)
+
+    Args:
+        receipt_id (int): receipt_id to be rendered.
+
+    Returns:
+        send_file(): rendered image not sent as attachment
+    """
     receipt = Receipts.query.get_or_404(receipt_id)
     
     if receipt.author_id != current_user.uid:
@@ -281,7 +290,7 @@ def view_receipt_img(receipt_id):
             abort(403)
     
     # Get author's email
-    author = User.query.get(receipt.author_id)
+    author = db.session.get(User,receipt.author_id)
     author_email = author.email if author and hasattr(author, 'email') else f"User-{receipt.author_id}"
     
     # Create receipt data for image
