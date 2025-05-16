@@ -65,20 +65,57 @@ def share_page(users=None):
 def send_request(receipt_id, target_user_id):
     if is_user_blocked(current_user.uid, target_user_id):
         abort(403)
-    else:
-        exists = ReceiptsShareRequest.query.filter_by(receiver_id=target_user_id, shared_receipt_id=receipt_id, status=Status.PENDING).first()
-        if exists: abort(403)
-        
-        request = ReceiptsShareRequest(
-            sender_id=current_user.uid,
-            receiver_id=target_user_id,
-            shared_receipt_id=receipt_id,
-            status=Status.PENDING,
-            time=db.func.current_timestamp()
-        )
-        db.session.add(request)
+
+    existing_request = ReceiptsShareRequest.query.filter_by(
+        receiver_id=target_user_id,
+        shared_receipt_id=receipt_id,
+        status=Status.PENDING
+    ).first()
+
+    if existing_request:
+        flash("A pending request for this receipt already exists.", "warning")
+        return redirect(url_for('share.share_page'))
+
+    receipt = Receipts.query.get(receipt_id)
+    if not receipt:
+        flash("Receipt not found.", "danger")
+        return redirect(url_for('share.share_page'))
+
+    print(f"DEBUG - Preparing to share receipt {receipt_id} with user {target_user_id}")
+    print(f"  Current Values → P: {receipt.hours_procrastinated}%, G: {receipt.hours_gaming}%, Prod: {receipt.hours_productive}%")
+
+    if (
+        receipt.hours_procrastinated == 0 and 
+        receipt.hours_gaming == 0 and 
+        receipt.hours_productive == 0
+    ):
+        from app.routes.friend_route import calculate_percentages
+        percentages = calculate_percentages(receipt.author_id)
+
+        receipt.hours_procrastinated = percentages["procrastination_percent"]
+        receipt.hours_gaming = percentages["gaming_percent"]
+        receipt.hours_productive = percentages["productive_percent"]
         db.session.commit()
-        return "200"  # Return a string, not an integer
+
+        print(f"DEBUG - Recalculated and updated receipt {receipt_id} before sharing")
+
+    # ➕ Create new share request
+    new_request = ReceiptsShareRequest(
+        sender_id=current_user.uid,
+        receiver_id=target_user_id,
+        shared_receipt_id=receipt_id,
+        status=Status.PENDING,
+        time=db.func.current_timestamp()
+    )
+
+    db.session.add(new_request)
+    db.session.commit()
+
+    print(f"Share request #{new_request.request_id} created: receipt {receipt_id} → user {target_user_id}")
+    flash("Receipt shared successfully!", "success")
+    return redirect(url_for('share.share_page'))
+
+
 
 @share.route('/share/requests', methods=['GET'])
 @login_required
@@ -97,7 +134,7 @@ def accept_request(request_id):
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.ACCEPTED
-    db.session.commit()  # Add this line to save the changes
+    db.session.commit()
     
     return redirect(url_for('share.share_requests'))
 
@@ -108,7 +145,7 @@ def decline_request(request_id):
     if request.receiver_id != current_user.uid: abort(403)
     
     request.status = Status.DECLINED
-    db.session.commit()  # Add this line to save the changes
+    db.session.commit()
     
     return redirect(url_for('share.share_requests'))
 

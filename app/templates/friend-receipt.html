@@ -4,7 +4,6 @@
 
 {% block head_links %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/friend-receipts.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/receipt-styles.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -30,9 +29,12 @@
               
               <!-- Fixed: Don't use strftime on potentially string values -->
               <!-- Default display dates/times -->
-              {% set receipt_date = 'May 27, 2025' %}
-              {% set receipt_time = '9:27:53 AM' %}
+              {% set receipt = item.receipt %}
+              {% set total_hours = item.total_hours | default(0) %}
+              {% set receipt_date = receipt.time | timestamp_to_date %}
+              {% set receipt_time = receipt.time | timestamp_to_time %}
               
+
               <!-- Generate random percentages for the visualization -->
               {% set procrastination_percent = [10, 20, 30, 40]|random %}
               {% set gaming_percent = [10, 20, 30, 40, 50]|random %}
@@ -53,14 +55,14 @@
               
               <!-- Receipt Text Elements -->
               <div class="receipt-text receipt-date-time" style="top: 105px; left: 160px;">
-                {{ receipt_date }} • {{ receipt_time }}
+              {{ item.time_shared | timestamp_to_date }} • {{ item.time_shared | timestamp_to_time }}
               </div>
-              
+
               <div class="receipt-text receipt-number" style="top: 140px; left: 260px;">
                 #{{ item.receipt.receipt_id }}
               </div>
               
-              <div class="receipt-text status-value" style="top: 210px; left: 280px;">
+              <div class="receipt-text status-value" style="top: 210px; left: 240px;">
                 {{ status_message }}
               </div>
               
@@ -85,9 +87,12 @@
               </div>
               
               <div class="receipt-text total-hours-value" style="top: 480px; left: 340px;">
-                {{ item.receipt.total_hours|int if item.receipt.total_hours else 500 }} hrs
+                {{ item.total_hours }} hrs
               </div>
             </div>
+            <form action="{{ url_for('friends.remove_shared_receipt', request_id=item.request_id) }}" method="post" class="remove-form">
+            <button type="submit" class="remove-btn">Remove</button>
+            </form>
           </div>
         {% endfor %}
       {% else %}
@@ -106,8 +111,12 @@
         <path d="M17 12L31 24L17 36" stroke="#78E08F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
+    
   </div>
 </main>
+
+
+
 {% endblock %}
 
 {% block scripts %}
