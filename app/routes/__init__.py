@@ -4,6 +4,7 @@ from .share_route import *
 from .friend_route import *
 from .log_route import *
 
+
 from app import app
 
 from flask import Flask
